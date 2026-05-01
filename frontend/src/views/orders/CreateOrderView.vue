@@ -174,7 +174,7 @@ import {
   CurrencyDollarIcon,
   CubeIcon,
   StarIcon,
-  CrownIcon,
+  SparklesIcon,
   PuzzlePieceIcon
 } from '@heroicons/vue/24/outline';
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
@@ -201,7 +201,7 @@ const form = reactive({
 const iconMap = {
   CubeIcon,
   StarIcon,
-  CrownIcon,
+  SparklesIcon,
   PuzzlePieceIcon
 };
 
