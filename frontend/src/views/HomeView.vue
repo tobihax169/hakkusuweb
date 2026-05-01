@@ -90,7 +90,7 @@
 <script setup>
 import { useI18n } from 'vue-i18n';
 import {
-  SpeakerWaveIcon,
+  ChatBubbleLeftRightIcon,
   PencilSquareIcon,
   ShieldCheckIcon,
   BoltIcon,
@@ -101,7 +101,7 @@ const { t } = useI18n();
 
 const features = [
   {
-    icon: SpeakerWaveIcon,
+    icon: ChatBubbleLeftRightIcon,
     title: t('home.features.support'),
     description: 'Hỗ trợ 24/7 qua Discord và Email'
   },
