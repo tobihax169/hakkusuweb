@@ -16,6 +16,19 @@
         <CardSkeleton v-for="i in 4" :key="i" :show-image="false" />
       </div>
 
+      <!-- Empty State -->
+      <div v-else-if="services.length === 0" class="text-center py-20">
+        <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center animate-bounce">
+          <CubeIcon class="w-12 h-12 text-gray-400 dark:text-gray-600" />
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          Chưa có dịch vụ nào
+        </h3>
+        <p class="text-gray-500 dark:text-gray-400">
+          Vui lòng quay lại sau hoặc liên hệ admin để thêm dịch vụ
+        </p>
+      </div>
+
       <!-- Packages Grid -->
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <div
