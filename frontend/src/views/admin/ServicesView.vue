@@ -120,7 +120,7 @@ import {
   XMarkIcon,
   CubeIcon,
   StarIcon,
-  CrownIcon,
+  SparklesIcon,
   PuzzlePieceIcon
 } from '@heroicons/vue/24/outline';
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
@@ -142,7 +142,7 @@ const form = reactive({
   popular: false
 });
 
-const iconMap = { CubeIcon, StarIcon, CrownIcon, PuzzlePieceIcon };
+const iconMap = { CubeIcon, StarIcon, SparklesIcon, PuzzlePieceIcon };
 const getIcon = (iconName) => iconMap[iconName] || CubeIcon;
 
 const formatPrice = (price) => price?.toLocaleString('vi-VN') || '0';
