@@ -97,7 +97,7 @@ import { serviceApi } from '@/services/api.js';
 import {
   CubeIcon,
   StarIcon,
-  CrownIcon,
+  SparklesIcon,
   PuzzlePieceIcon,
   CheckIcon
 } from '@heroicons/vue/24/outline';
@@ -113,7 +113,7 @@ const services = ref([]);
 const iconMap = {
   CubeIcon,
   StarIcon,
-  CrownIcon,
+  SparklesIcon,
   PuzzlePieceIcon
 };
 
