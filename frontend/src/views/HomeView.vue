@@ -2,7 +2,7 @@
   <div>
     <!-- Hero Section -->
     <section class="relative overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-br from-primary-900 via-gray-900 to-discord-blurple/20" />
+      <div class="absolute inset-0 bg-gradient-to-br from-primary-900 via-gray-900 to-primary-500/20" />
       
       <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
         <div class="text-center">
