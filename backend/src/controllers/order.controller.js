@@ -1,0 +1,495 @@
+import Order from '../models/Order.js';
+import ServicePackage from '../models/ServicePackage.js';
+import Transaction from '../models/Transaction.js';
+import User from '../models/User.js';
+import { catchAsync, APIError } from '../middleware/errorHandler.js';
+import Log from '../models/Log.js';
+
+/**
+ * Lấy danh sách đơn hàng của user hiện tại
+ * GET /api/orders
+ */
+export const getMyOrders = catchAsync(async (req, res) => {
+  const {
+    page = 1,
+    limit = 10,
+    status,
+    sortBy = 'createdAt',
+    sortOrder = 'desc'
+  } = req.query;
+
+  const query = { userId: req.user._id };
+  if (status) query.status = status;
+
+  const sort = {};
+  sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
+
+  const skip = (parseInt(page) - 1) * parseInt(limit);
+
+  const [orders, total] = await Promise.all([
+    Order.find(query)
+      .sort(sort)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .lean(),
+    Order.countDocuments(query)
+  ]);
+
+  res.json({
+    success: true,
+    data: orders,
+    pagination: {
+      page: parseInt(page),
+      limit: parseInt(limit),
+      total,
+      pages: Math.ceil(total / parseInt(limit))
+    }
+  });
+});
+
+/**
+ * Lấy chi tiết đơn hàng
+ * GET /api/orders/:id
+ */
+export const getOrderById = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const order = await Order.findById(id)
+    .populate('userId', 'username email discordUsername')
+    .populate('assignedTo', 'username email')
+    .populate('statusHistory.changedBy', 'username');
+
+  if (!order) {
+    throw new APIError('Không tìm thấy đơn hàng', 404);
+  }
+
+  // Kiểm tra quyền xem
+  if (order.userId._id.toString() !== req.user._id.toString() && 
+      !['admin', 'support'].includes(req.user.role)) {
+    throw new APIError('Không có quyền xem đơn hàng này', 403);
+  }
+
+  res.json({
+    success: true,
+    data: order
+  });
+});
+
+/**
+ * Tạo đơn hàng mới
+ * POST /api/orders
+ */
+export const createOrder = catchAsync(async (req, res) => {
+  const {
+    packageId,
+    requirements,
+    description,
+    discordServerId,
+    discordServerName,
+    discordInviteLink,
+    paymentMethod
+  } = req.body;
+
+  // Kiểm tra gói dịch vụ
+  const servicePackage = await ServicePackage.findOne({ packageId, isActive: true });
+  if (!servicePackage) {
+    throw new APIError('Gói dịch vụ không tồn tại hoặc đã bị vô hiệu hóa', 400);
+  }
+
+  // Tính giá (có thể thêm discount logic sau)
+  const basePrice = servicePackage.price;
+  const discountAmount = 0;
+  const totalPrice = basePrice - discountAmount;
+
+  // Tạo mã đơn hàng
+  const orderCode = await Order.generateOrderCode();
+
+  // Tạo đơn hàng
+  const order = new Order({
+    orderCode,
+    userId: req.user._id,
+    packageId: servicePackage.packageId,
+    packageName: servicePackage.name,
+    packageNameEn: servicePackage.nameEn,
+    requirements: requirements || [],
+    description: description || '',
+    discordServerId,
+    discordServerName,
+    discordInviteLink,
+    basePrice,
+    discountAmount,
+    totalPrice,
+    currency: servicePackage.currency,
+    paymentMethod,
+    paymentStatus: paymentMethod === 'wallet' ? 'pending' : 'pending',
+    status: 'pending',
+    statusHistory: [{
+      status: 'pending',
+      changedBy: req.user._id,
+      note: 'Đơn hàng được tạo'
+    }]
+  });
+
+  await order.save();
+
+  // Log
+  await Log.createLog({
+    type: 'order',
+    level: 'info',
+    message: `Đơn hàng mới được tạo: ${orderCode}`,
+    userId: req.user._id,
+    targetId: order._id.toString(),
+    targetType: 'order',
+    details: { packageId, totalPrice }
+  });
+
+  res.status(201).json({
+    success: true,
+    message: 'Đơn hàng đã được tạo',
+    data: order
+  });
+});
+
+/**
+ * Thanh toán đơn hàng bằng ví (Gem/Coin)
+ * POST /api/orders/:id/pay
+ */
+export const payWithWallet = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { currency: payCurrency } = req.body;
+
+  const order = await Order.findById(id);
+  if (!order) {
+    throw new APIError('Không tìm thấy đơn hàng', 404);
+  }
+
+  // Kiểm tra quyền
+  if (order.userId.toString() !== req.user._id.toString()) {
+    throw new APIError('Không có quyền thanh toán đơn hàng này', 403);
+  }
+
+  // Kiểm tra trạng thái
+  if (order.paymentStatus === 'paid') {
+    throw new APIError('Đơn hàng đã được thanh toán', 400);
+  }
+
+  if (order.status === 'cancelled') {
+    throw new APIError('Đơn hàng đã bị hủy', 400);
+  }
+
+  const user = await User.findById(req.user._id);
+  let amountToDeduct = order.totalPrice;
+  let transactionCurrency = 'gem';
+
+  // Quy đổi giá sang Gem nếu cần
+  if (order.currency === 'vnd') {
+    // Giả sử 1000 VND = 1 Gem
+    amountToDeduct = Math.ceil(order.totalPrice / 1000);
+  }
+
+  // Kiểm tra số dư
+  if (payCurrency === 'coin') {
+    // Quy đổi Coin sang Gem: 1 Coin = 10 Gem
+    const gemEquivalent = amountToDeduct / 10;
+    if (user.coin < gemEquivalent) {
+      throw new APIError('Số dư Coin không đủ', 400);
+    }
+    await user.deductCoin(gemEquivalent);
+    transactionCurrency = 'coin';
+  } else {
+    if (user.gem < amountToDeduct) {
+      throw new APIError('Số dư Gem không đủ', 400);
+    }
+    await user.deductGem(amountToDeduct);
+  }
+
+  // Tạo transaction
+  const transaction = new Transaction({
+    transactionCode: await Transaction.generateTransactionCode('payment'),
+    userId: req.user._id,
+    type: 'payment',
+    amount: amountToDeduct,
+    currency: transactionCurrency,
+    status: 'success',
+    orderId: order._id,
+    orderCode: order.orderCode,
+    description: `Thanh toán đơn hàng ${order.orderCode}`
+  });
+
+  await transaction.save();
+
+  // Cập nhật đơn hàng
+  await order.markAsPaid(transaction._id);
+
+  // Log
+  await Log.createLog({
+    type: 'payment',
+    level: 'info',
+    message: `Thanh toán thành công: ${order.orderCode}`,
+    userId: req.user._id,
+    targetId: order._id.toString(),
+    targetType: 'order',
+    details: { amount: amountToDeduct, currency: transactionCurrency }
+  });
+
+  res.json({
+    success: true,
+    message: 'Thanh toán thành công',
+    data: {
+      order,
+      transaction,
+      remainingGem: user.gem,
+      remainingCoin: user.coin
+    }
+  });
+});
+
+/**
+ * Hủy đơn hàng
+ * PUT /api/orders/:id/cancel
+ */
+export const cancelOrder = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { reason } = req.body;
+
+  const order = await Order.findById(id);
+  if (!order) {
+    throw new APIError('Không tìm thấy đơn hàng', 404);
+  }
+
+  // Kiểm tra quyền (chủ đơn hoặc admin/support)
+  const isOwner = order.userId.toString() === req.user._id.toString();
+  const isStaff = ['admin', 'support'].includes(req.user.role);
+
+  if (!isOwner && !isStaff) {
+    throw new APIError('Không có quyền hủy đơn hàng này', 403);
+  }
+
+  // Kiểm tra có thể hủy
+  if (!order.canCancel) {
+    throw new APIError('Không thể hủy đơn hàng ở trạng thái này', 400);
+  }
+
+  // Hoàn tiền nếu đã thanh toán
+  if (order.paymentStatus === 'paid') {
+    const user = await User.findById(order.userId);
+    
+    // Quy đổi lại
+    let refundAmount = order.totalPrice;
+    if (order.currency === 'vnd') {
+      refundAmount = Math.ceil(order.totalPrice / 1000);
+    }
+
+    await user.addGem(refundAmount);
+
+    // Tạo transaction hoàn tiền
+    const refundTransaction = new Transaction({
+      transactionCode: await Transaction.generateTransactionCode('refund'),
+      userId: order.userId,
+      type: 'refund',
+      amount: refundAmount,
+      currency: 'gem',
+      status: 'success',
+      orderId: order._id,
+      description: `Hoàn tiền đơn hàng ${order.orderCode} - Đã hủy`
+    });
+
+    await refundTransaction.save();
+    order.paymentStatus = 'refunded';
+  }
+
+  // Cập nhật trạng thái
+  await order.changeStatus('cancelled', req.user._id, reason || 'Người dùng hủy đơn');
+
+  // Log
+  await Log.createLog({
+    type: 'order',
+    level: 'warn',
+    message: `Đơn hàng bị hủy: ${order.orderCode}`,
+    userId: req.user._id,
+    targetId: order._id.toString(),
+    targetType: 'order',
+    details: { reason, cancelledBy: isOwner ? 'user' : 'staff' }
+  });
+
+  res.json({
+    success: true,
+    message: 'Đã hủy đơn hàng',
+    data: order
+  });
+});
+
+/**
+ * Đánh giá đơn hàng
+ * PUT /api/orders/:id/review
+ */
+export const reviewOrder = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { rating, review } = req.body;
+
+  const order = await Order.findById(id);
+  if (!order) {
+    throw new APIError('Không tìm thấy đơn hàng', 404);
+  }
+
+  // Chỉ chủ đơn mới đánh giá được
+  if (order.userId.toString() !== req.user._id.toString()) {
+    throw new APIError('Không có quyền đánh giá đơn hàng này', 403);
+  }
+
+  // Chỉ đánh giá đơn hoàn thành
+  if (order.status !== 'completed') {
+    throw new APIError('Chỉ có thể đánh giá đơn hàng đã hoàn thành', 400);
+  }
+
+  // Chỉ đánh giá 1 lần
+  if (order.rating) {
+    throw new APIError('Đơn hàng đã được đánh giá', 400);
+  }
+
+  await order.addReview(rating, review);
+
+  // Log
+  await Log.createLog({
+    type: 'order',
+    level: 'info',
+    message: `Đơn hàng được đánh giá: ${order.orderCode}`,
+    userId: req.user._id,
+    targetId: order._id.toString(),
+    details: { rating, review }
+  });
+
+  res.json({
+    success: true,
+    message: 'Đánh giá thành công',
+    data: order
+  });
+});
+
+// ==================== ADMIN CONTROLLERS ====================
+
+/**
+ * Lấy tất cả đơn hàng (Admin/Support)
+ * GET /api/admin/orders
+ */
+export const getAllOrders = catchAsync(async (req, res) => {
+  const {
+    page = 1,
+    limit = 10,
+    status,
+    paymentStatus,
+    search,
+    sortBy = 'createdAt',
+    sortOrder = 'desc'
+  } = req.query;
+
+  const query = {};
+  if (status) query.status = status;
+  if (paymentStatus) query.paymentStatus = paymentStatus;
+  if (search) {
+    query.$or = [
+      { orderCode: { $regex: search, $options: 'i' } },
+      { packageName: { $regex: search, $options: 'i' } }
+    ];
+  }
+
+  const sort = {};
+  sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
+
+  const skip = (parseInt(page) - 1) * parseInt(limit);
+
+  const [orders, total] = await Promise.all([
+    Order.find(query)
+      .sort(sort)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .populate('userId', 'username email discordUsername')
+      .populate('assignedTo', 'username')
+      .lean(),
+    Order.countDocuments(query)
+  ]);
+
+  res.json({
+    success: true,
+    data: orders,
+    pagination: {
+      page: parseInt(page),
+      limit: parseInt(limit),
+      total,
+      pages: Math.ceil(total / parseInt(limit))
+    }
+  });
+});
+
+/**
+ * Cập nhật đơn hàng (Admin/Support)
+ * PUT /api/admin/orders/:id
+ */
+export const updateOrder = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  const order = await Order.findById(id);
+  if (!order) {
+    throw new APIError('Không tìm thấy đơn hàng', 404);
+  }
+
+  // Cập nhật các trường cho phép
+  const allowedUpdates = [
+    'status', 'paymentStatus', 'assignedTo', 
+    'estimatedCompletionDate', 'internalNotes', 'discountAmount'
+  ];
+
+  allowedUpdates.forEach(field => {
+    if (updates[field] !== undefined) {
+      order[field] = updates[field];
+    }
+  });
+
+  // Nếu đổi status, thêm vào history
+  if (updates.status && updates.status !== order.status) {
+    await order.changeStatus(updates.status, req.user._id, updates.statusNote || 'Cập nhật bởi admin');
+  } else {
+    await order.save();
+  }
+
+  // Log
+  await Log.createLog({
+    type: 'admin',
+    level: 'info',
+    message: `Admin cập nhật đơn hàng: ${order.orderCode}`,
+    userId: req.user._id,
+    targetId: order._id.toString(),
+    targetType: 'order',
+    details: updates
+  });
+
+  res.json({
+    success: true,
+    message: 'Cập nhật đơn hàng thành công',
+    data: order
+  });
+});
+
+/**
+ * Thống kê đơn hàng (Admin)
+ * GET /api/admin/orders/stats
+ */
+export const getOrderStats = catchAsync(async (req, res) => {
+  const { startDate, endDate } = req.query;
+
+  const stats = await Order.getStatistics(startDate, endDate);
+
+  // Tính tổng doanh thu
+  const totalRevenue = stats.reduce((sum, item) => sum + (item.totalRevenue || 0), 0);
+  const totalOrders = stats.reduce((sum, item) => sum + item.count, 0);
+
+  res.json({
+    success: true,
+    data: {
+      byStatus: stats,
+      totalRevenue,
+      totalOrders
+    }
+  });
+});

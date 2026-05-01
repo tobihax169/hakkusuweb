@@ -1,0 +1,144 @@
+{
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "orders": "Orders",
+    "wallet": "Wallet",
+    "profile": "Profile",
+    "admin": "Admin",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "loginDiscord": "Login with Discord",
+    "loginSuccess": "Login successful!",
+    "registerSuccess": "Registration successful!",
+    "logoutSuccess": "Logged out",
+    "passwordMismatch": "Passwords do not match",
+    "emailRequired": "Email is required",
+    "passwordRequired": "Password is required",
+    "invalidCredentials": "Invalid email/username or password"
+  },
+  "home": {
+    "hero": {
+      "title": "Custom Discord Bots",
+      "subtitle": "For Your Server",
+      "description": "Service providing custom Discord bots tailored to your needs. From basic packages to premium solutions.",
+      "ctaPrimary": "Get Started",
+      "ctaSecondary": "Learn More"
+    },
+    "features": {
+      "title": "Why Choose Us?",
+      "support": "24/7 Support",
+      "custom": "Fully Customizable",
+      "secure": "High Security",
+      "fast": "Fast Deployment"
+    }
+  },
+  "services": {
+    "title": "Service Packages",
+    "subtitle": "Choose the package that fits your needs",
+    "popular": "Popular",
+    "features": "Features",
+    "orderNow": "Order Now",
+    "contact": "Contact Us",
+    "packages": {
+      "basic": "Basic Package",
+      "vip": "VIP Package",
+      "premium": "Premium Package",
+      "custom": "Custom Package"
+    }
+  },
+  "orders": {
+    "title": "My Orders",
+    "newOrder": "New Order",
+    "orderDetails": "Order Details",
+    "orderCode": "Order ID",
+    "package": "Package",
+    "statusLabel": "Status",
+    "price": "Price",
+    "createdAt": "Created",
+    "actions": "Actions",
+    "pay": "Pay",
+    "cancel": "Cancel",
+    "review": "Review",
+    "noOrders": "You have no orders yet",
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded"
+    },
+    "paymentStatus": {
+      "pending": "Pending Payment",
+      "paid": "Paid",
+      "failed": "Payment Failed",
+      "refunded": "Refunded"
+    }
+  },
+  "wallet": {
+    "title": "My Wallet",
+    "balance": "Balance",
+    "gem": "Gem",
+    "coin": "Coin",
+    "topup": "Top Up",
+    "history": "History",
+    "amount": "Amount",
+    "paymentMethod": "Payment Method",
+    "qrCode": "QR Code",
+    "bankTransfer": "Bank Transfer",
+    "transactionHistory": "Transaction History",
+    "noTransactions": "No transactions yet"
+  },
+  "admin": {
+    "title": "Dashboard",
+    "dashboard": "Overview",
+    "users": "Users",
+    "orders": "Orders",
+    "payments": "Payments",
+    "services": "Services",
+    "logs": "Logs",
+    "statistics": "Statistics",
+    "totalUsers": "Total Users",
+    "totalOrders": "Total Orders",
+    "totalRevenue": "Total Revenue",
+    "recentOrders": "Recent Orders"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "view": "View",
+    "download": "Download"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "auto": "Auto"
+  }
+}
