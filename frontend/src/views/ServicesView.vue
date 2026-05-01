@@ -11,20 +11,21 @@
         </p>
       </div>
 
-      <!-- Loading -->
-      <div v-if="loading" class="flex justify-center py-20">
-        <LoadingSpinner size="lg" />
+      <!-- Loading Skeleton -->
+      <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <CardSkeleton v-for="i in 4" :key="i" :show-image="false" />
       </div>
 
       <!-- Packages Grid -->
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <div
-          v-for="pkg in services"
+          v-for="(pkg, index) in services"
           :key="pkg.id"
           :class="[
-            'card card-hover relative flex flex-col',
+            'card card-hover relative flex flex-col animate-slide-up',
             pkg.popular ? 'ring-2 ring-primary-500' : ''
           ]"
+          :style="{ animationDelay: `${index * 100}ms` }"
         >
           <!-- Popular Badge -->
           <div v-if="pkg.popular" class="absolute -top-3 left-1/2 -translate-x-1/2">
@@ -102,6 +103,7 @@ import {
   CheckIcon
 } from '@heroicons/vue/24/outline';
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
+import CardSkeleton from '@/components/common/CardSkeleton.vue';
 
 const router = useRouter();
 const toast = useToast();
