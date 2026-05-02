@@ -30,8 +30,8 @@ const seedData = async () => {
         email: adminEmail,
         password: adminPassword, // pre-save hook sẽ hash
         role: 'admin',
-        gem: 999999,
-        coin: 999999,
+        gem: 0,
+        coin: 0,
         isActive: true,
         isEmailVerified: true
       });
@@ -39,10 +39,12 @@ const seedData = async () => {
       await admin.save();
       logger.info(`Đã tạo admin user: ${adminEmail}`);
     } else {
-      // Cập nhật password mới - pre-save hook sẽ hash
+      // Cập nhật password và reset gem/coin về 0
       existingAdmin.password = adminPassword;
+      existingAdmin.gem = 0;
+      existingAdmin.coin = 0;
       await existingAdmin.save();
-      logger.info(`Đã cập nhật password cho admin: ${adminEmail}`);
+      logger.info(`Đã cập nhật password và reset số dư cho admin: ${adminEmail}`);
     }
 
     // ==================== 2. Seed Service Packages ====================
@@ -83,62 +85,16 @@ const seedData = async () => {
 
     logger.info(`Service Packages: ${createdPackages} tạo mới, ${updatedPackages} cập nhật`);
 
-    // ==================== 3. Tạo Support User (optional) ====================
-    try {
-      const supportEmail = 'support@example.com';
-      const existingSupport = await User.findOne({ email: supportEmail });
-      
-      if (!existingSupport) {
-        const support = new User({
-          username: 'support',
-          email: supportEmail,
-          password: 'support123', // pre-save hook sẽ hash
-          role: 'support',
-          gem: 10000,
-          coin: 10000,
-          isActive: true,
-          isEmailVerified: true
-        });
-
-        await support.save();
-        logger.info(`Đã tạo support user: ${supportEmail}`);
-      }
-    } catch (err) {
-      logger.warn('Bỏ qua tạo support user:', err.message);
-    }
-
-    // ==================== 4. Tạo Demo User (optional) ====================
-    try {
-      const demoEmail = 'demo@example.com';
-      const existingDemo = await User.findOne({ email: demoEmail });
-      
-      if (!existingDemo) {
-        const demoUser = new User({
-          username: 'demouser',
-          email: demoEmail,
-          password: 'demo123', // pre-save hook sẽ hash
-          role: 'user',
-          gem: 5000,
-          coin: 1000,
-          isActive: true,
-          isEmailVerified: true
-        });
-
-        await demoUser.save();
-        logger.info(`Đã tạo demo user: ${demoEmail}`);
-      }
-    } catch (err) {
-      logger.warn('Bỏ qua tạo demo user:', err.message);
-    }
+    // Không tạo demo/support user với số dư có sẵn
+    // User phải nạp tiền thật mới có Gem/Coin
 
     logger.info('Seed dữ liệu hoàn tất!');
     
     // Hiển thị thông tin đăng nhập
     console.log('\n=== THÔNG TIN ĐĂNG NHẬP ===');
     console.log(`Admin:    otachienti169@gmail.com / tobihax169`);
-    console.log(`Support:  support@example.com / support123`);
-    console.log(`Demo:     demo@example.com / demo123`);
     console.log('===========================\n');
+    console.log('Lưu ý: Số dư Gem/Coin = 0, cần nạp tiền qua SePay để có Gem\n');
 
   } catch (error) {
     logger.error('Lỗi seed dữ liệu:', error);
