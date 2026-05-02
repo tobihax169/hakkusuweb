@@ -70,16 +70,16 @@
     <section class="py-20 bg-primary-600 dark:bg-primary-800">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-3xl font-bold text-white mb-4">
-          Sẵn sàng nâng cấp server Discord của bạn?
+          Sẵn sàng khám phá sản phẩm?
         </h2>
         <p class="text-primary-100 text-lg mb-8">
-          Bắt đầu với gói dịch vụ phù hợp nhất cho nhu cầu của bạn.
+          Tìm kiếm và mua các sản phẩm, dịch vụ từ cộng đồng seller của chúng tôi.
         </p>
-        <router-link 
-          to="/services" 
+        <router-link
+          to="/services"
           class="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
         >
-          Xem Gói Dịch Vụ
+          Khám phá ngay
           <ArrowRightIcon class="w-5 h-5" />
         </router-link>
       </div>
@@ -103,22 +103,22 @@ const features = [
   {
     icon: ChatBubbleLeftRightIcon,
     title: t('home.features.support'),
-    description: 'Hỗ trợ 24/7 qua Discord và Email'
+    description: 'Hỗ trợ 24/7 từ đội ngũ seller và admin'
   },
   {
     icon: PencilSquareIcon,
     title: t('home.features.custom'),
-    description: 'Tùy chỉnh bot theo yêu cầu riêng'
+    description: 'Đa dạng sản phẩm từ nhiều seller khác nhau'
   },
   {
     icon: ShieldCheckIcon,
     title: t('home.features.secure'),
-    description: 'Bảo mật dữ liệu và mã nguồn'
+    description: 'Giao dịch an toàn, bảo vệ người mua'
   },
   {
     icon: BoltIcon,
     title: t('home.features.fast'),
-    description: 'Triển khai nhanh trong 24-48h'
+    description: 'Giao hàng nhanh, nhận sản phẩm tức thì'
   }
 ];
 </script>

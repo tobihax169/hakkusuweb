@@ -2,13 +2,36 @@
   <div class="py-12 bg-gray-50 dark:bg-gray-900 min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
-      <div class="text-center mb-12">
+      <div class="text-center mb-8">
         <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
           {{ $t('services.title') }}
         </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-400">
+        <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
           {{ $t('services.subtitle') }}
         </p>
+
+        <!-- Search Box -->
+        <div class="max-w-md mx-auto relative">
+          <div class="relative">
+            <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Tìm kiếm sản phẩm..."
+              class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+            >
+            <button
+              v-if="searchQuery"
+              @click="searchQuery = ''"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <XMarkIcon class="w-5 h-5" />
+            </button>
+          </div>
+          <p v-if="searchQuery" class="text-sm text-gray-500 mt-2">
+            Tìm thấy {{ filteredServices.length }} sản phẩm
+          </p>
+        </div>
       </div>
 
       <!-- Loading Skeleton -->
@@ -16,23 +39,42 @@
         <CardSkeleton v-for="i in 4" :key="i" :show-image="false" />
       </div>
 
-      <!-- Empty State -->
+      <!-- Empty State - No Services -->
       <div v-else-if="services.length === 0" class="text-center py-20">
         <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center animate-bounce">
           <CubeIcon class="w-12 h-12 text-gray-400 dark:text-gray-600" />
         </div>
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-          Chưa có dịch vụ nào
+          Chưa có sản phẩm nào
         </h3>
         <p class="text-gray-500 dark:text-gray-400">
-          Vui lòng quay lại sau hoặc liên hệ admin để thêm dịch vụ
+          Vui lòng quay lại sau hoặc liên hệ admin để thêm sản phẩm
         </p>
+      </div>
+
+      <!-- Empty State - Search No Results -->
+      <div v-else-if="filteredServices.length === 0" class="text-center py-20">
+        <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+          <MagnifyingGlassIcon class="w-12 h-12 text-gray-400 dark:text-gray-600" />
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          Không tìm thấy sản phẩm
+        </h3>
+        <p class="text-gray-500 dark:text-gray-400">
+          Không có sản phẩm nào khớp với "{{ searchQuery }}"
+        </p>
+        <button
+          @click="searchQuery = ''"
+          class="mt-4 px-4 py-2 text-primary-600 hover:text-primary-700 font-medium"
+        >
+          Xóa tìm kiếm
+        </button>
       </div>
 
       <!-- Packages Grid -->
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <div
-          v-for="(pkg, index) in services"
+          v-for="(pkg, index) in filteredServices"
           :key="pkg.id"
           :class="[
             'card card-hover relative flex flex-col animate-slide-up',
@@ -103,7 +145,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import { useAuthStore } from '@/stores/auth.js';
@@ -113,7 +155,9 @@ import {
   StarIcon,
   SparklesIcon,
   PuzzlePieceIcon,
-  CheckIcon
+  CheckIcon,
+  MagnifyingGlassIcon,
+  XMarkIcon
 } from '@heroicons/vue/24/outline';
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
 import CardSkeleton from '@/components/common/CardSkeleton.vue';
@@ -124,6 +168,20 @@ const authStore = useAuthStore();
 
 const loading = ref(true);
 const services = ref([]);
+const searchQuery = ref('');
+
+// Filtered services based on search query
+const filteredServices = computed(() => {
+  if (!searchQuery.value.trim()) {
+    return services.value;
+  }
+  const query = searchQuery.value.toLowerCase().trim();
+  return services.value.filter(service =>
+    service.name?.toLowerCase().includes(query) ||
+    service.description?.toLowerCase().includes(query) ||
+    service.packageId?.toLowerCase().includes(query)
+  );
+});
 
 const iconMap = {
   CubeIcon,
