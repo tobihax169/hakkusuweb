@@ -38,7 +38,7 @@ api.interceptors.response.use(
     if (response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login?expired=true';
+      window.location.href = '/auth/login?expired=true';
     }
 
     // Trả về error object với message từ server
