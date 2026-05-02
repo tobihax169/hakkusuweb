@@ -1,53 +1,58 @@
 <template>
   <div class="py-8">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-        {{ $t('nav.profile') }}
-      </h1>
+      <!-- Kawaii Header -->
+      <div class="mb-6">
+        <span class="inline-block px-3 py-1 bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-300 rounded-full text-sm font-medium mb-3">👤 プロフィール Profile</span>
+        <h1 class="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent font-display">
+          {{ $t('nav.profile') }} 🌸
+        </h1>
+      </div>
 
-      <div class="card p-6">
+      <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounded-3xl p-6 border-2 border-pink-100 dark:border-pink-500/20 shadow-xl shadow-pink-100/30">
         <!-- Avatar & Balance -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-6">
           <div class="flex items-center gap-4">
             <img 
               v-if="authStore.userAvatar" 
               :src="authStore.userAvatar" 
-              class="w-20 h-20 rounded-full ring-4 ring-primary-100 dark:ring-primary-900"
+              class="w-20 h-20 rounded-full ring-4 ring-pink-200 dark:ring-pink-500/30"
             />
-            <div v-else class="w-20 h-20 rounded-full bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold ring-4 ring-primary-100 dark:ring-primary-900">
+            <div v-else class="w-20 h-20 rounded-full bg-gradient-to-br from-pink-400 via-purple-400 to-blue-400 flex items-center justify-center text-white text-2xl font-bold ring-4 ring-pink-200 dark:ring-pink-500/30 shadow-lg">
               {{ authStore.userDisplayName.charAt(0).toUpperCase() }}
             </div>
             <div>
-              <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-xl font-semibold text-slate-800 dark:text-white">
                 {{ authStore.userDisplayName }}
               </h2>
-              <p class="text-gray-500 dark:text-gray-400">{{ authStore.user?.email }}</p>
+              <p class="text-slate-500 dark:text-slate-400">{{ authStore.user?.email }}</p>
               <div class="flex items-center gap-2 mt-2">
                 <span 
                   :class="[
-                    'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                    'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold',
                     authStore.user?.role === 'admin' 
-                      ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                      ? 'bg-gradient-to-r from-purple-400 to-pink-400 text-white'
                       : authStore.user?.role === 'support'
-                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                        ? 'bg-gradient-to-r from-blue-400 to-cyan-400 text-white'
                         : authStore.user?.role === 'seller'
-                          ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
-                          : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
+                          ? 'bg-gradient-to-r from-amber-400 to-orange-400 text-white'
+                          : 'bg-gradient-to-r from-slate-300 to-slate-400 text-white'
                   ]"
                 >
+                  <span class="mr-1">{{ authStore.user?.role === 'admin' ? '👑' : authStore.user?.role === 'seller' ? '🏪' : authStore.user?.role === 'support' ? '🎧' : '👤' }}</span>
                   {{ authStore.user?.role }}
                 </span>
               </div>
             </div>
           </div>
 
-          <!-- Balance Cards -->
+          <!-- Kawaii Balance Cards -->
           <div class="flex gap-3 sm:ml-auto">
-            <div class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl text-white">
-              <p class="text-xs text-blue-100">💎 Gem</p>
+            <div class="px-4 py-2 bg-gradient-to-r from-pink-400 to-pink-500 rounded-2xl text-white shadow-lg shadow-pink-300/50">
+              <p class="text-xs text-pink-100">💎 Gem</p>
               <p class="text-lg font-bold">{{ formatNumber(wallet.gem) }}</p>
             </div>
-            <div class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-xl text-white">
+            <div class="px-4 py-2 bg-gradient-to-r from-amber-400 to-orange-400 rounded-2xl text-white shadow-lg shadow-orange-300/50">
               <p class="text-xs text-amber-100">🪙 Coin</p>
               <p class="text-lg font-bold">{{ formatNumber(wallet.coin) }}</p>
             </div>
