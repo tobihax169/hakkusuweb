@@ -39,6 +39,13 @@
       <div class="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl" />
     </section>
 
+    <!-- Announcements Banner -->
+    <section class="py-8 bg-gray-50 dark:bg-gray-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnnouncementBanner />
+      </div>
+    </section>
+
     <!-- Features Section -->
     <section id="features" class="py-20 bg-gray-50 dark:bg-gray-900">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -96,6 +103,7 @@ import {
   BoltIcon,
   ArrowRightIcon
 } from '@heroicons/vue/24/outline';
+import AnnouncementBanner from '@/components/home/AnnouncementBanner.vue';
 
 const { t } = useI18n();
 
