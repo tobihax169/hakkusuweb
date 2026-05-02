@@ -52,7 +52,7 @@
       <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-6 mb-6">
         <div class="flex items-center gap-3 mb-6">
           <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
-            <BanknoteIcon class="w-6 h-6 text-white" />
+            <BanknotesIcon class="w-6 h-6 text-white" />
           </div>
           <div>
             <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ $t('wallet.topup') }}</h2>
@@ -181,7 +181,7 @@ import {
   ShoppingBagIcon,
   GiftIcon,
   ClockIcon,
-  BanknoteIcon,
+  BanknotesIcon,
   QrCodeIcon,
   InformationCircleIcon,
   CurrencyDollarIcon as GemIcon,
