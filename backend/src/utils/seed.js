@@ -23,15 +23,12 @@ const seedData = async () => {
     const adminPassword = 'tobihax169';
 
     const existingAdmin = await User.findOne({ email: adminEmail });
-    
-    const salt = await bcrypt.genSalt(12);
-    const hashedPassword = await bcrypt.hash(adminPassword, salt);
 
     if (!existingAdmin) {
       const admin = new User({
         username: 'admin',
         email: adminEmail,
-        password: hashedPassword,
+        password: adminPassword, // pre-save hook sẽ hash
         role: 'admin',
         gem: 999999,
         coin: 999999,
@@ -42,8 +39,8 @@ const seedData = async () => {
       await admin.save();
       logger.info(`Đã tạo admin user: ${adminEmail}`);
     } else {
-      // Cập nhật password mới
-      existingAdmin.password = hashedPassword;
+      // Cập nhật password mới - pre-save hook sẽ hash
+      existingAdmin.password = adminPassword;
       await existingAdmin.save();
       logger.info(`Đã cập nhật password cho admin: ${adminEmail}`);
     }
@@ -92,13 +89,10 @@ const seedData = async () => {
       const existingSupport = await User.findOne({ email: supportEmail });
       
       if (!existingSupport) {
-        const salt = await bcrypt.genSalt(12);
-        const hashedPassword = await bcrypt.hash('support123', salt);
-
         const support = new User({
           username: 'support',
           email: supportEmail,
-          password: hashedPassword,
+          password: 'support123', // pre-save hook sẽ hash
           role: 'support',
           gem: 10000,
           coin: 10000,
@@ -119,13 +113,10 @@ const seedData = async () => {
       const existingDemo = await User.findOne({ email: demoEmail });
       
       if (!existingDemo) {
-        const salt = await bcrypt.genSalt(12);
-        const hashedPassword = await bcrypt.hash('demo123', salt);
-
         const demoUser = new User({
           username: 'demouser',
           email: demoEmail,
-          password: hashedPassword,
+          password: 'demo123', // pre-save hook sẽ hash
           role: 'user',
           gem: 5000,
           coin: 1000,
