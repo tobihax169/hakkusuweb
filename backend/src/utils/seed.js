@@ -84,49 +84,57 @@ const seedData = async () => {
     logger.info(`Service Packages: ${createdPackages} tạo mới, ${updatedPackages} cập nhật`);
 
     // ==================== 3. Tạo Support User (optional) ====================
-    const supportEmail = 'support@example.com';
-    const existingSupport = await User.findOne({ email: supportEmail });
-    
-    if (!existingSupport) {
-      const salt = await bcrypt.genSalt(12);
-      const hashedPassword = await bcrypt.hash('support123', salt);
+    try {
+      const supportEmail = 'support@example.com';
+      const existingSupport = await User.findOne({ email: supportEmail });
+      
+      if (!existingSupport) {
+        const salt = await bcrypt.genSalt(12);
+        const hashedPassword = await bcrypt.hash('support123', salt);
 
-      const support = new User({
-        username: 'support',
-        email: supportEmail,
-        password: hashedPassword,
-        role: 'support',
-        gem: 10000,
-        coin: 10000,
-        isActive: true,
-        isEmailVerified: true
-      });
+        const support = new User({
+          username: 'support',
+          email: supportEmail,
+          password: hashedPassword,
+          role: 'support',
+          gem: 10000,
+          coin: 10000,
+          isActive: true,
+          isEmailVerified: true
+        });
 
-      await support.save();
-      logger.info(`Đã tạo support user: ${supportEmail}`);
+        await support.save();
+        logger.info(`Đã tạo support user: ${supportEmail}`);
+      }
+    } catch (err) {
+      logger.warn('Bỏ qua tạo support user:', err.message);
     }
 
     // ==================== 4. Tạo Demo User (optional) ====================
-    const demoEmail = 'demo@example.com';
-    const existingDemo = await User.findOne({ email: demoEmail });
-    
-    if (!existingDemo) {
-      const salt = await bcrypt.genSalt(12);
-      const hashedPassword = await bcrypt.hash('demo123', salt);
+    try {
+      const demoEmail = 'demo@example.com';
+      const existingDemo = await User.findOne({ email: demoEmail });
+      
+      if (!existingDemo) {
+        const salt = await bcrypt.genSalt(12);
+        const hashedPassword = await bcrypt.hash('demo123', salt);
 
-      const demoUser = new User({
-        username: 'demouser',
-        email: demoEmail,
-        password: hashedPassword,
-        role: 'user',
-        gem: 5000,
-        coin: 1000,
-        isActive: true,
-        isEmailVerified: true
-      });
+        const demoUser = new User({
+          username: 'demouser',
+          email: demoEmail,
+          password: hashedPassword,
+          role: 'user',
+          gem: 5000,
+          coin: 1000,
+          isActive: true,
+          isEmailVerified: true
+        });
 
-      await demoUser.save();
-      logger.info(`Đã tạo demo user: ${demoEmail}`);
+        await demoUser.save();
+        logger.info(`Đã tạo demo user: ${demoEmail}`);
+      }
+    } catch (err) {
+      logger.warn('Bỏ qua tạo demo user:', err.message);
     }
 
     logger.info('Seed dữ liệu hoàn tất!');
