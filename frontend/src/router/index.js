@@ -23,6 +23,12 @@ const AdminUsers = () => import('@/views/admin/UsersView.vue');
 const AdminOrders = () => import('@/views/admin/OrdersView.vue');
 const AdminServices = () => import('@/views/admin/ServicesView.vue');
 
+// Seller Views
+const SellerRegister = () => import('@/views/seller/SellerRegister.vue');
+const SellerDashboard = () => import('@/views/seller/SellerDashboard.vue');
+const SellerProducts = () => import('@/views/seller/SellerProducts.vue');
+const CreateProduct = () => import('@/views/seller/CreateProduct.vue');
+
 const routes = [
   {
     path: '/',
@@ -76,6 +82,18 @@ const routes = [
       { path: 'services', name: 'AdminServices', component: AdminServices }
     ]
   },
+  // Seller Routes
+  {
+    path: '/seller',
+    component: DefaultLayout,
+    meta: { requiresAuth: true },
+    children: [
+      { path: 'register', name: 'SellerRegister', component: SellerRegister },
+      { path: 'dashboard', name: 'SellerDashboard', component: SellerDashboard, meta: { requiresSeller: true } },
+      { path: 'products', name: 'SellerProducts', component: SellerProducts, meta: { requiresSeller: true } },
+      { path: 'products/create', name: 'CreateProduct', component: CreateProduct, meta: { requiresSeller: true } }
+    ]
+  },
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
@@ -108,6 +126,11 @@ router.beforeEach(async (to, from, next) => {
   // Yêu cầu admin
   if (to.meta.requiresAdmin && !authStore.isAdmin) {
     return next({ name: 'Home' });
+  }
+
+  // Yêu cầu seller
+  if (to.meta.requiresSeller && !authStore.isSeller) {
+    return next({ name: 'SellerRegister' });
   }
 
   // Chỉ cho khách (đã đăng nhập thì redirect)

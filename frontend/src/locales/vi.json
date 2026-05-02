@@ -1,6 +1,7 @@
 {
   "nav": {
     "home": "Trang chủ",
+    "seller": "Trở thành Seller",
     "services": "Dịch vụ",
     "orders": "Đơn hàng",
     "wallet": "Ví",
@@ -44,6 +45,14 @@
       "secure": "Bảo mật cao",
       "fast": "Triển khai nhanh"
     }
+  },
+  "seller": {
+    "register": "Trở thành Seller",
+    "dashboard": "Seller Dashboard",
+    "products": "Sản phẩm của tôi",
+    "orders": "Đơn hàng",
+    "earnings": "Thu nhập",
+    "withdraw": "Rút tiền"
   },
   "services": {
     "title": "Khám Phá Sản Phẩm",

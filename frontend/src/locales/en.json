@@ -1,6 +1,7 @@
 {
   "nav": {
     "home": "Home",
+    "seller": "Become Seller",
     "services": "Services",
     "orders": "Orders",
     "wallet": "Wallet",
@@ -44,6 +45,14 @@
       "secure": "High Security",
       "fast": "Fast Deployment"
     }
+  },
+  "seller": {
+    "register": "Become a Seller",
+    "dashboard": "Seller Dashboard",
+    "products": "My Products",
+    "orders": "Orders",
+    "earnings": "Earnings",
+    "withdraw": "Withdraw"
   },
   "services": {
     "title": "Explore Products",

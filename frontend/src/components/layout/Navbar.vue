@@ -120,13 +120,35 @@
                 </router-link>
 
                 <div v-if="authStore.isAdmin" class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
-                  <router-link 
-                    to="/admin" 
+                  <router-link
+                    to="/admin"
                     @click="userMenuOpen = false"
                     class="flex items-center gap-2 px-4 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
                     <ShieldCheckIcon class="w-4 h-4" />
                     {{ $t('nav.admin') }}
+                  </router-link>
+                </div>
+
+                <!-- Seller Menu -->
+                <div class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
+                  <router-link
+                    v-if="authStore.isSeller"
+                    to="/seller/dashboard"
+                    @click="userMenuOpen = false"
+                    class="flex items-center gap-2 px-4 py-2 text-sm text-green-600 dark:text-green-400 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  >
+                    <StoreIcon class="w-4 h-4" />
+                    Seller Dashboard
+                  </router-link>
+                  <router-link
+                    v-else
+                    to="/seller/register"
+                    @click="userMenuOpen = false"
+                    class="flex items-center gap-2 px-4 py-2 text-sm text-green-600 dark:text-green-400 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  >
+                    <StoreIcon class="w-4 h-4" />
+                    Trở thành Seller
                   </router-link>
                 </div>
 
@@ -193,7 +215,8 @@ import {
   CurrencyDollarIcon,
   ShieldCheckIcon,
   ArrowRightOnRectangleIcon,
-  Bars3Icon
+  Bars3Icon,
+  StoreIcon
 } from '@heroicons/vue/24/outline';
 import ThemeToggle from '@/components/common/ThemeToggle.vue';
 import LanguageSwitch from '@/components/common/LanguageSwitch.vue';

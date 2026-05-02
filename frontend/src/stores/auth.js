@@ -17,6 +17,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => !!token.value && !!user.value);
   const isAdmin = computed(() => user.value?.role === 'admin');
   const isSupport = computed(() => ['admin', 'support'].includes(user.value?.role));
+  const isSeller = computed(() => user.value?.role === 'seller');
   const userDisplayName = computed(() => {
     return user.value?.discordUsername || user.value?.username || 'User';
   });
@@ -168,6 +169,7 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated,
     isAdmin,
     isSupport,
+    isSeller,
     userDisplayName,
     userAvatar,
     login,
