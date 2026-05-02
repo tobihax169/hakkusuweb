@@ -196,7 +196,7 @@
               <option value="StarIcon">Star</option>
               <option value="SparklesIcon">Sparkles</option>
               <option value="PuzzlePieceIcon">Puzzle</option>
-              <option v-if="form.type === 'game_account'" value="GamepadIcon">Game</option>
+              <option v-if="form.type === 'game_account'" value="DeviceTabletIcon">Game</option>
               <option v-if="form.type === 'google_account'" value="EnvelopeIcon">Email</option>
               <option v-if="form.type === 'facebook_account'" value="UserGroupIcon">Social</option>
             </select>
@@ -292,7 +292,7 @@ import {
   PlusIcon,
   TrashIcon,
   CubeIcon,
-  GamepadIcon,
+  DeviceTabletIcon,
   EnvelopeIcon,
   UserGroupIcon,
   ExclamationTriangleIcon,
@@ -306,7 +306,7 @@ const loading = ref(false);
 
 const productTypes = [
   { value: 'digital', label: 'Sản phẩm số', icon: CubeIcon },
-  { value: 'game_account', label: 'Account Game', icon: GamepadIcon },
+  { value: 'game_account', label: 'Account Game', icon: DeviceTabletIcon },
   { value: 'google_account', label: 'Google Account', icon: EnvelopeIcon },
   { value: 'facebook_account', label: 'Facebook Account', icon: UserGroupIcon }
 ];
