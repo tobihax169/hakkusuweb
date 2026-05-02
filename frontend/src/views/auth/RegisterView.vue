@@ -1,22 +1,23 @@
 <template>
   <div class="min-h-[80vh] flex items-center justify-center p-4">
     <div class="w-full max-w-md">
-      <!-- Kawaii Card -->
-      <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-[2rem] p-8 shadow-2xl shadow-purple-200/50 dark:shadow-purple-500/20 border-2 border-purple-100 dark:border-purple-500/30">
-        <!-- Cute Header -->
+      <!-- Modern Card -->
+      <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl shadow-blue-200/30 dark:shadow-blue-500/10 border border-slate-200 dark:border-slate-700">
+        <!-- Modern Header with Logo -->
         <div class="text-center mb-8">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-400 via-pink-400 to-blue-400 flex items-center justify-center shadow-lg">
-            <span class="text-3xl">🎀</span>
+          <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-300/50">
+            <img src="/logo.png" alt="Hakkusu" class="w-14 h-14 object-contain" />
           </div>
           <h2 class="text-2xl font-bold text-center text-slate-800 dark:text-white mb-2 font-display">
-            {{ $t('auth.register') }} ✨
+            {{ $t('auth.register') }}
           </h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400">ようこそ ~ Join our kawaii community!</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400">ようこそ ~ Create your account</p>
         </div>
 
         <!-- Error Message -->
         <div v-if="errorMessage" class="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 text-sm flex items-center gap-2">
-          <span>😅</span> {{ errorMessage }}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          {{ errorMessage }}
         </div>
 
         <form @submit.prevent="handleRegister" class="space-y-4">

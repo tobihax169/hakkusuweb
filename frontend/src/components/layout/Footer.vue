@@ -77,15 +77,17 @@
           
           <!-- Social Links -->
           <div class="flex items-center gap-3 mt-4">
-            <a href="#" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/20 transition-all">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-              </svg>
+            <a href="#" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-blue-50 dark:hover:bg-blue-500/20 transition-all p-1.5">
+              <img src="/discord.png" alt="Discord" class="w-full h-full object-contain" />
             </a>
-            <a href="#" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/20 transition-all">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.995 16.88l-3.23-4.5-4.5 4.5H8.1l5.4-6.3-5.4-6.3h1.665l4.5 4.5 3.23-4.5h1.665l-5.4 6.3 5.4 6.3h-1.665z"/>
-              </svg>
+            <a href="#" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-blue-50 dark:hover:bg-blue-500/20 transition-all p-1.5">
+              <img src="/facebook.png" alt="Facebook" class="w-full h-full object-contain" />
+            </a>
+            <a href="#" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-blue-50 dark:hover:bg-blue-500/20 transition-all p-1.5">
+              <img src="/instagram.png" alt="Instagram" class="w-full h-full object-contain" />
+            </a>
+            <a href="#" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-blue-50 dark:hover:bg-blue-500/20 transition-all p-1.5">
+              <img src="/tiktok.png" alt="TikTok" class="w-full h-full object-contain" />
             </a>
           </div>
         </div>

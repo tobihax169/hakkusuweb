@@ -1,25 +1,30 @@
 <template>
   <div class="py-8">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Kawaii Header -->
-      <div class="mb-6">
-        <span class="inline-block px-3 py-1 bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-300 rounded-full text-sm font-medium mb-3">👤 プロフィール Profile</span>
-        <h1 class="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent font-display">
-          {{ $t('nav.profile') }} 🌸
-        </h1>
+      <!-- Modern Header -->
+      <div class="mb-6 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-300/50">
+          <img src="/user.png" alt="User" class="w-7 h-7 object-contain filter brightness-0 invert" />
+        </div>
+        <div>
+          <span class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-300 rounded-full text-sm font-medium mb-1">プロフィール Profile</span>
+          <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent font-display">
+            {{ $t('nav.profile') }}
+          </h1>
+        </div>
       </div>
 
-      <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounded-3xl p-6 border-2 border-pink-100 dark:border-pink-500/20 shadow-xl shadow-pink-100/30">
+      <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-xl shadow-blue-100/20">
         <!-- Avatar & Balance -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-6">
           <div class="flex items-center gap-4">
             <img 
               v-if="authStore.userAvatar" 
               :src="authStore.userAvatar" 
-              class="w-20 h-20 rounded-full ring-4 ring-pink-200 dark:ring-pink-500/30"
+              class="w-20 h-20 rounded-full ring-4 ring-blue-200 dark:ring-blue-500/30 object-cover"
             />
-            <div v-else class="w-20 h-20 rounded-full bg-gradient-to-br from-pink-400 via-purple-400 to-blue-400 flex items-center justify-center text-white text-2xl font-bold ring-4 ring-pink-200 dark:ring-pink-500/30 shadow-lg">
-              {{ authStore.userDisplayName.charAt(0).toUpperCase() }}
+            <div v-else class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-500 flex items-center justify-center ring-4 ring-blue-200 dark:ring-blue-500/30 shadow-lg">
+              <img src="/user.png" alt="User" class="w-10 h-10 object-contain filter brightness-0 invert" />
             </div>
             <div>
               <h2 class="text-xl font-semibold text-slate-800 dark:text-white">
@@ -31,29 +36,31 @@
                   :class="[
                     'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold',
                     authStore.user?.role === 'admin' 
-                      ? 'bg-gradient-to-r from-purple-400 to-pink-400 text-white'
+                      ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white'
                       : authStore.user?.role === 'support'
-                        ? 'bg-gradient-to-r from-blue-400 to-cyan-400 text-white'
+                        ? 'bg-gradient-to-r from-cyan-400 to-blue-400 text-white'
                         : authStore.user?.role === 'seller'
                           ? 'bg-gradient-to-r from-amber-400 to-orange-400 text-white'
                           : 'bg-gradient-to-r from-slate-300 to-slate-400 text-white'
                   ]"
                 >
-                  <span class="mr-1">{{ authStore.user?.role === 'admin' ? '👑' : authStore.user?.role === 'seller' ? '🏪' : authStore.user?.role === 'support' ? '🎧' : '👤' }}</span>
+                  <img v-if="authStore.user?.role === 'admin'" src="/user.png" class="w-3 h-3 mr-1 filter brightness-0 invert" />
+                  <img v-else-if="authStore.user?.role === 'seller'" src="/wallet.png" class="w-3 h-3 mr-1 filter brightness-0 invert" />
+                  <img v-else src="/user.png" class="w-3 h-3 mr-1 filter brightness-0 invert" />
                   {{ authStore.user?.role }}
                 </span>
               </div>
             </div>
           </div>
 
-          <!-- Kawaii Balance Cards -->
+          <!-- Modern Balance Cards -->
           <div class="flex gap-3 sm:ml-auto">
-            <div class="px-4 py-2 bg-gradient-to-r from-pink-400 to-pink-500 rounded-2xl text-white shadow-lg shadow-pink-300/50">
-              <p class="text-xs text-pink-100">💎 Gem</p>
+            <div class="px-4 py-2 bg-gradient-to-r from-blue-400 to-blue-500 rounded-2xl text-white shadow-lg shadow-blue-300/50">
+              <p class="text-xs text-blue-100">Gem</p>
               <p class="text-lg font-bold">{{ formatNumber(wallet.gem) }}</p>
             </div>
-            <div class="px-4 py-2 bg-gradient-to-r from-amber-400 to-orange-400 rounded-2xl text-white shadow-lg shadow-orange-300/50">
-              <p class="text-xs text-amber-100">🪙 Coin</p>
+            <div class="px-4 py-2 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-2xl text-white shadow-lg shadow-cyan-300/50">
+              <p class="text-xs text-cyan-100">Coin</p>
               <p class="text-lg font-bold">{{ formatNumber(wallet.coin) }}</p>
             </div>
           </div>

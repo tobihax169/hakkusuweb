@@ -3,12 +3,10 @@
     <div class="w-full max-w-md">
       <!-- Modern Card -->
       <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl shadow-blue-200/30 dark:shadow-blue-500/10 border border-slate-200 dark:border-slate-700">
-        <!-- Modern Header -->
+        <!-- Modern Header with Logo -->
         <div class="text-center mb-8">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-300/50">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-            </svg>
+          <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-300/50">
+            <img src="/logo.png" alt="Hakkusu" class="w-14 h-14 object-contain" />
           </div>
           <h2 class="text-2xl font-bold text-center text-slate-800 dark:text-white mb-2 font-display">
             {{ $t('auth.login') }}
