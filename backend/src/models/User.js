@@ -79,7 +79,7 @@ const userSchema = new mongoose.Schema(
       availableBalance: { type: Number, default: 0 },
       pendingBalance: { type: Number, default: 0 },
       totalSales: { type: Number, default: 0 },
-      rating: { type: Number, min: 1, max: 5, default: 0 },
+      rating: { type: Number, min: 0, max: 5, default: 0 },
       reviewCount: { type: Number, default: 0 }
     },
     isActive: {
