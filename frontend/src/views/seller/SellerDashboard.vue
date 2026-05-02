@@ -125,16 +125,16 @@
 
       <!-- Recent Orders -->
       <div class="card">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">
           Đơn Hàng Gần Đây
         </h2>
-        <div v-if="recentOrders.length === 0" class="text-center py-8 text-gray-500">
+        <div v-if="recentOrders.length === 0" class="text-center py-8 text-slate-500">
           Chưa có đơn hàng nào
         </div>
         <div v-else class="overflow-x-auto">
           <table class="w-full">
             <thead>
-              <tr class="text-left text-sm text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+              <tr class="text-left text-sm text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-gray-700">
                 <th class="pb-3">Mã đơn</th>
                 <th class="pb-3">Sản phẩm</th>
                 <th class="pb-3">Doanh thu</th>
@@ -146,7 +146,7 @@
               <tr
                 v-for="order in recentOrders"
                 :key="order._id"
-                class="border-b border-gray-100 dark:border-gray-800 text-sm"
+                class="border-b border-slate-100 dark:border-gray-800 text-sm"
               >
                 <td class="py-3 font-medium">{{ order.orderCode }}</td>
                 <td class="py-3">{{ order.packageName }}</td>
@@ -156,7 +156,7 @@
                     {{ order.status }}
                   </span>
                 </td>
-                <td class="py-3 text-gray-500">
+                <td class="py-3 text-slate-500">
                   {{ formatDate(order.createdAt) }}
                 </td>
               </tr>
@@ -222,7 +222,7 @@ const getStatusClass = (status) => {
     completed: 'text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded text-xs',
     cancelled: 'text-red-600 bg-red-100 dark:bg-red-900/30 px-2 py-1 rounded text-xs'
   };
-  return classes[status] || 'text-gray-600 bg-gray-100 dark:bg-gray-900/30 px-2 py-1 rounded text-xs';
+  return classes[status] || 'text-slate-600 bg-slate-100 dark:bg-gray-900/30 px-2 py-1 rounded text-xs';
 };
 
 const fetchDashboard = async () => {

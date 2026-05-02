@@ -1,13 +1,13 @@
 <template>
-  <div class="py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
+  <div class="py-8 bg-slate-50 dark:bg-gray-900 min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 class="text-3xl font-bold text-slate-900 dark:text-white">
             Sản Phẩm Của Tôi
           </h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1">
+          <p class="text-slate-600 dark:text-slate-400 mt-1">
             Quản lý tất cả sản phẩm đã đăng
           </p>
         </div>
@@ -29,8 +29,8 @@
           :class="[
             'px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors',
             currentTab === tab.value
-              ? 'bg-primary-600 text-white'
-              : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+              ? 'bg-blue-600 text-white'
+              : 'bg-white dark:bg-gray-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-gray-700'
           ]"
         >
           {{ tab.label }}
@@ -40,7 +40,7 @@
               'ml-2 px-2 py-0.5 rounded-full text-xs',
               currentTab === tab.value
                 ? 'bg-white/20 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                : 'bg-slate-200 dark:bg-gray-700 text-slate-600 dark:text-slate-400'
             ]"
           >
             {{ tab.count }}
@@ -55,13 +55,13 @@
 
       <!-- Empty State -->
       <div v-else-if="products.length === 0" class="text-center py-20">
-        <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-          <CubeIcon class="w-12 h-12 text-gray-400" />
+        <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-slate-100 dark:bg-gray-800 flex items-center justify-center">
+          <CubeIcon class="w-12 h-12 text-slate-400" />
         </div>
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+        <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">
           Chưa có sản phẩm nào
         </h3>
-        <p class="text-gray-500 dark:text-gray-400 mb-6">
+        <p class="text-slate-500 dark:text-slate-400 mb-6">
           Bắt đầu bằng cách đăng sản phẩm đầu tiên của bạn
         </p>
         <router-link
@@ -88,14 +88,14 @@
             <div class="flex gap-2">
               <router-link
                 :to="`/seller/products/${product._id}/edit`"
-                class="p-2 text-gray-500 hover:text-primary-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                class="p-2 text-slate-500 hover:text-blue-600 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-700"
                 title="Sửa"
               >
                 <PencilIcon class="w-4 h-4" />
               </router-link>
               <button
                 @click="confirmDelete(product)"
-                class="p-2 text-gray-500 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30"
+                class="p-2 text-slate-500 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30"
                 title="Xóa"
               >
                 <TrashIcon class="w-4 h-4" />
@@ -106,20 +106,20 @@
           <!-- Product Info -->
           <div class="flex items-start gap-4 mb-4">
             <div class="w-12 h-12 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
-              <component :is="getIcon(product.icon)" class="w-6 h-6 text-primary-600" />
+              <component :is="getIcon(product.icon)" class="w-6 h-6 text-blue-600" />
             </div>
             <div class="flex-1 min-w-0">
-              <h3 class="font-semibold text-gray-900 dark:text-white truncate">
+              <h3 class="font-semibold text-slate-900 dark:text-white truncate">
                 {{ product.name }}
               </h3>
-              <p class="text-lg font-bold text-primary-600">
+              <p class="text-lg font-bold text-blue-600">
                 {{ formatPrice(product.price) }}
               </p>
             </div>
           </div>
 
           <!-- Stats -->
-          <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800 pt-4">
+          <div class="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-gray-800 pt-4">
             <span class="flex items-center gap-1">
               <ShoppingBagIcon class="w-4 h-4" />
               {{ product.salesCount || 0 }} đã bán
@@ -146,10 +146,10 @@
       class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
     >
       <div class="card max-w-md w-full">
-        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">
           Xác nhận xóa
         </h3>
-        <p class="text-gray-600 dark:text-gray-400 mb-6">
+        <p class="text-slate-600 dark:text-slate-400 mb-6">
           Bạn có chắc chắn muốn xóa sản phẩm "{{ productToDelete?.name }}"? Hành động này không thể hoàn tác.
         </p>
         <div class="flex gap-4">
@@ -228,7 +228,7 @@ const getStatusBadgeClass = (status) => {
     pending: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 px-2 py-1 rounded-full text-xs font-medium',
     rejected: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-2 py-1 rounded-full text-xs font-medium'
   };
-  return classes[status] || 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs font-medium';
+  return classes[status] || 'bg-slate-100 dark:bg-gray-800 text-slate-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs font-medium';
 };
 
 const getStatusLabel = (status) => {

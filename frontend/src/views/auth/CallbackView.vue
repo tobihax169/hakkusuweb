@@ -1,10 +1,10 @@
 <template>
   <div class="card p-8 text-center">
     <LoadingSpinner size="lg" class="mx-auto mb-4" />
-    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+    <h2 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">
       Đang xử lý đăng nhập...
     </h2>
-    <p class="text-gray-500 dark:text-gray-400">
+    <p class="text-slate-500 dark:text-slate-400">
       Vui lòng đợi trong giây lát
     </p>
   </div>

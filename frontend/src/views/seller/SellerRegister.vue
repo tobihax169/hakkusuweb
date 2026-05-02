@@ -1,32 +1,32 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-slate-50 dark:from-slate-900 dark:via-slate-800/50 dark:to-slate-900">
     <!-- Decorative Background Elements -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute -top-40 -right-40 w-80 h-80 bg-primary-200/30 dark:bg-primary-900/20 rounded-full blur-3xl" />
-      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-200/30 dark:bg-purple-900/20 rounded-full blur-3xl" />
+      <div class="absolute -top-40 -right-40 w-80 h-80 bg-blue-200/30 dark:bg-blue-900/20 rounded-full blur-3xl" />
+      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-200/30 dark:bg-indigo-900/20 rounded-full blur-3xl" />
     </div>
 
     <div class="relative py-12 px-4 sm:px-6 lg:px-8">
       <div class="max-w-5xl mx-auto">
         <!-- Header -->
         <div class="text-center mb-12">
-          <div class="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-primary-500 to-purple-600 shadow-lg shadow-primary-500/30">
+          <div class="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/30">
             <BuildingStorefrontIcon class="w-10 h-10 text-white" />
           </div>
-          <h1 class="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-primary-600 to-purple-600 dark:from-white dark:via-primary-400 dark:to-purple-400 mb-4">
+          <h1 class="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-blue-600 to-indigo-600 dark:from-white dark:via-blue-400 dark:to-indigo-400 mb-4">
             Trở Thành Seller
           </h1>
-          <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Mở shop trên Hakkusu Shop và bắt đầu kiếm thu nhập từ sản phẩm của bạn
+          <p class="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+            Mở shop trên Hakkusu Store và bắt đầu kiếm thu nhập từ sản phẩm của bạn
           </p>
         </div>
 
         <div class="grid lg:grid-cols-5 gap-8">
           <!-- Left: Form -->
           <div class="lg:col-span-3">
-            <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-black/20 border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-black/20 border border-slate-100 dark:border-slate-700 overflow-hidden">
               <!-- Form Header -->
-              <div class="bg-gradient-to-r from-primary-600 to-purple-600 px-6 py-4">
+              <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
                 <h2 class="text-white font-semibold flex items-center gap-2">
                   <DocumentTextIcon class="w-5 h-5" />
                   Thông Tin Đăng Ký
@@ -37,9 +37,9 @@
               <form @submit.prevent="handleSubmit" class="p-6 space-y-5">
                 <!-- Business Name -->
                 <div class="group">
-                  <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                  <label class="block text-sm font-semibold text-slate-700 dark:text-gray-200 mb-2">
                     <span class="flex items-center gap-2">
-                      <BuildingStorefrontIcon class="w-4 h-4 text-primary-500" />
+                      <BuildingStorefrontIcon class="w-4 h-4 text-blue-500" />
                       Tên Shop / Doanh nghiệp *
                     </span>
                   </label>
@@ -49,7 +49,7 @@
                       type="text"
                       required
                       placeholder="VD: ABC Store"
-                      class="w-full pl-4 pr-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:border-primary-500 focus:bg-white dark:focus:bg-gray-700 focus:ring-0 outline-none transition-all duration-200"
+                      class="w-full pl-4 pr-4 py-3 rounded-xl border-2 border-slate-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-700/50 text-slate-900 dark:text-white focus:border-blue-500 focus:bg-white dark:focus:bg-gray-700 focus:ring-0 outline-none transition-all duration-200"
                     >
                   </div>
                 </div>
@@ -58,9 +58,9 @@
                 <div class="grid sm:grid-cols-2 gap-4">
                   <!-- Business Email -->
                   <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-gray-200 mb-2">
                       <span class="flex items-center gap-2">
-                        <EnvelopeIcon class="w-4 h-4 text-primary-500" />
+                        <EnvelopeIcon class="w-4 h-4 text-blue-500" />
                         Email liên hệ *
                       </span>
                     </label>
@@ -69,15 +69,15 @@
                       type="email"
                       required
                       placeholder="shop@example.com"
-                      class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:border-primary-500 focus:bg-white dark:focus:bg-gray-700 focus:ring-0 outline-none transition-all"
+                      class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-700/50 text-slate-900 dark:text-white focus:border-blue-500 focus:bg-white dark:focus:bg-gray-700 focus:ring-0 outline-none transition-all"
                     >
                   </div>
 
                   <!-- Phone -->
                   <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-gray-200 mb-2">
                       <span class="flex items-center gap-2">
-                        <PhoneIcon class="w-4 h-4 text-primary-500" />
+                        <PhoneIcon class="w-4 h-4 text-blue-500" />
                         Số điện thoại
                       </span>
                     </label>
@@ -85,16 +85,16 @@
                       v-model="form.phone"
                       type="tel"
                       placeholder="0901234567"
-                      class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:border-primary-500 focus:bg-white dark:focus:bg-gray-700 focus:ring-0 outline-none transition-all"
+                      class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-700/50 text-slate-900 dark:text-white focus:border-blue-500 focus:bg-white dark:focus:bg-gray-700 focus:ring-0 outline-none transition-all"
                     >
                   </div>
                 </div>
 
                 <!-- Description -->
                 <div>
-                  <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                  <label class="block text-sm font-semibold text-slate-700 dark:text-gray-200 mb-2">
                     <span class="flex items-center gap-2">
-                      <PencilSquareIcon class="w-4 h-4 text-primary-500" />
+                      <PencilSquareIcon class="w-4 h-4 text-blue-500" />
                       Mô tả về shop
                     </span>
                   </label>
@@ -102,7 +102,7 @@
                     v-model="form.description"
                     rows="4"
                     placeholder="Giới thiệu về sản phẩm/dịch vụ bạn sẽ cung cấp..."
-                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:border-primary-500 focus:bg-white dark:focus:bg-gray-700 focus:ring-0 outline-none transition-all resize-none"
+                    class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-700/50 text-slate-900 dark:text-white focus:border-blue-500 focus:bg-white dark:focus:bg-gray-700 focus:ring-0 outline-none transition-all resize-none"
                   />
                 </div>
 
@@ -115,12 +115,12 @@
                         v-model="form.acceptTerms"
                         type="checkbox"
                         required
-                        class="w-5 h-5 text-primary-600 rounded border-amber-300 focus:ring-primary-500 cursor-pointer"
+                        class="w-5 h-5 text-blue-600 rounded border-amber-300 focus:ring-blue-500 cursor-pointer"
                       >
                     </div>
-                    <label for="terms" class="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                    <label for="terms" class="text-sm text-slate-700 dark:text-gray-300 cursor-pointer">
                       Tôi đồng ý với
-                      <a href="#" class="font-semibold text-primary-600 hover:text-primary-700 hover:underline">điều khoản seller</a>
+                      <a href="#" class="font-semibold text-blue-600 hover:text-primary-700 hover:underline">điều khoản seller</a>
                       và cam kết tuân thủ quy định. Platform thu
                       <span class="font-bold text-orange-600">30%</span>
                       phí, bạn nhận
@@ -134,7 +134,7 @@
                 <button
                   type="submit"
                   :disabled="loading || !form.acceptTerms"
-                  class="w-full group relative overflow-hidden rounded-xl bg-gradient-to-r from-primary-600 to-purple-600 py-4 font-bold text-white shadow-lg shadow-primary-500/30 transition-all hover:shadow-xl hover:shadow-primary-500/40 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  class="w-full group relative overflow-hidden rounded-xl bg-gradient-to-r from-primary-600 to-indigo-600 py-4 font-bold text-white shadow-lg shadow-primary-500/30 transition-all hover:shadow-xl hover:shadow-primary-500/40 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   <span class="relative z-10 flex items-center justify-center gap-2">
                     <span v-if="loading" class="flex items-center gap-2">
@@ -154,8 +154,8 @@
           <!-- Right: Benefits -->
           <div class="lg:col-span-2 space-y-4">
             <!-- Benefits Card -->
-            <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6">
-              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg border border-slate-100 dark:border-gray-700 p-6">
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                 <SparklesIcon class="w-5 h-5 text-yellow-500" />
                 Lợi Ích Khi Là Seller
               </h3>
@@ -167,8 +167,8 @@
                     <CurrencyDollarIcon class="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h4 class="font-bold text-gray-900 dark:text-white">Nhận 70%</h4>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Doanh thu từ mỗi đơn hàng thuộc về bạn</p>
+                    <h4 class="font-bold text-slate-900 dark:text-white">Nhận 70%</h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Doanh thu từ mỗi đơn hàng thuộc về bạn</p>
                   </div>
                 </div>
 
@@ -178,26 +178,26 @@
                     <UsersIcon class="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h4 class="font-bold text-gray-900 dark:text-white">Tiếp Cận Khách Hàng</h4>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Hàng ngàn khách hàng tiềm năng trên nền tảng</p>
+                    <h4 class="font-bold text-slate-900 dark:text-white">Tiếp Cận Khách Hàng</h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Hàng ngàn khách hàng tiềm năng trên nền tảng</p>
                   </div>
                 </div>
 
                 <!-- Benefit 3 -->
-                <div class="flex items-start gap-4 p-3 rounded-xl bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border border-purple-100 dark:border-purple-800">
-                  <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                <div class="flex items-start gap-4 p-3 rounded-xl bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border border-indigo-100 dark:border-purple-800">
+                  <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
                     <ShieldCheckIcon class="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h4 class="font-bold text-gray-900 dark:text-white">Bảo Vệ Giao Dịch</h4>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Thanh toán an toàn, rút tiền đúng hạn</p>
+                    <h4 class="font-bold text-slate-900 dark:text-white">Bảo Vệ Giao Dịch</h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Thanh toán an toàn, rút tiền đúng hạn</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Stats Card -->
-            <div class="bg-gradient-to-br from-primary-600 to-purple-600 rounded-2xl shadow-lg p-6 text-white">
+            <div class="bg-gradient-to-br from-primary-600 to-indigo-600 rounded-2xl shadow-lg p-6 text-white">
               <div class="flex items-center gap-3 mb-4">
                 <ChartBarIcon class="w-6 h-6" />
                 <h3 class="font-bold">Số Liệu Nổi Bật</h3>
@@ -223,12 +223,12 @@
             </div>
 
             <!-- Help Card -->
-            <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6">
-              <div class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
-                <QuestionMarkCircleIcon class="w-8 h-8 text-primary-500 flex-shrink-0" />
+            <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg border border-slate-100 dark:border-gray-700 p-6">
+              <div class="flex items-center gap-3 text-slate-600 dark:text-slate-400">
+                <QuestionMarkCircleIcon class="w-8 h-8 text-blue-500 flex-shrink-0" />
                 <p class="text-sm">
                   Cần hỗ trợ? Liên hệ
-                  <a href="#" class="text-primary-600 hover:underline font-medium">đội ngũ hỗ trợ</a>
+                  <a href="#" class="text-blue-600 hover:underline font-medium">đội ngũ hỗ trợ</a>
                   của chúng tôi
                 </p>
               </div>

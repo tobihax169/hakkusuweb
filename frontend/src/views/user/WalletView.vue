@@ -56,14 +56,14 @@
       </div>
 
       <!-- Top Up Section - Glassmorphism -->
-      <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-6 mb-6">
+      <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-100 dark:border-gray-700 p-6 mb-6">
         <div class="flex items-center gap-3 mb-6">
           <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
             <BanknotesIcon class="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ $t('wallet.topup') }}</h2>
-            <p class="text-sm text-gray-500">Nạp tiền qua SePay - Tự động cộng Gem</p>
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white">{{ $t('wallet.topup') }}</h2>
+            <p class="text-sm text-slate-500">Nạp tiền qua SePay - Tự động cộng Gem</p>
           </div>
         </div>
 
@@ -76,23 +76,23 @@
             :class="[
               'group relative p-4 rounded-xl border-2 text-center transition-all duration-300 overflow-hidden',
               topupAmount === amount
-                ? 'border-primary-500 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-800/20 shadow-lg shadow-primary-500/20'
-                : 'border-gray-200 dark:border-gray-700 hover:border-primary-300 hover:shadow-md'
+                ? 'border-blue-500 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-800/20 shadow-lg shadow-primary-500/20'
+                : 'border-slate-200 dark:border-gray-700 hover:border-primary-300 hover:shadow-md'
             ]"
           >
             <div class="relative z-10">
-              <p class="font-bold text-gray-900 dark:text-white text-lg">{{ formatNumber(amount) }} ₫</p>
-              <p class="text-sm font-medium" :class="topupAmount === amount ? 'text-primary-600 dark:text-primary-400' : 'text-gray-500'">
+              <p class="font-bold text-slate-900 dark:text-white text-lg">{{ formatNumber(amount) }} ₫</p>
+              <p class="text-sm font-medium" :class="topupAmount === amount ? 'text-blue-600 dark:text-primary-400' : 'text-slate-500'">
                 +{{ amount / 1000 }} 💎
               </p>
             </div>
-            <div v-if="topupAmount === amount" class="absolute inset-0 bg-gradient-to-r from-primary-500/10 to-purple-500/10"></div>
+            <div v-if="topupAmount === amount" class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10"></div>
           </button>
         </div>
 
         <!-- Custom Amount -->
-        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Số tiền tùy chỉnh</label>
+        <div class="bg-slate-50 dark:bg-gray-700/50 rounded-xl p-4">
+          <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">Số tiền tùy chỉnh</label>
           <div class="flex items-center gap-4">
             <div class="relative flex-1">
               <input
@@ -103,7 +103,7 @@
                 min="10000"
                 step="10000"
               />
-              <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">₫</span>
+              <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">₫</span>
             </div>
             <button
               @click="createTopup"
@@ -117,7 +117,7 @@
               </span>
             </button>
           </div>
-          <p class="text-xs text-gray-500 mt-2">Tối thiểu: 10,000 ₫ | Tối đa: 100,000,000 ₫ | 1,000 ₫ = 1 💎</p>
+          <p class="text-xs text-slate-500 mt-2">Tối thiểu: 10,000 ₫ | Tối đa: 100,000,000 ₫ | 1,000 ₫ = 1 💎</p>
         </div>
 
         <!-- Payment Info -->
@@ -125,8 +125,8 @@
           <div class="flex items-start gap-3">
             <InformationCircleIcon class="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" />
             <div>
-              <p class="text-sm font-medium text-gray-900 dark:text-white">Thanh toán qua SePay</p>
-              <p class="text-sm text-gray-600 dark:text-gray-400">Hệ thống sẽ tạo mã QR VietQR. Sau khi chuyển khoản, tiền sẽ tự động cộng vào tài khoản trong vòng 1-5 phút.</p>
+              <p class="text-sm font-medium text-slate-900 dark:text-white">Thanh toán qua SePay</p>
+              <p class="text-sm text-slate-600 dark:text-slate-400">Hệ thống sẽ tạo mã QR VietQR. Sau khi chuyển khoản, tiền sẽ tự động cộng vào tài khoản trong vòng 1-5 phút.</p>
             </div>
           </div>
         </div>
@@ -134,8 +134,8 @@
 
       <!-- Transaction History -->
       <div class="card">
-        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+        <div class="p-6 border-b border-slate-200 dark:border-gray-700">
+          <h2 class="text-lg font-semibold text-slate-900 dark:text-white">
             {{ $t('wallet.history') }}
           </h2>
         </div>
@@ -144,7 +144,7 @@
           <LoadingSpinner size="lg" />
         </div>
 
-        <div v-else-if="transactions.length === 0" class="p-8 text-center text-gray-500">
+        <div v-else-if="transactions.length === 0" class="p-8 text-center text-slate-500">
           {{ $t('wallet.noTransactions') }}
         </div>
 
@@ -152,15 +152,15 @@
           <div
             v-for="tx in transactions"
             :key="tx._id"
-            class="p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800"
+            class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-gray-800"
           >
             <div class="flex items-center gap-3">
               <div :class="getTransactionIconClass(tx.type)">
                 <component :is="getTransactionIcon(tx.type)" class="w-5 h-5" />
               </div>
               <div>
-                <p class="font-medium text-gray-900 dark:text-white">{{ tx.description }}</p>
-                <p class="text-sm text-gray-500">{{ formatDate(tx.createdAt) }}</p>
+                <p class="font-medium text-slate-900 dark:text-white">{{ tx.description }}</p>
+                <p class="text-sm text-slate-500">{{ formatDate(tx.createdAt) }}</p>
               </div>
             </div>
             <div class="text-right">
@@ -234,9 +234,9 @@ const getTransactionIconClass = (type) => {
     topup: 'w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600',
     payment: 'w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600',
     refund: 'w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600',
-    bonus: 'w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600'
+    bonus: 'w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600'
   };
-  return classes[type] || 'w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center';
+  return classes[type] || 'w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center';
 };
 
 const getAmountClass = (type) => {

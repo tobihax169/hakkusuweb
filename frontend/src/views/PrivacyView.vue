@@ -9,7 +9,7 @@
           </svg>
           <span class="text-sm font-medium text-indigo-600 dark:text-indigo-400">Bảo mật & Quyền riêng tư</span>
         </div>
-        <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-500 bg-clip-text text-transparent mb-4">
+        <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-500 bg-clip-text text-transparent mb-4">
           Chính sách bảo mật
         </h1>
         <p class="text-slate-600 dark:text-slate-400">Cập nhật lần cuối: Tháng 5, 2026</p>

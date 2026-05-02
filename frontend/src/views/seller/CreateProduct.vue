@@ -1,23 +1,23 @@
 <template>
-  <div class="py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
+  <div class="py-8 bg-slate-50 dark:bg-gray-900 min-h-screen">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
       <div class="mb-8">
         <div class="flex items-center gap-2 mb-4">
           <router-link
             to="/seller/dashboard"
-            class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 flex items-center gap-1"
+            class="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-gray-300 flex items-center gap-1"
           >
             <ArrowLeftIcon class="w-4 h-4" />
             Dashboard
           </router-link>
           <span class="text-gray-300">/</span>
-          <span class="text-gray-900 dark:text-white">Đăng Sản Phẩm</span>
+          <span class="text-slate-900 dark:text-white">Đăng Sản Phẩm</span>
         </div>
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+        <h1 class="text-3xl font-bold text-slate-900 dark:text-white">
           Đăng Sản Phẩm Mới
         </h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-2">
+        <p class="text-slate-600 dark:text-slate-400 mt-2">
           Tạo sản phẩm để bán trên marketplace. Sản phẩm sẽ được hiển thị sau khi admin duyệt.
         </p>
       </div>
@@ -26,7 +26,7 @@
       <form @submit.prevent="handleSubmit" class="card space-y-6">
         <!-- Product Type -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">
             Loại sản phẩm *
           </label>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -38,19 +38,19 @@
               :class="[
                 'p-4 rounded-xl border-2 text-center transition-all',
                 form.type === type.value
-                  ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                  : 'border-gray-200 dark:border-gray-700 hover:border-primary-300'
+                  ? 'border-blue-500 bg-primary-50 dark:bg-primary-900/20'
+                  : 'border-slate-200 dark:border-gray-700 hover:border-primary-300'
               ]"
             >
-              <component :is="type.icon" class="w-6 h-6 mx-auto mb-2" :class="form.type === type.value ? 'text-primary-600' : 'text-gray-400'" />
-              <p class="text-sm font-medium" :class="form.type === type.value ? 'text-primary-600' : 'text-gray-700 dark:text-gray-300'">{{ type.label }}</p>
+              <component :is="type.icon" class="w-6 h-6 mx-auto mb-2" :class="form.type === type.value ? 'text-blue-600' : 'text-slate-400'" />
+              <p class="text-sm font-medium" :class="form.type === type.value ? 'text-blue-600' : 'text-slate-700 dark:text-gray-300'">{{ type.label }}</p>
             </button>
           </div>
         </div>
 
         <!-- Product Name -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">
             Tên sản phẩm *
           </label>
           <input
@@ -58,13 +58,13 @@
             type="text"
             required
             :placeholder="getNamePlaceholder()"
-            class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none"
+            class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
           >
         </div>
 
         <!-- Description -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">
             Mô tả sản phẩm *
           </label>
           <textarea
@@ -72,13 +72,13 @@
             rows="4"
             required
             placeholder="Mô tả chi tiết về sản phẩm, tính năng, cách sử dụng..."
-            class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none resize-none"
+            class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none resize-none"
           />
         </div>
 
         <!-- Product Images -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">
             Hình ảnh sản phẩm
           </label>
           <div class="space-y-4">
@@ -87,7 +87,7 @@
               <div 
                 v-for="(image, index) in previewImages" 
                 :key="index"
-                class="relative aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 group"
+                class="relative aspect-square rounded-lg overflow-hidden border border-slate-200 dark:border-gray-700 group"
               >
                 <img :src="image" class="w-full h-full object-cover" />
                 <button
@@ -110,30 +110,30 @@
                   @change="handleImageUpload"
                   class="hidden"
                 >
-                <div class="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors">
-                  <PhotoIcon class="w-6 h-6 text-gray-400" />
-                  <span class="text-sm text-gray-500">Thêm hình ảnh (tối đa 5)</span>
+                <div class="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl hover:border-blue-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors">
+                  <PhotoIcon class="w-6 h-6 text-slate-400" />
+                  <span class="text-sm text-slate-500">Thêm hình ảnh (tối đa 5)</span>
                 </div>
               </label>
             </div>
-            <p class="text-xs text-gray-500">Hỗ trợ: JPG, PNG, WebP. Tối đa 5MB mỗi ảnh.</p>
+            <p class="text-xs text-slate-500">Hỗ trợ: JPG, PNG, WebP. Tối đa 5MB mỗi ảnh.</p>
           </div>
         </div>
 
         <!-- Product Files -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">
             File đính kèm
           </label>
           <div class="space-y-2">
             <div 
               v-for="(file, index) in attachedFiles" 
               :key="index"
-              class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+              class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-gray-800 rounded-lg"
             >
-              <DocumentIcon class="w-5 h-5 text-primary-500" />
-              <span class="flex-1 text-sm text-gray-700 dark:text-gray-300 truncate">{{ file.name }}</span>
-              <span class="text-xs text-gray-500">{{ formatFileSize(file.size) }}</span>
+              <DocumentIcon class="w-5 h-5 text-blue-500" />
+              <span class="flex-1 text-sm text-slate-700 dark:text-gray-300 truncate">{{ file.name }}</span>
+              <span class="text-xs text-slate-500">{{ formatFileSize(file.size) }}</span>
               <button
                 type="button"
                 @click="removeFile(index)"
@@ -149,7 +149,7 @@
                 @change="handleFileUpload"
                 class="hidden"
               >
-              <div class="flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium cursor-pointer">
+              <div class="flex items-center gap-2 text-blue-600 hover:text-primary-700 font-medium cursor-pointer">
                 <PlusIcon class="w-5 h-5" />
                 Thêm file
               </div>
@@ -174,7 +174,7 @@
           <!-- Game Account Details -->
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">
                 Tên game *
               </label>
               <input
@@ -182,30 +182,30 @@
                 type="text"
                 required
                 placeholder="VD: Liên Quân Mobile, Free Fire, PUBG..."
-                class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none"
+                class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
               >
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">
                   Level/Rank
                 </label>
                 <input
                   v-model="form.accountDetails.level"
                   type="text"
                   placeholder="VD: Level 50, Cao Thủ..."
-                  class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none"
+                  class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
                 >
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">
                   Server
                 </label>
                 <input
                   v-model="form.accountDetails.server"
                   type="text"
                   placeholder="VD: VN, SEA, Global..."
-                  class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none"
+                  class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
                 >
               </div>
             </div>
@@ -213,36 +213,36 @@
 
           <!-- Account Credentials -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">
               Tên đăng nhập/Email *
             </label>
             <input
               v-model="form.accountDetails.username"
               type="text"
               required
-              class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none"
+              class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
             >
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">
               Mật khẩu *
             </label>
             <input
               v-model="form.accountDetails.password"
               type="password"
               required
-              class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none"
+              class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
             >
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">
               Thông tin bổ sung (2FA, backup code...)
             </label>
             <textarea
               v-model="form.accountDetails.additionalInfo"
               rows="2"
               placeholder="Mã 2FA, email khôi phục, câu hỏi bảo mật..."
-              class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none resize-none"
+              class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none resize-none"
             />
           </div>
         </div>
@@ -250,7 +250,7 @@
         <!-- Price -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">
               Giá bán (VND) *
             </label>
             <div class="relative">
@@ -260,18 +260,18 @@
                 required
                 min="1000"
                 placeholder="100000"
-                class="w-full px-4 py-2 pl-12 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none"
+                class="w-full px-4 py-2 pl-12 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
               >
-              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">₫</span>
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">₫</span>
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">
               Icon
             </label>
             <select
               v-model="form.icon"
-              class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none"
+              class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
             >
               <option value="CubeIcon">Cube (Mặc định)</option>
               <option value="StarIcon">Star</option>
@@ -284,7 +284,7 @@
 
         <!-- Features -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">
             Tính năng sản phẩm
           </label>
           <div class="space-y-2">
@@ -297,7 +297,7 @@
                 v-model="feature.text"
                 type="text"
                 :placeholder="`Tính năng ${index + 1}`"
-                class="flex-1 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none"
+                class="flex-1 px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
               >
               <button
                 type="button"
@@ -310,7 +310,7 @@
             <button
               type="button"
               @click="addFeature"
-              class="flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium"
+              class="flex items-center gap-2 text-blue-600 hover:text-primary-700 font-medium"
             >
               <PlusIcon class="w-5 h-5" />
               Thêm tính năng
@@ -330,7 +330,7 @@
             </p>
             <ul class="text-sm mt-1 space-y-1">
               <li>Bạn nhận: <span class="text-green-600 font-medium">{{ formatPrice(form.price * 0.7) }}</span></li>
-              <li>Platform thu: <span class="text-gray-500">{{ formatPrice(form.price * 0.3) }}</span></li>
+              <li>Platform thu: <span class="text-slate-500">{{ formatPrice(form.price * 0.3) }}</span></li>
             </ul>
           </div>
         </div>

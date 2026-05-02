@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+    <h1 class="text-2xl font-bold text-slate-900 dark:text-white mb-6">
       {{ $t('admin.users') }}
     </h1>
 
@@ -35,27 +35,27 @@
 
       <div v-else class="overflow-x-auto">
         <table class="w-full">
-          <thead class="bg-gray-50 dark:bg-gray-800">
+          <thead class="bg-slate-50 dark:bg-gray-800">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">User</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Email</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Role</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Balance</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Status</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Actions</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">User</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Email</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Role</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Balance</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
             <tr v-for="user in users" :key="user._id">
               <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-full bg-primary-500 flex items-center justify-center text-white font-medium">
+                  <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
                     {{ user.username.charAt(0).toUpperCase() }}
                   </div>
-                  <span class="font-medium text-gray-900 dark:text-white">{{ user.username }}</span>
+                  <span class="font-medium text-slate-900 dark:text-white">{{ user.username }}</span>
                 </div>
               </td>
-              <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{{ user.email }}</td>
+              <td class="px-6 py-4 text-sm text-slate-600 dark:text-gray-300">{{ user.email }}</td>
               <td class="px-6 py-4">
                 <select 
                   v-model="user.role" 
@@ -67,7 +67,7 @@
                   <option value="admin">Admin</option>
                 </select>
               </td>
-              <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+              <td class="px-6 py-4 text-sm text-slate-600 dark:text-gray-300">
                 {{ user.gem?.toLocaleString() }} 💎
               </td>
               <td class="px-6 py-4">
@@ -79,7 +79,7 @@
                 <div class="flex items-center gap-2">
                   <button 
                     @click="openBalanceModal(user)" 
-                    class="p-1 text-primary-600 hover:bg-primary-50 rounded"
+                    class="p-1 text-blue-600 hover:bg-primary-50 rounded"
                     :aria-label="'Cập nhật số dư cho ' + user.username"
                     title="Cập nhật số dư"
                   >
@@ -103,8 +103,8 @@
       </div>
 
       <!-- Pagination -->
-      <div v-if="pagination.pages > 1" class="flex items-center justify-between p-4 border-t border-gray-200 dark:border-gray-700">
-        <span class="text-sm text-gray-500">Total: {{ pagination.total }}</span>
+      <div v-if="pagination.pages > 1" class="flex items-center justify-between p-4 border-t border-slate-200 dark:border-gray-700">
+        <span class="text-sm text-slate-500">Total: {{ pagination.total }}</span>
         <div class="flex gap-2">
           <button 
             :disabled="pagination.page === 1" 

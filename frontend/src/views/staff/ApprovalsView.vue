@@ -1,16 +1,16 @@
 <template>
   <div>
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+    <h1 class="text-2xl font-bold text-slate-900 dark:text-white mb-6">
       Duyệt Seller & Sản phẩm
     </h1>
 
     <!-- Tabs -->
-    <div class="flex gap-4 mb-6 border-b border-gray-200 dark:border-gray-700">
+    <div class="flex gap-4 mb-6 border-b border-slate-200 dark:border-gray-700">
       <button
         v-for="tab in tabs"
         :key="tab.id"
         @click="activeTab = tab.id"
-        :class="['px-4 py-3 font-medium text-sm border-b-2 transition-colors', activeTab === tab.id ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300']"
+        :class="['px-4 py-3 font-medium text-sm border-b-2 transition-colors', activeTab === tab.id ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-gray-300']"
       >
         <span class="flex items-center gap-2">
           <component :is="tab.icon" class="w-5 h-5" />
@@ -22,30 +22,30 @@
 
     <!-- Sellers Tab -->
     <div v-if="activeTab === 'sellers'" class="card">
-      <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Seller đang chờ duyệt</h2>
-        <span class="text-sm text-gray-500">{{ pendingSellers.length }} seller</span>
+      <div class="p-6 border-b border-slate-200 dark:border-gray-700 flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Seller đang chờ duyệt</h2>
+        <span class="text-sm text-slate-500">{{ pendingSellers.length }} seller</span>
       </div>
       
       <div class="divide-y divide-gray-200 dark:divide-gray-700">
-        <div v-for="seller in pendingSellers" :key="seller.id" class="p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50">
+        <div v-for="seller in pendingSellers" :key="seller.id" class="p-6 hover:bg-slate-50 dark:hover:bg-gray-800/50">
           <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
               {{ seller.businessName.charAt(0) }}
             </div>
             <div class="flex-1">
               <div class="flex items-start justify-between">
                 <div>
-                  <h3 class="font-semibold text-gray-900 dark:text-white">{{ seller.businessName }}</h3>
-                  <p class="text-sm text-gray-500">{{ seller.businessEmail }}</p>
-                  <p class="text-sm text-gray-500 mt-1">{{ seller.phone || 'Chưa có SĐT' }}</p>
+                  <h3 class="font-semibold text-slate-900 dark:text-white">{{ seller.businessName }}</h3>
+                  <p class="text-sm text-slate-500">{{ seller.businessEmail }}</p>
+                  <p class="text-sm text-slate-500 mt-1">{{ seller.phone || 'Chưa có SĐT' }}</p>
                 </div>
                 <span class="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400">
                   Đang chờ duyệt
                 </span>
               </div>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">{{ seller.description }}</p>
-              <div class="flex items-center gap-2 mt-3 text-xs text-gray-500">
+              <p class="text-sm text-slate-600 dark:text-slate-400 mt-3">{{ seller.description }}</p>
+              <div class="flex items-center gap-2 mt-3 text-xs text-slate-500">
                 <UserIcon class="w-4 h-4" />
                 <span>Đăng ký bởi: {{ seller.user.name }} ({{ seller.user.email }})</span>
               </div>
@@ -72,7 +72,7 @@
                 </button>
                 <button
                   @click="viewSellerDetail(seller)"
-                  class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600"
+                  class="px-4 py-2 bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-slate-200 dark:hover:bg-gray-600"
                 >
                   Xem chi tiết
                 </button>
@@ -83,38 +83,38 @@
       </div>
 
       <div v-if="pendingSellers.length === 0" class="text-center py-12">
-        <BuildingStorefrontIcon class="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600 mb-4" />
-        <p class="text-gray-500 dark:text-gray-400">Không có seller nào đang chờ duyệt</p>
+        <BuildingStorefrontIcon class="w-16 h-16 mx-auto text-gray-300 dark:text-slate-600 mb-4" />
+        <p class="text-slate-500 dark:text-slate-400">Không có seller nào đang chờ duyệt</p>
       </div>
     </div>
 
     <!-- Products Tab -->
     <div v-if="activeTab === 'products'" class="card">
-      <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Sản phẩm đang chờ duyệt</h2>
-        <span class="text-sm text-gray-500">{{ pendingProducts.length }} sản phẩm</span>
+      <div class="p-6 border-b border-slate-200 dark:border-gray-700 flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Sản phẩm đang chờ duyệt</h2>
+        <span class="text-sm text-slate-500">{{ pendingProducts.length }} sản phẩm</span>
       </div>
       
       <div class="divide-y divide-gray-200 dark:divide-gray-700">
-        <div v-for="product in pendingProducts" :key="product.id" class="p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50">
+        <div v-for="product in pendingProducts" :key="product.id" class="p-6 hover:bg-slate-50 dark:hover:bg-gray-800/50">
           <div class="flex items-start gap-4">
-            <div class="w-20 h-20 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
+            <div class="w-20 h-20 rounded-xl bg-slate-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
               <img v-if="product.image" :src="product.image" :alt="product.name" class="w-full h-full object-cover rounded-xl" />
-              <CubeIcon v-else class="w-8 h-8 text-gray-400" />
+              <CubeIcon v-else class="w-8 h-8 text-slate-400" />
             </div>
             <div class="flex-1">
               <div class="flex items-start justify-between">
                 <div>
-                  <h3 class="font-semibold text-gray-900 dark:text-white">{{ product.name }}</h3>
-                  <p class="text-sm text-gray-500">{{ product.category }}</p>
+                  <h3 class="font-semibold text-slate-900 dark:text-white">{{ product.name }}</h3>
+                  <p class="text-sm text-slate-500">{{ product.category }}</p>
                   <p class="text-lg font-bold text-blue-600 dark:text-blue-400 mt-1">{{ formatPrice(product.price) }}</p>
                 </div>
                 <span class="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400">
                   Đang chờ duyệt
                 </span>
               </div>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">{{ product.description }}</p>
-              <div class="flex items-center gap-4 mt-3 text-xs text-gray-500">
+              <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 line-clamp-2">{{ product.description }}</p>
+              <div class="flex items-center gap-4 mt-3 text-xs text-slate-500">
                 <span class="flex items-center gap-1">
                   <BuildingStorefrontIcon class="w-4 h-4" />
                   {{ product.seller.businessName }}
@@ -147,7 +147,7 @@
                 </button>
                 <button
                   @click="viewProductDetail(product)"
-                  class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600"
+                  class="px-4 py-2 bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-slate-200 dark:hover:bg-gray-600"
                 >
                   Xem chi tiết
                 </button>
@@ -158,44 +158,44 @@
       </div>
 
       <div v-if="pendingProducts.length === 0" class="text-center py-12">
-        <CubeIcon class="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600 mb-4" />
-        <p class="text-gray-500 dark:text-gray-400">Không có sản phẩm nào đang chờ duyệt</p>
+        <CubeIcon class="w-16 h-16 mx-auto text-gray-300 dark:text-slate-600 mb-4" />
+        <p class="text-slate-500 dark:text-slate-400">Không có sản phẩm nào đang chờ duyệt</p>
       </div>
     </div>
 
     <!-- History Tab -->
     <div v-if="activeTab === 'history'" class="card">
-      <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Lịch sử duyệt</h2>
+      <div class="p-6 border-b border-slate-200 dark:border-gray-700">
+        <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Lịch sử duyệt</h2>
       </div>
       <div class="overflow-x-auto">
         <table class="w-full">
-          <thead class="bg-gray-50 dark:bg-gray-800">
+          <thead class="bg-slate-50 dark:bg-gray-800">
             <tr>
-              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Thời gian</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Loại</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Tên</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Người yêu cầu</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Hành động</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Người duyệt</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Thời gian</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Loại</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Tên</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Người yêu cầu</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Hành động</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Người duyệt</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-            <tr v-for="item in history" :key="item.id" class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-              <td class="px-6 py-4 text-sm text-gray-500">{{ formatDate(item.date) }}</td>
+            <tr v-for="item in history" :key="item.id" class="hover:bg-slate-50 dark:hover:bg-gray-800/50">
+              <td class="px-6 py-4 text-sm text-slate-500">{{ formatDate(item.date) }}</td>
               <td class="px-6 py-4">
-                <span :class="['px-2 py-1 rounded-full text-xs font-medium', item.type === 'seller' ? 'bg-blue-100 text-blue-600' : 'bg-purple-100 text-purple-600']">
+                <span :class="['px-2 py-1 rounded-full text-xs font-medium', item.type === 'seller' ? 'bg-blue-100 text-blue-600' : 'bg-indigo-100 text-indigo-600']">
                   {{ item.type === 'seller' ? 'Seller' : 'Sản phẩm' }}
                 </span>
               </td>
-              <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ item.name }}</td>
-              <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{{ item.requester }}</td>
+              <td class="px-6 py-4 font-medium text-slate-900 dark:text-white">{{ item.name }}</td>
+              <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{{ item.requester }}</td>
               <td class="px-6 py-4">
                 <span :class="['px-2 py-1 rounded-full text-xs font-medium', item.action === 'approved' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600']">
                   {{ item.action === 'approved' ? 'Đã duyệt' : 'Đã từ chối' }}
                 </span>
               </td>
-              <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{{ item.approver }}</td>
+              <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{{ item.approver }}</td>
             </tr>
           </tbody>
         </table>

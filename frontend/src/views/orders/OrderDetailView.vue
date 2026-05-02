@@ -4,7 +4,7 @@
       <!-- Back -->
       <button 
         @click="$router.back()"
-        class="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white mb-6"
+        class="flex items-center gap-2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white mb-6"
       >
         <ArrowLeftIcon class="w-5 h-5" />
         Quay lại
@@ -20,20 +20,20 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div class="flex items-center gap-3 mb-2">
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                <h1 class="text-2xl font-bold text-slate-900 dark:text-white">
                   {{ order.orderCode }}
                 </h1>
                 <span :class="getStatusBadgeClass(order.status)">
                   {{ $t(`orders.status.${order.status}`) }}
                 </span>
               </div>
-              <p class="text-gray-500 dark:text-gray-400">
+              <p class="text-slate-500 dark:text-slate-400">
                 {{ formatDate(order.createdAt) }}
               </p>
             </div>
 
             <div class="text-right">
-              <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              <p class="text-2xl font-bold text-slate-900 dark:text-white">
                 {{ formatPrice(order.totalPrice) }} ₫
               </p>
               <p class="text-sm" :class="getPaymentStatusClass(order.paymentStatus)">
@@ -47,44 +47,44 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Package Info -->
           <div class="card p-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">
               Thông tin gói
             </h3>
             <div class="space-y-3">
               <div class="flex justify-between">
-                <span class="text-gray-500 dark:text-gray-400">Gói:</span>
-                <span class="font-medium text-gray-900 dark:text-white">{{ order.packageName }}</span>
+                <span class="text-slate-500 dark:text-slate-400">Gói:</span>
+                <span class="font-medium text-slate-900 dark:text-white">{{ order.packageName }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-gray-500 dark:text-gray-400">Giá gốc:</span>
+                <span class="text-slate-500 dark:text-slate-400">Giá gốc:</span>
                 <span>{{ formatPrice(order.basePrice) }} ₫</span>
               </div>
               <div v-if="order.discountAmount > 0" class="flex justify-between text-green-600">
                 <span>Giảm giá:</span>
                 <span>-{{ formatPrice(order.discountAmount) }} ₫</span>
               </div>
-              <div class="flex justify-between font-semibold pt-2 border-t border-gray-200 dark:border-gray-700">
+              <div class="flex justify-between font-semibold pt-2 border-t border-slate-200 dark:border-gray-700">
                 <span>Tổng:</span>
-                <span class="text-primary-600">{{ formatPrice(order.totalPrice) }} ₫</span>
+                <span class="text-blue-600">{{ formatPrice(order.totalPrice) }} ₫</span>
               </div>
             </div>
           </div>
 
           <!-- Discord Info -->
           <div class="card p-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">
               Thông tin Discord
             </h3>
             <div class="space-y-3">
               <div v-if="order.discordServerId" class="flex justify-between">
-                <span class="text-gray-500 dark:text-gray-400">Server ID:</span>
+                <span class="text-slate-500 dark:text-slate-400">Server ID:</span>
                 <span class="font-mono">{{ order.discordServerId }}</span>
               </div>
               <div v-if="order.discordServerName" class="flex justify-between">
-                <span class="text-gray-500 dark:text-gray-400">Server Name:</span>
+                <span class="text-slate-500 dark:text-slate-400">Server Name:</span>
                 <span>{{ order.discordServerName }}</span>
               </div>
-              <div v-if="!order.discordServerId" class="text-gray-500 italic">
+              <div v-if="!order.discordServerId" class="text-slate-500 italic">
                 Chưa cung cấp thông tin Discord
               </div>
             </div>
@@ -93,17 +93,17 @@
 
         <!-- Description -->
         <div class="card p-6">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">
             Mô tả yêu cầu
           </h3>
-          <p class="text-gray-600 dark:text-gray-300 whitespace-pre-wrap">
+          <p class="text-slate-600 dark:text-gray-300 whitespace-pre-wrap">
             {{ order.description || 'Không có mô tả' }}
           </p>
         </div>
 
         <!-- Actions -->
         <div class="card p-6">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">
             Thao tác
           </h3>
           <div class="flex flex-wrap gap-3">
@@ -186,9 +186,9 @@ const getPaymentStatusClass = (status) => {
     pending: 'text-yellow-600 dark:text-yellow-400',
     paid: 'text-green-600 dark:text-green-400',
     failed: 'text-red-600 dark:text-red-400',
-    refunded: 'text-gray-500'
+    refunded: 'text-slate-500'
   };
-  return classes[status] || 'text-gray-500';
+  return classes[status] || 'text-slate-500';
 };
 
 const fetchOrder = async () => {

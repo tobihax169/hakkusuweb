@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
       <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">
           {{ $t('orders.title') }}
         </h1>
         <router-link 
@@ -18,7 +18,7 @@
       <!-- Filters -->
       <div class="card p-4 mb-6 flex flex-wrap items-center gap-4">
         <div class="flex items-center gap-2">
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Trạng thái:</label>
+          <label class="text-sm font-medium text-slate-700 dark:text-gray-300">Trạng thái:</label>
           <select 
             v-model="filters.status" 
             @change="fetchOrders"
@@ -40,11 +40,11 @@
 
       <!-- Empty -->
       <div v-else-if="orders.length === 0" class="card p-12 text-center">
-        <ShoppingBagIcon class="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600 mb-4" />
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
+        <ShoppingBagIcon class="w-16 h-16 mx-auto text-gray-300 dark:text-slate-600 mb-4" />
+        <h3 class="text-lg font-medium text-slate-900 dark:text-white mb-2">
           {{ $t('orders.noOrders') }}
         </h3>
-        <p class="text-gray-500 dark:text-gray-400 mb-4">
+        <p class="text-slate-500 dark:text-slate-400 mb-4">
           Bạn chưa có đơn hàng nào. Hãy đặt dịch vụ ngay!
         </p>
         <router-link to="/services" class="btn-primary">
@@ -63,17 +63,17 @@
             <!-- Info -->
             <div class="flex-1">
               <div class="flex items-center gap-3 mb-2">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
                   {{ order.orderCode }}
                 </h3>
                 <span :class="getStatusBadgeClass(order.status)">
                   {{ $t(`orders.status.${order.status}`) }}
                 </span>
               </div>
-              <p class="text-gray-600 dark:text-gray-300 mb-2">
+              <p class="text-slate-600 dark:text-gray-300 mb-2">
                 {{ order.packageName }}
               </p>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
+              <p class="text-sm text-slate-500 dark:text-slate-400">
                 {{ $t('orders.createdAt') }}: {{ formatDate(order.createdAt) }}
               </p>
             </div>
@@ -81,7 +81,7 @@
             <!-- Price & Actions -->
             <div class="flex items-center gap-4">
               <div class="text-right">
-                <p class="text-lg font-bold text-gray-900 dark:text-white">
+                <p class="text-lg font-bold text-slate-900 dark:text-white">
                   {{ formatPrice(order.totalPrice) }} ₫
                 </p>
                 <p class="text-sm" :class="getPaymentStatusClass(order.paymentStatus)">
@@ -119,7 +119,7 @@
 
         <!-- Pagination -->
         <div v-if="pagination.pages > 1" class="flex items-center justify-between card p-4">
-          <p class="text-sm text-gray-500 dark:text-gray-400">
+          <p class="text-sm text-slate-500 dark:text-slate-400">
             Hiển thị {{ orders.length }} / {{ pagination.total }} đơn hàng
           </p>
           <div class="flex items-center gap-2">
@@ -130,7 +130,7 @@
             >
               Trước
             </button>
-            <span class="text-sm text-gray-600 dark:text-gray-400">
+            <span class="text-sm text-slate-600 dark:text-slate-400">
               Trang {{ pagination.page }} / {{ pagination.pages }}
             </span>
             <button
@@ -202,9 +202,9 @@ const getPaymentStatusClass = (status) => {
     pending: 'text-yellow-600 dark:text-yellow-400',
     paid: 'text-green-600 dark:text-green-400',
     failed: 'text-red-600 dark:text-red-400',
-    refunded: 'text-gray-500'
+    refunded: 'text-slate-500'
   };
-  return classes[status] || 'text-gray-500';
+  return classes[status] || 'text-slate-500';
 };
 
 const fetchOrders = async () => {

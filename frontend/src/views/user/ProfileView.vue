@@ -86,7 +86,7 @@
               class="form-input"
               disabled
             />
-            <p class="text-xs text-gray-500 mt-1">Email không thể thay đổi</p>
+            <p class="text-xs text-slate-500 mt-1">Email không thể thay đổi</p>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
@@ -109,7 +109,7 @@
           </div>
 
           <div class="flex items-center justify-between pt-4">
-            <router-link to="/user/wallet" class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all">
+            <router-link to="/user/wallet" class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all">
               <WalletIcon class="w-4 h-4" />
               Nạp tiền ngay
             </router-link>
@@ -127,7 +127,7 @@
 
       <!-- Change Password -->
       <div class="card p-6 mt-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">
           Đổi mật khẩu
         </h3>
         <form @submit.prevent="changePassword" class="space-y-4">

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+    <h1 class="text-2xl font-bold text-slate-900 dark:text-white mb-6">
       {{ $t('admin.orders') }}
     </h1>
 
@@ -33,28 +33,28 @@
 
       <div v-else class="overflow-x-auto">
         <table class="w-full">
-          <thead class="bg-gray-50 dark:bg-gray-800">
+          <thead class="bg-slate-50 dark:bg-gray-800">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Package</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Order</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Customer</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Package</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Price</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
             <tr v-for="order in orders" :key="order._id">
-              <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
+              <td class="px-6 py-4 text-sm font-medium text-slate-900 dark:text-white">
                 {{ order.orderCode }}
               </td>
-              <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+              <td class="px-6 py-4 text-sm text-slate-600 dark:text-gray-300">
                 {{ order.userId?.username || 'Unknown' }}
               </td>
-              <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+              <td class="px-6 py-4 text-sm text-slate-600 dark:text-gray-300">
                 {{ order.packageName }}
               </td>
-              <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
+              <td class="px-6 py-4 text-sm font-medium text-slate-900 dark:text-white">
                 {{ formatPrice(order.totalPrice) }}
               </td>
               <td class="px-6 py-4">
@@ -71,7 +71,7 @@
                 </select>
               </td>
               <td class="px-6 py-4">
-                <router-link :to="`/orders/${order._id}`" class="text-primary-600 hover:text-primary-500">
+                <router-link :to="`/orders/${order._id}`" class="text-blue-600 hover:text-blue-500">
                   View
                 </router-link>
               </td>
@@ -82,7 +82,7 @@
 
       <!-- Pagination -->
       <div v-if="pagination.pages > 1" class="flex items-center justify-between p-4 border-t">
-        <span class="text-sm text-gray-500">Total: {{ pagination.total }}</span>
+        <span class="text-sm text-slate-500">Total: {{ pagination.total }}</span>
         <div class="flex gap-2">
           <button :disabled="pagination.page === 1" @click="changePage(pagination.page - 1)" class="btn-outline py-1 px-3">Prev</button>
           <button :disabled="pagination.page === pagination.pages" @click="changePage(pagination.page + 1)" class="btn-outline py-1 px-3">Next</button>

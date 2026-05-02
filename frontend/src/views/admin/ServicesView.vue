@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+      <h1 class="text-2xl font-bold text-slate-900 dark:text-white">
         {{ $t('admin.services') }}
       </h1>
       <div class="flex gap-2">
@@ -26,30 +26,30 @@
         v-for="service in services"
         :key="service.packageId"
         class="card p-6"
-        :class="{ 'ring-2 ring-primary-500': service.popular }"
+        :class="{ 'ring-2 ring-blue-500': service.popular }"
       >
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
-            <component :is="getIcon(service.icon)" class="w-8 h-8 text-primary-600" />
+            <component :is="getIcon(service.icon)" class="w-8 h-8 text-blue-600" />
             <div>
-              <h3 class="font-semibold text-gray-900 dark:text-white">{{ service.name }}</h3>
-              <p class="text-sm text-gray-500">{{ service.packageId }}</p>
+              <h3 class="font-semibold text-slate-900 dark:text-white">{{ service.name }}</h3>
+              <p class="text-sm text-slate-500">{{ service.packageId }}</p>
             </div>
           </div>
           <div class="flex gap-1">
-            <button @click="openModal(service)" class="p-1 text-gray-400 hover:text-primary-600">
+            <button @click="openModal(service)" class="p-1 text-slate-400 hover:text-blue-600">
               <PencilIcon class="w-4 h-4" />
             </button>
-            <button @click="deleteService(service)" class="p-1 text-gray-400 hover:text-red-600">
+            <button @click="deleteService(service)" class="p-1 text-slate-400 hover:text-red-600">
               <TrashIcon class="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">{{ service.description }}</p>
+        <p class="text-slate-600 dark:text-gray-300 text-sm mb-4">{{ service.description }}</p>
 
         <div class="flex items-center justify-between">
-          <span class="text-xl font-bold text-primary-600">
+          <span class="text-xl font-bold text-blue-600">
             {{ service.price > 0 ? formatPrice(service.price) + ' ₫' : 'Liên hệ' }}
           </span>
           <span :class="service.isActive ? 'badge-success' : 'badge-danger'" class="badge">
@@ -64,7 +64,7 @@
       <div class="card w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div class="p-6 border-b flex items-center justify-between">
           <h2 class="text-lg font-semibold">{{ editingService ? 'Edit' : 'Add' }} Service</h2>
-          <button @click="showModal = false" class="text-gray-400 hover:text-gray-600">
+          <button @click="showModal = false" class="text-slate-400 hover:text-slate-600">
             <XMarkIcon class="w-5 h-5" />
           </button>
         </div>

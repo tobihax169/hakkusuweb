@@ -5,18 +5,18 @@
       <div class="flex items-center gap-4 mb-6">
         <button 
           @click="$router.back()"
-          class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+          class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-800"
         >
-          <ArrowLeftIcon class="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          <ArrowLeftIcon class="w-5 h-5 text-slate-600 dark:text-slate-400" />
         </button>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">
           Đặt hàng mới
         </h1>
       </div>
 
       <!-- Step 1: Select Package -->
       <div v-if="step === 1" class="card p-6">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h2 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">
           Chọn gói dịch vụ
         </h2>
 
@@ -32,18 +32,18 @@
             :class="[
               'p-4 rounded-xl border-2 cursor-pointer transition-all',
               selectedPackage?.id === pkg.id
-                ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                : 'border-gray-200 dark:border-gray-700 hover:border-primary-300'
+                ? 'border-blue-500 bg-primary-50 dark:bg-primary-900/20'
+                : 'border-slate-200 dark:border-gray-700 hover:border-primary-300'
             ]"
           >
             <div class="flex items-center gap-3 mb-2">
-              <component :is="getIcon(pkg.icon)" class="w-6 h-6 text-primary-600" />
-              <h3 class="font-semibold text-gray-900 dark:text-white">{{ pkg.name }}</h3>
+              <component :is="getIcon(pkg.icon)" class="w-6 h-6 text-blue-600" />
+              <h3 class="font-semibold text-slate-900 dark:text-white">{{ pkg.name }}</h3>
             </div>
-            <p class="text-lg font-bold text-primary-600">
+            <p class="text-lg font-bold text-blue-600">
               {{ pkg.price > 0 ? formatPrice(pkg.price) + ' ₫' : 'Liên hệ' }}
             </p>
-            <p class="text-sm text-gray-500 mt-1">{{ pkg.features.length }} tính năng</p>
+            <p class="text-sm text-slate-500 mt-1">{{ pkg.features.length }} tính năng</p>
           </div>
         </div>
 
@@ -61,7 +61,7 @@
 
       <!-- Step 2: Details -->
       <div v-else-if="step === 2" class="card p-6">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h2 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">
           Chi tiết yêu cầu
         </h2>
 
@@ -98,13 +98,13 @@
                 :class="[
                   'p-4 rounded-xl border-2 text-left transition-all',
                   form.paymentMethod === 'wallet'
-                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                    : 'border-gray-200 dark:border-gray-700'
+                    ? 'border-blue-500 bg-primary-50 dark:bg-primary-900/20'
+                    : 'border-slate-200 dark:border-gray-700'
                 ]"
               >
-                <CurrencyDollarIcon class="w-6 h-6 text-primary-600 mb-2" />
-                <p class="font-medium text-gray-900 dark:text-white">Ví (Gem)</p>
-                <p class="text-sm text-gray-500">Số dư: {{ gemBalance }}</p>
+                <CurrencyDollarIcon class="w-6 h-6 text-blue-600 mb-2" />
+                <p class="font-medium text-slate-900 dark:text-white">Ví (Gem)</p>
+                <p class="text-sm text-slate-500">Số dư: {{ gemBalance }}</p>
               </button>
 
               <button
@@ -113,26 +113,26 @@
                 :class="[
                   'p-4 rounded-xl border-2 text-left transition-all',
                   form.paymentMethod === 'qr_code'
-                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                    : 'border-gray-200 dark:border-gray-700'
+                    ? 'border-blue-500 bg-primary-50 dark:bg-primary-900/20'
+                    : 'border-slate-200 dark:border-gray-700'
                 ]"
               >
-                <QrCodeIcon class="w-6 h-6 text-primary-600 mb-2" />
-                <p class="font-medium text-gray-900 dark:text-white">QR Code</p>
-                <p class="text-sm text-gray-500">Chuyển khoản ngân hàng</p>
+                <QrCodeIcon class="w-6 h-6 text-blue-600 mb-2" />
+                <p class="font-medium text-slate-900 dark:text-white">QR Code</p>
+                <p class="text-sm text-slate-500">Chuyển khoản ngân hàng</p>
               </button>
             </div>
           </div>
 
           <!-- Summary -->
-          <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+          <div class="bg-slate-50 dark:bg-gray-800 rounded-lg p-4">
             <div class="flex justify-between items-center">
-              <span class="text-gray-600 dark:text-gray-400">Gói dịch vụ:</span>
-              <span class="font-medium text-gray-900 dark:text-white">{{ selectedPackage?.name }}</span>
+              <span class="text-slate-600 dark:text-slate-400">Gói dịch vụ:</span>
+              <span class="font-medium text-slate-900 dark:text-white">{{ selectedPackage?.name }}</span>
             </div>
-            <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
-              <span class="text-gray-900 dark:text-white font-semibold">Tổng thanh toán:</span>
-              <span class="text-xl font-bold text-primary-600">
+            <div class="flex justify-between items-center mt-2 pt-2 border-t border-slate-200 dark:border-gray-700">
+              <span class="text-slate-900 dark:text-white font-semibold">Tổng thanh toán:</span>
+              <span class="text-xl font-bold text-blue-600">
                 {{ formatPrice(selectedPackage?.price) }} ₫
               </span>
             </div>
