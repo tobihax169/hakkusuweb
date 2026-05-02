@@ -3,11 +3,8 @@
     <div class="w-full max-w-md">
       <!-- Logo -->
       <div class="text-center mb-6">
-        <router-link to="/" class="inline-flex flex-col items-center gap-2">
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-300/50">
-            <img src="/logo.png" alt="Hakkusu" class="w-10 h-10 object-contain" />
-          </div>
-          <span class="text-xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
+        <router-link to="/" class="inline-block">
+          <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
             はっくす
           </span>
         </router-link>
