@@ -124,17 +124,23 @@
       </div>
 
       <!-- Recent Orders -->
-      <div class="card">
-        <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">
+      <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-600 shadow-lg">
+        <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+          </svg>
           Đơn Hàng Gần Đây
         </h2>
-        <div v-if="recentOrders.length === 0" class="text-center py-8 text-slate-500">
-          Chưa có đơn hàng nào
+        <div v-if="recentOrders.length === 0" class="text-center py-12 text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-slate-700/30 rounded-xl">
+          <svg class="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414a1 1 0 00-.707-.293H4"/>
+          </svg>
+          <p>Chưa có đơn hàng nào</p>
         </div>
         <div v-else class="overflow-x-auto">
           <table class="w-full">
             <thead>
-              <tr class="text-left text-sm text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-gray-700">
+              <tr class="text-left text-sm text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-600">
                 <th class="pb-3">Mã đơn</th>
                 <th class="pb-3">Sản phẩm</th>
                 <th class="pb-3">Doanh thu</th>
@@ -146,7 +152,7 @@
               <tr
                 v-for="order in recentOrders"
                 :key="order._id"
-                class="border-b border-slate-100 dark:border-gray-800 text-sm"
+                class="border-b border-slate-100 dark:border-slate-700/50 text-sm hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors"
               >
                 <td class="py-3 font-medium">{{ order.orderCode }}</td>
                 <td class="py-3">{{ order.packageName }}</td>
