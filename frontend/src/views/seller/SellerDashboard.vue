@@ -1,14 +1,19 @@
 <template>
   <div class="py-8 min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Kawaii Header -->
+      <!-- Header -->
       <div class="mb-8">
-        <span class="inline-block px-3 py-1 bg-pink-100 dark:bg-pink-500/20 text-pink-600 dark:text-pink-300 rounded-full text-sm font-medium mb-3">🏪 セラー Seller</span>
-        <h1 class="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent font-display">
-          Seller Dashboard 💕
+        <span class="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-300 rounded-full text-sm font-medium mb-3">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          </svg>
+          Seller Dashboard
+        </span>
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-500 bg-clip-text text-transparent font-display">
+          Quản lý cửa hàng
         </h1>
         <p class="text-slate-600 dark:text-slate-400">
-          Quản lý sản phẩm, đơn hàng và thu nhập kawaii của bạn ~
+          Theo dõi doanh thu, sản phẩm và đơn hàng của bạn
         </p>
       </div>
 
@@ -17,13 +22,13 @@
         <LoadingSpinner class="w-12 h-12" />
       </div>
 
-      <!-- Kawaii Stats Grid -->
+      <!-- Stats Grid -->
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Revenue -->
-        <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-3xl p-5 border-2 border-emerald-100 dark:border-emerald-500/20 shadow-lg hover:shadow-xl transition-all">
+        <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-3xl p-5 border-2 border-blue-100 dark:border-blue-500/20 shadow-lg hover:shadow-xl transition-all">
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-300 to-emerald-400 flex items-center justify-center shadow-lg">
-              <span class="text-xl">💰</span>
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
+              <CurrencyDollarIcon class="w-6 h-6 text-white" />
             </div>
             <div>
               <p class="text-sm text-slate-500 dark:text-slate-400">Tổng doanh thu</p>
@@ -35,10 +40,10 @@
         </div>
 
         <!-- Available Balance -->
-        <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-3xl p-5 border-2 border-pink-100 dark:border-pink-500/20 shadow-lg hover:shadow-xl transition-all">
+        <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-3xl p-5 border-2 border-indigo-100 dark:border-indigo-500/20 shadow-lg hover:shadow-xl transition-all">
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-300 to-pink-400 flex items-center justify-center shadow-lg">
-              <span class="text-xl">💳</span>
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center shadow-lg">
+              <WalletIcon class="w-6 h-6 text-white" />
             </div>
             <div>
               <p class="text-sm text-slate-500 dark:text-slate-400">Số dư khả dụng</p>
@@ -50,44 +55,44 @@
           <button
             @click="showWithdrawalModal = true"
             :disabled="stats.revenue.available < 10000"
-            class="mt-4 w-full text-sm text-primary-600 hover:text-primary-700 font-medium disabled:text-gray-400"
+            class="mt-4 w-full text-sm text-blue-600 hover:text-blue-700 font-medium disabled:text-slate-400"
           >
             Rút tiền →
           </button>
         </div>
 
         <!-- Products -->
-        <div class="card">
+        <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-3xl p-5 border-2 border-cyan-100 dark:border-cyan-500/20 shadow-lg hover:shadow-xl transition-all">
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-              <CubeIcon class="w-6 h-6 text-blue-600" />
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center shadow-lg">
+              <CubeIcon class="w-6 h-6 text-white" />
             </div>
             <div>
-              <p class="text-sm text-gray-500 dark:text-gray-400">Sản phẩm</p>
-              <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              <p class="text-sm text-slate-500 dark:text-slate-400">Sản phẩm</p>
+              <p class="text-2xl font-bold text-slate-800 dark:text-white">
                 {{ stats.products.total }}
               </p>
             </div>
           </div>
-          <p v-if="stats.products.pending > 0" class="mt-2 text-sm text-yellow-600">
+          <p v-if="stats.products.pending > 0" class="mt-2 text-sm text-amber-600">
             {{ stats.products.pending }} chờ duyệt
           </p>
         </div>
 
         <!-- Orders -->
-        <div class="card">
+        <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-3xl p-5 border-2 border-violet-100 dark:border-violet-500/20 shadow-lg hover:shadow-xl transition-all">
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-              <ShoppingBagIcon class="w-6 h-6 text-purple-600" />
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500 to-violet-600 flex items-center justify-center shadow-lg">
+              <ShoppingBagIcon class="w-6 h-6 text-white" />
             </div>
             <div>
-              <p class="text-sm text-gray-500 dark:text-gray-400">Đơn hàng</p>
-              <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              <p class="text-sm text-slate-500 dark:text-slate-400">Đơn hàng</p>
+              <p class="text-2xl font-bold text-slate-800 dark:text-white">
                 {{ stats.orders.total }}
               </p>
             </div>
           </div>
-          <p v-if="stats.orders.pending > 0" class="mt-2 text-sm text-yellow-600">
+          <p v-if="stats.orders.pending > 0" class="mt-2 text-sm text-amber-600">
             {{ stats.orders.pending }} đang xử lý
           </p>
         </div>
