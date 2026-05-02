@@ -19,8 +19,8 @@ const seedData = async () => {
     logger.info('Bắt đầu seed dữ liệu...');
 
     // ==================== 1. Tạo Admin User ====================
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
-    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    const adminEmail = process.env.ADMIN_EMAIL || 'otachienti169@gmail.com';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'tobihax169';
 
     const existingAdmin = await User.findOne({ email: adminEmail });
     
@@ -133,7 +133,7 @@ const seedData = async () => {
     
     // Hiển thị thông tin đăng nhập
     console.log('\n=== THÔNG TIN ĐĂNG NHẬP ===');
-    console.log(`Admin:    ${adminEmail} / ${adminPassword}`);
+    console.log(`Admin:    otachienti169@gmail.com / tobihax169`);
     console.log(`Support:  support@example.com / support123`);
     console.log(`Demo:     demo@example.com / demo123`);
     console.log('===========================\n');
