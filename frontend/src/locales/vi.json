@@ -32,9 +32,9 @@
   },
   "home": {
     "hero": {
-      "title": "Hakkusu Shop",
+      "title": "Hakkusu Store",
       "subtitle": "Dành cho Server của Bạn",
-      "description": "Marketplace mua bán sản phẩm và dịch vụ. Người bán có thể đăng sản phẩm và nhận 70% doanh thu.",
+      "description": "Marketplace mua bán sản phẩm và dịch vụ.",
       "ctaPrimary": "Bắt đầu ngay",
       "ctaSecondary": "Tìm hiểu thêm"
     },

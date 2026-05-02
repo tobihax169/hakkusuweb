@@ -32,9 +32,9 @@
   },
   "home": {
     "hero": {
-      "title": "Hakkusu Shop",
+      "title": "Hakkusu Store",
       "subtitle": "For Your Server",
-      "description": "Marketplace for buying and selling products and services. Sellers can list products and earn 70% revenue.",
+      "description": "Marketplace for buying and selling products and services.",
       "ctaPrimary": "Get Started",
       "ctaSecondary": "Learn More"
     },
