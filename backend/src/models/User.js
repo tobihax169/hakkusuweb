@@ -7,8 +7,7 @@ const userSchema = new mongoose.Schema(
     discordId: {
       type: String,
       unique: true,
-      sparse: true, // Cho phép null/undefined và vẫn giữ unique constraint
-      index: true
+      sparse: true // Cho phép null/undefined và vẫn giữ unique constraint
     },
     discordUsername: {
       type: String,
@@ -159,8 +158,7 @@ const userSchema = new mongoose.Schema(
 );
 
 // ==================== INDEXES ====================
-userSchema.index({ email: 1 });
-userSchema.index({ discordId: 1 });
+// Note: email và discordId đã có unique: true nên auto tạo index
 userSchema.index({ role: 1 });
 userSchema.index({ createdAt: -1 });
 
