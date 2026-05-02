@@ -120,7 +120,7 @@
                   {{ product.seller.businessName }}
                 </span>
                 <span class="flex items-center gap-1">
-                  <BoxIcon class="w-4 h-4" />
+                  <CubeIcon class="w-4 h-4" />
                   Kho: {{ product.stock }}
                 </span>
               </div>
@@ -213,7 +213,6 @@ import {
   CheckIcon,
   XMarkIcon,
   UserIcon,
-  BoxIcon,
   ClockIcon
 } from '@heroicons/vue/24/outline';
 
