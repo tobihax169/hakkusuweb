@@ -14,22 +14,22 @@
 
     <div class="w-full max-w-md relative z-10">
       <!-- Header Section -->
-      <div class="text-center mb-8">
-        <!-- Badge -->
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-full border border-blue-100 dark:border-blue-500/20 shadow-sm mb-4">
-          <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-          <span class="text-xs font-medium text-slate-600 dark:text-slate-300">Marketplace Store</span>
+      <div class="text-center mb-6">
+        <!-- Logo with Badge inline -->
+        <div class="flex items-center justify-center gap-3 mb-2">
+          <router-link to="/" class="inline-block group">
+            <span class="text-3xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-500 bg-clip-text text-transparent group-hover:opacity-80 transition-opacity">
+              はっくす
+            </span>
+          </router-link>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-full border border-blue-100 dark:border-blue-500/20 shadow-sm">
+            <span class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></span>
+            <span class="text-xs font-medium text-slate-600 dark:text-slate-300">Store</span>
+          </div>
         </div>
         
-        <!-- Logo -->
-        <router-link to="/" class="inline-block group">
-          <span class="text-3xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-500 bg-clip-text text-transparent group-hover:opacity-80 transition-opacity">
-            はっくす
-          </span>
-        </router-link>
-        
         <!-- Tagline -->
-        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">
+        <p class="text-sm text-slate-500 dark:text-slate-400">
           Mua bán sản phẩm & dịch vụ trực tuyến
         </p>
       </div>
