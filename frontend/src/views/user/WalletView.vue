@@ -1,77 +1,127 @@
 <template>
-  <div class="py-8">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-        {{ $t('wallet.title') }}
-      </h1>
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-gray-900 via-primary-600 to-purple-600 dark:from-white dark:via-primary-400 dark:to-purple-400 bg-clip-text text-transparent">
+          {{ $t('wallet.title') }}
+        </h1>
+        <p class="text-gray-500 dark:text-gray-400 mt-2">Quản lý số dư và nạp tiền</p>
+      </div>
 
-      <!-- Balance Cards -->
+      <!-- Balance Cards - Luxury Design -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-        <div class="card p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-          <div class="flex items-center justify-between">
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 p-6 text-white shadow-xl shadow-blue-500/30">
+          <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+          <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
+          <div class="relative flex items-center justify-between">
             <div>
-              <p class="text-blue-100 text-sm mb-1">{{ $t('wallet.gem') }}</p>
-              <p class="text-3xl font-bold">{{ formatNumber(wallet.gem) }}</p>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-2xl">💎</span>
+                <p class="text-blue-100 text-sm font-medium">{{ $t('wallet.gem') }}</p>
+              </div>
+              <p class="text-4xl font-bold">{{ formatNumber(wallet.gem) }}</p>
+              <p class="text-blue-200 text-xs mt-1">1 Gem = 1,000 VND</p>
             </div>
-            <div class="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center">
-              <span class="text-3xl">💎</span>
+            <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
+              <GemIcon class="w-8 h-8 text-white" />
             </div>
           </div>
         </div>
 
-        <div class="card p-6 bg-gradient-to-br from-amber-500 to-amber-600 text-white">
-          <div class="flex items-center justify-between">
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 p-6 text-white shadow-xl shadow-amber-500/30">
+          <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+          <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
+          <div class="relative flex items-center justify-between">
             <div>
-              <p class="text-amber-100 text-sm mb-1">{{ $t('wallet.coin') }}</p>
-              <p class="text-3xl font-bold">{{ formatNumber(wallet.coin) }}</p>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-2xl">🪙</span>
+                <p class="text-amber-100 text-sm font-medium">{{ $t('wallet.coin') }}</p>
+              </div>
+              <p class="text-4xl font-bold">{{ formatNumber(wallet.coin) }}</p>
+              <p class="text-amber-200 text-xs mt-1">Nhận từ hoạt động</p>
             </div>
-            <div class="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center">
-              <span class="text-3xl">🪙</span>
+            <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
+              <CoinIcon class="w-8 h-8 text-white" />
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Top Up Section -->
-      <div class="card p-6 mb-6">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          {{ $t('wallet.topup') }}
-        </h2>
+      <!-- Top Up Section - Glassmorphism -->
+      <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-6 mb-6">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
+            <BanknoteIcon class="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ $t('wallet.topup') }}</h2>
+            <p class="text-sm text-gray-500">Nạp tiền qua SePay - Tự động cộng Gem</p>
+          </div>
+        </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
+        <!-- Quick Amounts -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
           <button
             v-for="amount in quickAmounts"
             :key="amount"
             @click="topupAmount = amount"
             :class="[
-              'p-4 rounded-xl border-2 text-center transition-all',
+              'group relative p-4 rounded-xl border-2 text-center transition-all duration-300 overflow-hidden',
               topupAmount === amount
-                ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                : 'border-gray-200 dark:border-gray-700 hover:border-primary-300'
+                ? 'border-primary-500 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-800/20 shadow-lg shadow-primary-500/20'
+                : 'border-gray-200 dark:border-gray-700 hover:border-primary-300 hover:shadow-md'
             ]"
           >
-            <p class="font-bold text-gray-900 dark:text-white">{{ formatNumber(amount) }} ₫</p>
-            <p class="text-sm text-gray-500">+{{ amount / 1000 }} 💎</p>
+            <div class="relative z-10">
+              <p class="font-bold text-gray-900 dark:text-white text-lg">{{ formatNumber(amount) }} ₫</p>
+              <p class="text-sm font-medium" :class="topupAmount === amount ? 'text-primary-600 dark:text-primary-400' : 'text-gray-500'">
+                +{{ amount / 1000 }} 💎
+              </p>
+            </div>
+            <div v-if="topupAmount === amount" class="absolute inset-0 bg-gradient-to-r from-primary-500/10 to-purple-500/10"></div>
           </button>
         </div>
 
-        <div class="flex items-center gap-4">
-          <input
-            v-model.number="topupAmount"
-            type="number"
-            class="form-input flex-1"
-            placeholder="Nhập số tiền"
-            min="10000"
-            step="10000"
-          />
-          <button
-            @click="createTopup"
-            :disabled="!topupAmount || topupAmount < 10000 || processing"
-            class="btn-primary"
-          >
-            <LoadingSpinner v-if="processing" size="sm" color="white" class="mr-2" />
-            {{ processing ? 'Đang xử lý...' : 'Nạp tiền' }}
-          </button>
+        <!-- Custom Amount -->
+        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Số tiền tùy chỉnh</label>
+          <div class="flex items-center gap-4">
+            <div class="relative flex-1">
+              <input
+                v-model.number="topupAmount"
+                type="number"
+                class="form-input w-full pl-4 pr-12 py-3 text-lg"
+                placeholder="Nhập số tiền (tối thiểu 10,000)"
+                min="10000"
+                step="10000"
+              />
+              <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">₫</span>
+            </div>
+            <button
+              @click="createTopup"
+              :disabled="!topupAmount || topupAmount < 10000 || processing"
+              class="btn-primary px-8 py-3 text-lg font-semibold shadow-lg shadow-primary-500/30 hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <LoadingSpinner v-if="processing" size="sm" color="white" class="mr-2" />
+              <span v-else class="flex items-center gap-2">
+                <QrCodeIcon class="w-5 h-5" />
+                Nạp tiền
+              </span>
+            </button>
+          </div>
+          <p class="text-xs text-gray-500 mt-2">Tối thiểu: 10,000 ₫ | Tối đa: 100,000,000 ₫ | 1,000 ₫ = 1 💎</p>
+        </div>
+
+        <!-- Payment Info -->
+        <div class="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
+          <div class="flex items-start gap-3">
+            <InformationCircleIcon class="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" />
+            <div>
+              <p class="text-sm font-medium text-gray-900 dark:text-white">Thanh toán qua SePay</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Hệ thống sẽ tạo mã QR VietQR. Sau khi chuyển khoản, tiền sẽ tự động cộng vào tài khoản trong vòng 1-5 phút.</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -130,7 +180,12 @@ import {
   ArrowUpIcon,
   ShoppingBagIcon,
   GiftIcon,
-  ClockIcon
+  ClockIcon,
+  BanknoteIcon,
+  QrCodeIcon,
+  InformationCircleIcon,
+  CurrencyDollarIcon as GemIcon,
+  CircleStackIcon as CoinIcon
 } from '@heroicons/vue/24/outline';
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
 

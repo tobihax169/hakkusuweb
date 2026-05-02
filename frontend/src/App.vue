@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <NetworkLoader :minimum-display-time="2000" />
     <PageTransition name="fade">
       <router-view />
     </PageTransition>
@@ -11,6 +12,7 @@ import { onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth.js';
 import { useThemeStore } from '@/stores/theme.js';
 import PageTransition from '@/components/common/PageTransition.vue';
+import NetworkLoader from '@/components/common/NetworkLoader.vue';
 
 const authStore = useAuthStore();
 const themeStore = useThemeStore();

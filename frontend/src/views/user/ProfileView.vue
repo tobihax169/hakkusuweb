@@ -6,33 +6,51 @@
       </h1>
 
       <div class="card p-6">
-        <!-- Avatar -->
-        <div class="flex items-center gap-4 mb-6">
-          <img 
-            v-if="authStore.userAvatar" 
-            :src="authStore.userAvatar" 
-            class="w-20 h-20 rounded-full"
-          />
-          <div v-else class="w-20 h-20 rounded-full bg-primary-500 flex items-center justify-center text-white text-2xl font-bold">
-            {{ authStore.userDisplayName.charAt(0).toUpperCase() }}
+        <!-- Avatar & Balance -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-6">
+          <div class="flex items-center gap-4">
+            <img 
+              v-if="authStore.userAvatar" 
+              :src="authStore.userAvatar" 
+              class="w-20 h-20 rounded-full ring-4 ring-primary-100 dark:ring-primary-900"
+            />
+            <div v-else class="w-20 h-20 rounded-full bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold ring-4 ring-primary-100 dark:ring-primary-900">
+              {{ authStore.userDisplayName.charAt(0).toUpperCase() }}
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+                {{ authStore.userDisplayName }}
+              </h2>
+              <p class="text-gray-500 dark:text-gray-400">{{ authStore.user?.email }}</p>
+              <div class="flex items-center gap-2 mt-2">
+                <span 
+                  :class="[
+                    'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                    authStore.user?.role === 'admin' 
+                      ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                      : authStore.user?.role === 'support'
+                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                        : authStore.user?.role === 'seller'
+                          ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
+                          : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
+                  ]"
+                >
+                  {{ authStore.user?.role }}
+                </span>
+              </div>
+            </div>
           </div>
-          <div>
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
-              {{ authStore.userDisplayName }}
-            </h2>
-            <p class="text-gray-500 dark:text-gray-400">{{ authStore.user?.email }}</p>
-            <span 
-              :class="[
-                'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium mt-2',
-                authStore.user?.role === 'admin' 
-                  ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
-                  : authStore.user?.role === 'support'
-                    ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                    : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
-              ]"
-            >
-              {{ authStore.user?.role }}
-            </span>
+
+          <!-- Balance Cards -->
+          <div class="flex gap-3 sm:ml-auto">
+            <div class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl text-white">
+              <p class="text-xs text-blue-100">💎 Gem</p>
+              <p class="text-lg font-bold">{{ formatNumber(wallet.gem) }}</p>
+            </div>
+            <div class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-xl text-white">
+              <p class="text-xs text-amber-100">🪙 Coin</p>
+              <p class="text-lg font-bold">{{ formatNumber(wallet.coin) }}</p>
+            </div>
           </div>
         </div>
 
@@ -79,8 +97,9 @@
           </div>
 
           <div class="flex items-center justify-between pt-4">
-            <router-link to="/user/wallet" class="text-primary-600 hover:text-primary-500">
-              Quản lý ví →
+            <router-link to="/user/wallet" class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all">
+              <WalletIcon class="w-4 h-4" />
+              Nạp tiền ngay
             </router-link>
             <button
               type="submit"
@@ -147,11 +166,18 @@ import { ref, reactive, onMounted } from 'vue';
 import { useToast } from 'vue-toastification';
 import { useAuthStore } from '@/stores/auth.js';
 import { useThemeStore } from '@/stores/theme.js';
+import { userApi } from '@/services/api.js';
+import { WalletIcon } from '@heroicons/vue/24/outline';
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
 
 const toast = useToast();
 const authStore = useAuthStore();
 const themeStore = useThemeStore();
+
+const wallet = reactive({
+  gem: 0,
+  coin: 0
+});
 
 const form = reactive({
   username: '',
@@ -168,6 +194,20 @@ const passwordForm = reactive({
 
 const updating = ref(false);
 const changingPassword = ref(false);
+
+const formatNumber = (num) => num?.toLocaleString('vi-VN') || '0';
+
+const fetchWallet = async () => {
+  try {
+    const response = await userApi.getWallet();
+    if (response.success) {
+      wallet.gem = response.data.balance.gem;
+      wallet.coin = response.data.balance.coin;
+    }
+  } catch (error) {
+    console.error('Failed to fetch wallet:', error);
+  }
+};
 
 const updateProfile = async () => {
   updating.value = true;
@@ -207,10 +247,12 @@ const changePassword = async () => {
 };
 
 onMounted(() => {
-  // Load current user data
-  form.username = authStore.user?.username || '';
-  form.email = authStore.user?.email || '';
-  form.language = authStore.user?.language || 'vi';
-  form.theme = authStore.user?.theme || 'dark';
+  if (authStore.user) {
+    form.username = authStore.user.username;
+    form.email = authStore.user.email;
+    form.language = authStore.user.language || 'vi';
+    form.theme = authStore.user.theme || 'dark';
+  }
+  fetchWallet();
 });
 </script>

@@ -146,12 +146,12 @@ router.beforeEach(async (to, from, next) => {
     return next({ name: 'Home' });
   }
 
-  // Yêu cầu seller
-  if (to.meta.requiresSeller && !authStore.isSeller) {
+  // Yêu cầu seller (admin cũng có quyền)
+  if (to.meta.requiresSeller && !(authStore.isSeller || authStore.isAdmin)) {
     return next({ name: 'SellerRegister' });
   }
 
-  // Yêu cầu staff/support
+  // Yêu cầu staff/support (admin cũng có quyền)
   if (to.meta.requiresStaff && !(authStore.isAdmin || authStore.isSupport)) {
     return next({ name: 'Home' });
   }
