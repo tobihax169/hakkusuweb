@@ -98,30 +98,53 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth.js';
+import { useRoute } from 'vue-router';
 import {
   Bars3Icon,
   HomeIcon,
   UsersIcon,
   ShoppingBagIcon,
   CubeIcon,
-  ArrowRightOnRectangleIcon
+  ArrowRightOnRectangleIcon,
+  TicketIcon,
+  ClipboardDocumentCheckIcon,
+  MegaphoneIcon
 } from '@heroicons/vue/24/outline';
 import ThemeToggle from '@/components/common/ThemeToggle.vue';
 import LanguageSwitch from '@/components/common/LanguageSwitch.vue';
 
 const { t } = useI18n();
 const authStore = useAuthStore();
+const route = useRoute();
 const sidebarOpen = ref(false);
 
-const menuItems = [
+const isAdminRoute = computed(() => route.path.startsWith('/admin'));
+const isStaffRoute = computed(() => route.path.startsWith('/staff'));
+
+// Admin menu
+const adminMenuItems = [
   { name: 'dashboard', label: t('admin.dashboard'), path: '/admin', icon: HomeIcon },
   { name: 'users', label: t('admin.users'), path: '/admin/users', icon: UsersIcon },
   { name: 'orders', label: t('admin.orders'), path: '/admin/orders', icon: ShoppingBagIcon },
-  { name: 'services', label: t('admin.services'), path: '/admin/services', icon: CubeIcon }
+  { name: 'services', label: t('admin.services'), path: '/admin/services', icon: CubeIcon },
+  { name: 'announcements', label: 'Thông báo', path: '/admin/announcements', icon: MegaphoneIcon }
 ];
+
+// Staff/Support menu
+const staffMenuItems = [
+  { name: 'dashboard', label: 'Tổng quan', path: '/staff', icon: HomeIcon },
+  { name: 'tickets', label: 'Tickets', path: '/staff/tickets', icon: TicketIcon },
+  { name: 'approvals', label: 'Duyệt đơn', path: '/staff/approvals', icon: ClipboardDocumentCheckIcon },
+  { name: 'announcements', label: 'Thông báo', path: '/admin/announcements', icon: MegaphoneIcon }
+];
+
+const menuItems = computed(() => {
+  if (isStaffRoute.value) return staffMenuItems;
+  return adminMenuItems;
+});
 </script>
 
 <style scoped>

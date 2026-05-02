@@ -22,6 +22,12 @@ const AdminDashboard = () => import('@/views/admin/DashboardView.vue');
 const AdminUsers = () => import('@/views/admin/UsersView.vue');
 const AdminOrders = () => import('@/views/admin/OrdersView.vue');
 const AdminServices = () => import('@/views/admin/ServicesView.vue');
+const AdminAnnouncements = () => import('@/views/admin/AnnouncementsView.vue');
+
+// Staff/Support Views
+const StaffDashboard = () => import('@/views/staff/StaffDashboard.vue');
+const StaffTickets = () => import('@/views/staff/TicketsView.vue');
+const StaffApprovals = () => import('@/views/staff/ApprovalsView.vue');
 
 // Seller Views
 const SellerRegister = () => import('@/views/seller/SellerRegister.vue');
@@ -79,7 +85,19 @@ const routes = [
       { path: '', name: 'AdminDashboard', component: AdminDashboard },
       { path: 'users', name: 'AdminUsers', component: AdminUsers },
       { path: 'orders', name: 'AdminOrders', component: AdminOrders },
-      { path: 'services', name: 'AdminServices', component: AdminServices }
+      { path: 'services', name: 'AdminServices', component: AdminServices },
+      { path: 'announcements', name: 'AdminAnnouncements', component: AdminAnnouncements }
+    ]
+  },
+  // Staff Routes
+  {
+    path: '/staff',
+    component: DashboardLayout,
+    meta: { requiresAuth: true, requiresStaff: true },
+    children: [
+      { path: '', name: 'StaffDashboard', component: StaffDashboard },
+      { path: 'tickets', name: 'StaffTickets', component: StaffTickets },
+      { path: 'approvals', name: 'StaffApprovals', component: StaffApprovals }
     ]
   },
   // Seller Routes
@@ -131,6 +149,11 @@ router.beforeEach(async (to, from, next) => {
   // Yêu cầu seller
   if (to.meta.requiresSeller && !authStore.isSeller) {
     return next({ name: 'SellerRegister' });
+  }
+
+  // Yêu cầu staff/support
+  if (to.meta.requiresStaff && !(authStore.isAdmin || authStore.isSupport)) {
+    return next({ name: 'Home' });
   }
 
   // Chỉ cho khách (đã đăng nhập thì redirect)
