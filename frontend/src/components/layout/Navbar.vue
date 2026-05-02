@@ -138,7 +138,7 @@
                     @click="userMenuOpen = false"
                     class="flex items-center gap-2 px-4 py-2 text-sm text-green-600 dark:text-green-400 hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
-                    <StoreIcon class="w-4 h-4" />
+                    <BuildingStorefrontIcon class="w-4 h-4" />
                     Seller Dashboard
                   </router-link>
                   <router-link
@@ -147,7 +147,7 @@
                     @click="userMenuOpen = false"
                     class="flex items-center gap-2 px-4 py-2 text-sm text-green-600 dark:text-green-400 hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
-                    <StoreIcon class="w-4 h-4" />
+                    <BuildingStorefrontIcon class="w-4 h-4" />
                     Trở thành Seller
                   </router-link>
                 </div>
@@ -216,7 +216,7 @@ import {
   ShieldCheckIcon,
   ArrowRightOnRectangleIcon,
   Bars3Icon,
-  StoreIcon
+  BuildingStorefrontIcon
 } from '@heroicons/vue/24/outline';
 import ThemeToggle from '@/components/common/ThemeToggle.vue';
 import LanguageSwitch from '@/components/common/LanguageSwitch.vue';
