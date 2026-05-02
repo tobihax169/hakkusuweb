@@ -13,6 +13,8 @@ router.get('/health', (req, res) => {
   res.json({
     success: true,
     message: 'Server is running',
+    name: 'Hakkusu Store API',
+    version: '1.0.0',
     timestamp: new Date().toISOString()
   });
 });

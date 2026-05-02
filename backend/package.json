@@ -1,7 +1,7 @@
 {
-  "name": "discord-web-platform-backend",
+  "name": "hakkusu-store-backend",
   "version": "1.0.0",
-  "description": "Backend API for Discord Custom Bot Service Platform",
+  "description": "Backend API for Hakkusu Store - Modern Marketplace Platform",
   "main": "src/app.js",
   "type": "module",
   "scripts": {
