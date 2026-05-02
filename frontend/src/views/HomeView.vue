@@ -198,19 +198,56 @@
     <!-- Modern CTA Section -->
     <section class="py-24 relative overflow-hidden">
       <!-- Gradient Background -->
-      <div class="absolute inset-0 bg-gradient-to-r from-blue-500/90 via-indigo-500/90 to-cyan-500/90" />
+      <div class="absolute inset-0 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600" />
       
-      <!-- Decorative Elements -->
-      <div class="absolute top-10 left-10 text-6xl opacity-20 animate-pulse" style="animation-duration: 4s;">�</div>
-      <div class="absolute bottom-10 right-10 text-6xl opacity-20 animate-pulse" style="animation-duration: 5s;">✨</div>
-      <div class="absolute top-1/2 left-20 text-4xl opacity-10 animate-pulse">⭐</div>
-      <div class="absolute top-20 right-1/4 text-4xl opacity-20 animate-pulse" style="animation-delay: 1s;">⭐</div>
+      <!-- Decorative SVG Elements -->
+      <!-- Top Left Circle -->
+      <div class="absolute top-10 left-10 w-20 h-20 opacity-20 animate-pulse" style="animation-duration: 4s;">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="45" stroke="white" stroke-width="2" fill="none"/>
+          <circle cx="50" cy="50" r="30" stroke="white" stroke-width="1" fill="none" opacity="0.5"/>
+        </svg>
+      </div>
+      
+      <!-- Bottom Right Star -->
+      <div class="absolute bottom-10 right-10 w-16 h-16 opacity-20 animate-pulse" style="animation-duration: 5s;">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 5 L61 35 L95 35 L68 57 L79 87 L50 65 L21 87 L32 57 L5 35 L39 35 Z" fill="white" opacity="0.3"/>
+        </svg>
+      </div>
+      
+      <!-- Left Side Diamond -->
+      <div class="absolute top-1/2 left-16 w-12 h-12 opacity-15 animate-pulse">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="25" y="25" width="50" height="50" transform="rotate(45 50 50)" stroke="white" stroke-width="2" fill="none"/>
+        </svg>
+      </div>
+      
+      <!-- Right Side Small Star -->
+      <div class="absolute top-20 right-1/4 w-10 h-10 opacity-20 animate-pulse" style="animation-delay: 1s;">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 10 L58 38 L90 38 L64 56 L72 84 L50 66 L28 84 L36 56 L10 38 L42 38 Z" fill="white" opacity="0.4"/>
+        </svg>
+      </div>
+      
+      <!-- Additional Decorative Circles -->
+      <div class="absolute bottom-20 left-1/4 w-8 h-8 opacity-10 animate-pulse" style="animation-delay: 2s;">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="40" fill="white" opacity="0.2"/>
+        </svg>
+      </div>
+      
+      <div class="absolute top-1/3 right-20 w-6 h-6 opacity-15 animate-pulse" style="animation-delay: 0.5s;">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="45" stroke="white" stroke-width="3" fill="none"/>
+        </svg>
+      </div>
       
       <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <span class="inline-block px-4 py-1.5 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-medium mb-6">
+        <span class="inline-block px-4 py-1.5 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-medium mb-6 border border-white/30">
           始めましょう ~ Let's Start
         </span>
-        <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 font-display">
+        <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 font-display drop-shadow-lg">
           Sẵn sàng khám phá?
         </h2>
         <p class="text-white/90 text-lg mb-10 max-w-2xl mx-auto">
