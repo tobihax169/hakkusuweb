@@ -1,39 +1,38 @@
 <template>
-  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b-2 border-pink-100 dark:border-pink-500/20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
         <div class="flex items-center gap-8">
-          <router-link to="/" class="flex items-center">
-            <img
-              src="/logo.png"
-              alt="Hakkusu Shop"
-              class="h-10 w-auto object-contain dark:brightness-110"
-              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
-            >
-            <!-- Fallback nếu logo chưa có -->
-            <span class="text-xl font-bold text-gray-900 dark:text-white hidden">Hakkusu Shop</span>
+          <router-link to="/" class="flex items-center gap-2 group">
+            <!-- Kawaii Logo -->
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 via-purple-400 to-blue-400 flex items-center justify-center shadow-lg shadow-pink-300/50 group-hover:scale-110 transition-transform">
+              <span class="text-xl">🌸</span>
+            </div>
+            <span class="text-xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent hidden sm:block">
+              はっくす
+            </span>
           </router-link>
           
           <!-- Desktop Navigation -->
-          <div class="hidden md:flex items-center gap-6">
+          <div class="hidden md:flex items-center gap-1">
             <router-link 
               to="/" 
-              class="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+              class="px-4 py-2 rounded-full text-sm font-medium text-slate-600 hover:text-pink-500 hover:bg-pink-50 dark:text-slate-300 dark:hover:text-pink-300 dark:hover:bg-pink-500/10 transition-all"
             >
-              {{ $t('nav.home') }}
+              🏠 {{ $t('nav.home') }}
             </router-link>
             <router-link 
               to="/services" 
-              class="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+              class="px-4 py-2 rounded-full text-sm font-medium text-slate-600 hover:text-purple-500 hover:bg-purple-50 dark:text-slate-300 dark:hover:text-purple-300 dark:hover:bg-purple-500/10 transition-all"
             >
-              {{ $t('nav.services') }}
+              ✨ {{ $t('nav.services') }}
             </router-link>
           </div>
         </div>
 
         <!-- Right Side -->
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
           <ThemeToggle class="hidden sm:block" />
           <LanguageSwitch class="hidden sm:block" />
 
@@ -41,13 +40,13 @@
           <template v-if="!authStore.isAuthenticated">
             <router-link 
               to="/auth/login"
-              class="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+              class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-pink-500 dark:text-slate-300 dark:hover:text-pink-300 transition-colors"
             >
-              {{ $t('nav.login') }}
+              🔐 {{ $t('nav.login') }}
             </router-link>
             <router-link 
               to="/auth/register"
-              class="btn-primary text-sm"
+              class="px-5 py-2.5 bg-gradient-to-r from-pink-400 to-purple-400 text-white text-sm font-semibold rounded-full shadow-lg shadow-pink-300/50 hover:shadow-xl hover:scale-105 transition-all"
             >
               {{ $t('nav.register') }}
             </router-link>
