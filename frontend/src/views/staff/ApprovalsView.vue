@@ -332,13 +332,13 @@ const rejectProduct = async (product) => {
 };
 
 const viewSellerDetail = (seller) => {
-  // TODO: Open detail modal
-  console.log('View seller:', seller);
+  // TODO: Implement seller detail modal
+  toast.info('Chức năng xem chi tiết đang phát triển');
 };
 
 const viewProductDetail = (product) => {
-  // TODO: Open detail modal
-  console.log('View product:', product);
+  // TODO: Implement product detail modal
+  toast.info('Chức năng xem chi tiết đang phát triển');
 };
 
 const formatPrice = (price) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);

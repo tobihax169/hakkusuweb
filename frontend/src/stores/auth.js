@@ -85,7 +85,8 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       await authApi.logout();
     } catch (error) {
-      console.error('Logout error:', error);
+      // Silently ignore logout API errors
+      // Token will be cleared anyway
     } finally {
       clearAuth();
       toast.success('Đã đăng xuất');
@@ -113,8 +114,8 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.setItem('user', JSON.stringify(response.user));
       }
     } catch (error) {
-      console.error('Fetch user error:', error);
-      // Nếu lỗi 401, clear auth
+      // Silently handle fetch errors
+      // If 401, clear auth
       if (error.status === 401) {
         clearAuth();
       }

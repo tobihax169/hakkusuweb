@@ -210,7 +210,7 @@ const fetchStats = async () => {
       resolvedTickets: 156
     };
   } catch (error) {
-    console.error('Lỗi tải stats:', error);
+    // Silent fail for mock data
   }
 };
 
@@ -223,7 +223,7 @@ const fetchRecentActivity = async () => {
       { id: 3, type: 'product', title: 'Sản phẩm mới', description: 'Discord Nitro 1 tháng đang chờ duyệt', createdAt: new Date(Date.now() - 7200000) }
     ];
   } catch (error) {
-    console.error('Lỗi tải activity:', error);
+    // Silent fail for mock data
   } finally {
     loading.value = false;
   }

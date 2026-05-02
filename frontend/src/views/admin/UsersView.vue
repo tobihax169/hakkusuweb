@@ -77,16 +77,23 @@
               </td>
               <td class="px-6 py-4">
                 <div class="flex items-center gap-2">
-                  <button @click="openBalanceModal(user)" class="p-1 text-primary-600 hover:bg-primary-50 rounded">
-                    <CurrencyDollarIcon class="w-5 h-5" />
+                  <button 
+                    @click="openBalanceModal(user)" 
+                    class="p-1 text-primary-600 hover:bg-primary-50 rounded"
+                    :aria-label="'Cập nhật số dư cho ' + user.username"
+                    title="Cập nhật số dư"
+                  >
+                    <CurrencyDollarIcon class="w-5 h-5" aria-hidden="true" />
                   </button>
                   <button 
                     @click="toggleBan(user)" 
                     :class="user.isBanned ? 'text-green-600 hover:bg-green-50' : 'text-red-600 hover:bg-red-50'"
                     class="p-1 rounded"
+                    :aria-label="user.isBanned ? 'Bỏ cấm ' + user.username : 'Cấm ' + user.username"
+                    :title="user.isBanned ? 'Bỏ cấm' : 'Cấm user'"
                   >
-                    <ShieldCheckIcon v-if="user.isBanned" class="w-5 h-5" />
-                    <ShieldExclamationIcon v-else class="w-5 h-5" />
+                    <ShieldCheckIcon v-if="user.isBanned" class="w-5 h-5" aria-hidden="true" />
+                    <ShieldExclamationIcon v-else class="w-5 h-5" aria-hidden="true" />
                   </button>
                 </div>
               </td>
@@ -116,6 +123,14 @@
         </div>
       </div>
     </div>
+
+    <!-- Balance Modal -->
+    <BalanceModal
+      :show="showBalanceModal"
+      :user="selectedUser"
+      @close="showBalanceModal = false"
+      @submit="handleBalanceUpdate"
+    />
   </div>
 </template>
 
@@ -130,6 +145,7 @@ import {
   ShieldExclamationIcon
 } from '@heroicons/vue/24/outline';
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
+import BalanceModal from '@/components/admin/BalanceModal.vue';
 
 const toast = useToast();
 
@@ -142,6 +158,8 @@ const filters = reactive({
   limit: 10
 });
 const pagination = ref({ page: 1, pages: 1, total: 0 });
+const showBalanceModal = ref(false);
+const selectedUser = ref(null);
 
 const getStatusBadgeClass = (user) => {
   if (user.isBanned) return 'badge badge-danger';
@@ -189,30 +207,23 @@ const toggleBan = async (user) => {
 };
 
 const openBalanceModal = (user) => {
-  const amount = prompt('Enter amount to add (negative to subtract):');
-  if (!amount) return;
-  
-  const numAmount = parseInt(amount);
-  if (isNaN(numAmount)) {
-    toast.error('Invalid amount');
-    return;
-  }
-
-  updateBalance(user, numAmount);
+  selectedUser.value = user;
+  showBalanceModal.value = true;
 };
 
-const updateBalance = async (user, amount) => {
+const handleBalanceUpdate = async (data) => {
   try {
-    await userApi.updateUserBalance(user._id, {
-      amount: Math.abs(amount),
-      currency: 'gem',
-      type: amount > 0 ? 'add' : 'subtract',
-      reason: 'Admin adjustment'
+    await userApi.updateUserBalance(data.userId, {
+      amount: data.amount,
+      currency: data.currency,
+      type: data.type,
+      reason: data.reason
     });
-    toast.success('Balance updated');
+    toast.success('Cập nhật số dư thành công');
+    showBalanceModal.value = false;
     fetchUsers();
   } catch (error) {
-    toast.error('Failed to update balance');
+    toast.error('Cập nhật số dư thất bại');
   }
 };
 

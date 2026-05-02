@@ -269,7 +269,7 @@ const fetchTransactions = async () => {
       transactions.value = response.data;
     }
   } catch (error) {
-    console.error('Failed to fetch transactions:', error);
+    // Silent fail - error handled by API interceptor
   } finally {
     loading.value = false;
   }

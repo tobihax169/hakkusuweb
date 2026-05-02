@@ -236,7 +236,7 @@ const fetchWallet = async () => {
     const response = await userApi.getWallet();
     gemBalance.value = response.data?.balance?.gem || 0;
   } catch (error) {
-    console.error('Failed to fetch wallet:', error);
+    // Silent fail - error handled by API interceptor
   }
 };
 

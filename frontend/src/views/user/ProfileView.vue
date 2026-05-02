@@ -205,7 +205,7 @@ const fetchWallet = async () => {
       wallet.coin = response.data.balance.coin;
     }
   } catch (error) {
-    console.error('Failed to fetch wallet:', error);
+    // Silent fail - error handled by API interceptor
   }
 };
 
