@@ -1,27 +1,29 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+  <div class="min-h-screen py-8">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Header -->
+      <!-- Kawaii Header -->
       <div class="mb-8">
-        <h1 class="text-3xl font-bold bg-gradient-to-r from-gray-900 via-primary-600 to-purple-600 dark:from-white dark:via-primary-400 dark:to-purple-400 bg-clip-text text-transparent">
-          {{ $t('wallet.title') }}
+        <span class="inline-block px-3 py-1 bg-pink-100 dark:bg-pink-500/20 text-pink-600 dark:text-pink-300 rounded-full text-sm font-medium mb-3">💰 財布 Saifu</span>
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent font-display">
+          {{ $t('wallet.title') }} 💎
         </h1>
-        <p class="text-gray-500 dark:text-gray-400 mt-2">Quản lý số dư và nạp tiền</p>
+        <p class="text-slate-500 dark:text-slate-400 mt-2">Quản lý số dư và nạp tiền kawaii ~</p>
       </div>
 
-      <!-- Balance Cards - Luxury Design -->
+      <!-- Kawaii Balance Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 p-6 text-white shadow-xl shadow-blue-500/30">
-          <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-          <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
+        <!-- Gem Card -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-400 via-pink-500 to-purple-500 p-6 text-white shadow-2xl shadow-pink-300/50">
+          <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white/20 rounded-full blur-2xl animate-pulse"></div>
+          <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
           <div class="relative flex items-center justify-between">
             <div>
               <div class="flex items-center gap-2 mb-1">
-                <span class="text-2xl">💎</span>
-                <p class="text-blue-100 text-sm font-medium">{{ $t('wallet.gem') }}</p>
+                <span class="text-2xl animate-bounce">💎</span>
+                <p class="text-pink-100 text-sm font-medium">{{ $t('wallet.gem') }}</p>
               </div>
               <p class="text-4xl font-bold">{{ formatNumber(wallet.gem) }}</p>
-              <p class="text-blue-200 text-xs mt-1">1 Gem = 1,000 VND</p>
+              <p class="text-pink-200 text-xs mt-1">1 Gem = 1,000 VND ✨</p>
             </div>
             <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
               <GemIcon class="w-8 h-8 text-white" />
@@ -29,17 +31,18 @@
           </div>
         </div>
 
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 p-6 text-white shadow-xl shadow-amber-500/30">
-          <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-          <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
+        <!-- Coin Card -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-400 via-orange-400 to-pink-400 p-6 text-white shadow-2xl shadow-orange-300/50">
+          <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white/20 rounded-full blur-2xl animate-pulse" style="animation-delay: 1s;"></div>
+          <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
           <div class="relative flex items-center justify-between">
             <div>
               <div class="flex items-center gap-2 mb-1">
-                <span class="text-2xl">🪙</span>
-                <p class="text-amber-100 text-sm font-medium">{{ $t('wallet.coin') }}</p>
+                <span class="text-2xl animate-bounce" style="animation-delay: 0.5s;">🪙</span>
+                <p class="text-orange-100 text-sm font-medium">{{ $t('wallet.coin') }}</p>
               </div>
               <p class="text-4xl font-bold">{{ formatNumber(wallet.coin) }}</p>
-              <p class="text-amber-200 text-xs mt-1">Nhận từ hoạt động</p>
+              <p class="text-orange-200 text-xs mt-1">Nhận từ hoạt động 💕</p>
             </div>
             <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
               <CoinIcon class="w-8 h-8 text-white" />
