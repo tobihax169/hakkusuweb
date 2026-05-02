@@ -1,13 +1,14 @@
 <template>
-  <div class="py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
+  <div class="py-8 min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Header -->
+      <!-- Kawaii Header -->
       <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Seller Dashboard
+        <span class="inline-block px-3 py-1 bg-pink-100 dark:bg-pink-500/20 text-pink-600 dark:text-pink-300 rounded-full text-sm font-medium mb-3">🏪 セラー Seller</span>
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent font-display">
+          Seller Dashboard 💕
         </h1>
-        <p class="text-gray-600 dark:text-gray-400">
-          Quản lý sản phẩm, đơn hàng và thu nhập của bạn
+        <p class="text-slate-600 dark:text-slate-400">
+          Quản lý sản phẩm, đơn hàng và thu nhập kawaii của bạn ~
         </p>
       </div>
 
@@ -16,17 +17,17 @@
         <LoadingSpinner class="w-12 h-12" />
       </div>
 
-      <!-- Stats Grid -->
+      <!-- Kawaii Stats Grid -->
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Revenue -->
-        <div class="card">
+        <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-3xl p-5 border-2 border-emerald-100 dark:border-emerald-500/20 shadow-lg hover:shadow-xl transition-all">
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-              <CurrencyDollarIcon class="w-6 h-6 text-green-600" />
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-300 to-emerald-400 flex items-center justify-center shadow-lg">
+              <span class="text-xl">💰</span>
             </div>
             <div>
-              <p class="text-sm text-gray-500 dark:text-gray-400">Tổng doanh thu</p>
-              <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              <p class="text-sm text-slate-500 dark:text-slate-400">Tổng doanh thu</p>
+              <p class="text-2xl font-bold text-slate-800 dark:text-white">
                 {{ formatPrice(stats.revenue.total) }}
               </p>
             </div>
@@ -34,14 +35,14 @@
         </div>
 
         <!-- Available Balance -->
-        <div class="card">
+        <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-3xl p-5 border-2 border-pink-100 dark:border-pink-500/20 shadow-lg hover:shadow-xl transition-all">
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
-              <WalletIcon class="w-6 h-6 text-primary-600" />
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-300 to-pink-400 flex items-center justify-center shadow-lg">
+              <span class="text-xl">💳</span>
             </div>
             <div>
-              <p class="text-sm text-gray-500 dark:text-gray-400">Số dư khả dụng</p>
-              <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              <p class="text-sm text-slate-500 dark:text-slate-400">Số dư khả dụng</p>
+              <p class="text-2xl font-bold text-slate-800 dark:text-white">
                 {{ formatPrice(stats.revenue.available) }}
               </p>
             </div>
