@@ -65,4 +65,64 @@ onMounted(() => {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* Modern Toast Notifications */
+.Vue-Toastification__toast.modern-toast {
+  border-radius: 16px !important;
+  padding: 16px 20px !important;
+  min-height: 60px !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.Vue-Toastification__toast--success.modern-toast {
+  background: rgba(59, 130, 246, 0.95) !important;
+  color: white !important;
+}
+
+.Vue-Toastification__toast--error.modern-toast {
+  background: rgba(239, 68, 68, 0.95) !important;
+  color: white !important;
+}
+
+.Vue-Toastification__toast--warning.modern-toast {
+  background: rgba(245, 158, 11, 0.95) !important;
+  color: white !important;
+}
+
+.Vue-Toastification__toast--info.modern-toast {
+  background: rgba(99, 102, 241, 0.95) !important;
+  color: white !important;
+}
+
+.Vue-Toastification__toast-body.modern-toast-body {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+}
+
+.Vue-Toastification__progress-bar {
+  height: 3px !important;
+  border-radius: 0 0 16px 16px !important;
+  background: rgba(255, 255, 255, 0.5) !important;
+}
+
+.Vue-Toastification__close-button {
+  color: white !important;
+  opacity: 0.7 !important;
+  transition: opacity 0.2s !important;
+}
+
+.Vue-Toastification__close-button:hover {
+  opacity: 1 !important;
+}
+
+/* Dark mode toast adjustments */
+.dark .Vue-Toastification__toast.modern-toast {
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
 </style>

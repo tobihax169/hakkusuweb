@@ -1,36 +1,36 @@
 <template>
   <div class="py-12 min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Kawaii Header -->
+      <!-- Modern Header -->
       <div class="text-center mb-12">
-        <span class="inline-block px-4 py-1.5 bg-pink-100 dark:bg-pink-500/20 text-pink-600 dark:text-pink-300 rounded-full text-sm font-medium mb-4">🛍️ サービス Services</span>
+        <span class="inline-block px-4 py-1.5 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-300 rounded-full text-sm font-medium mb-4">サービス Services</span>
         <h1 class="text-3xl sm:text-4xl font-bold text-slate-800 dark:text-white mb-4 font-display">
-          {{ $t('services.title') }} ✨
+          {{ $t('services.title') }}
         </h1>
         <p class="text-lg text-slate-600 dark:text-slate-400 mb-8">
-          {{ $t('services.subtitle') }} 💕
+          {{ $t('services.subtitle') }}
         </p>
 
-        <!-- Kawaii Search Box -->
+        <!-- Modern Search Box -->
         <div class="max-w-md mx-auto relative">
           <div class="relative">
-            <MagnifyingGlassIcon class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-pink-400" />
+            <MagnifyingGlassIcon class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400" />
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="Tìm kiếm sản phẩm kawaii... 🔍"
-              class="w-full pl-12 pr-12 py-3.5 rounded-2xl border-2 border-pink-100 dark:border-slate-600 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm text-slate-800 dark:text-white focus:border-pink-400 focus:ring-4 focus:ring-pink-200/50 outline-none transition-all shadow-lg shadow-pink-100/50"
+              placeholder="Tìm kiếm sản phẩm..."
+              class="w-full pl-12 pr-12 py-3.5 rounded-2xl border-2 border-blue-100 dark:border-slate-600 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm text-slate-800 dark:text-white focus:border-blue-400 focus:ring-4 focus:ring-blue-200/50 outline-none transition-all shadow-lg shadow-blue-100/50"
             >
             <button
               v-if="searchQuery"
               @click="searchQuery = ''"
-              class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-pink-500 transition-colors p-1"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-500 transition-colors p-1"
             >
               <XMarkIcon class="w-5 h-5" />
             </button>
           </div>
           <p v-if="searchQuery" class="text-sm text-slate-500 mt-3 flex items-center justify-center gap-1">
-            <span>🌸</span> Tìm thấy {{ filteredServices.length }} sản phẩm
+            Tìm thấy {{ filteredServices.length }} sản phẩm
           </p>
         </div>
       </div>
@@ -42,57 +42,61 @@
 
       <!-- Empty State - No Services -->
       <div v-else-if="services.length === 0" class="text-center py-20">
-        <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-pink-100 dark:bg-pink-500/10 flex items-center justify-center animate-bounce">
-          <span class="text-5xl">📦</span>
+        <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-blue-100 dark:bg-blue-500/10 flex items-center justify-center">
+          <svg class="w-12 h-12 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+          </svg>
         </div>
         <h3 class="text-xl font-semibold text-slate-800 dark:text-white mb-2">
-          Chưa có sản phẩm nào 😢
+          Chưa có sản phẩm nào
         </h3>
         <p class="text-slate-500 dark:text-slate-400">
-          Vui lòng quay lại sau hoặc liên hệ admin để thêm sản phẩm kawaii ~
+          Vui lòng quay lại sau hoặc liên hệ admin để thêm sản phẩm
         </p>
       </div>
 
       <!-- Empty State - Search No Results -->
       <div v-else-if="filteredServices.length === 0" class="text-center py-20">
-        <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-purple-100 dark:bg-purple-500/10 flex items-center justify-center">
-          <span class="text-5xl">🔍</span>
+        <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-indigo-100 dark:bg-indigo-500/10 flex items-center justify-center">
+          <svg class="w-12 h-12 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
         </div>
         <h3 class="text-xl font-semibold text-slate-800 dark:text-white mb-2">
-          Không tìm thấy sản phẩm 😅
+          Không tìm thấy sản phẩm
         </h3>
         <p class="text-slate-500 dark:text-slate-400">
           Không có sản phẩm nào khớp với "{{ searchQuery }}"
         </p>
         <button
           @click="searchQuery = ''"
-          class="mt-4 px-6 py-2 bg-gradient-to-r from-pink-400 to-purple-400 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all"
+          class="mt-4 px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all"
         >
-          Xóa tìm kiếm ✨
+          Xóa tìm kiếm
         </button>
       </div>
 
-      <!-- Kawaii Packages Grid -->
+      <!-- Modern Packages Grid -->
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div
           v-for="(pkg, index) in filteredServices"
           :key="pkg.id"
-          class="group bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-3xl relative flex flex-col overflow-hidden border-2 border-transparent hover:border-pink-200 dark:hover:border-pink-500/30 shadow-lg hover:shadow-2xl hover:shadow-pink-200/50 dark:hover:shadow-pink-500/20 transition-all duration-300 hover:-translate-y-2"
-          :class="{ 'ring-2 ring-pink-400 dark:ring-pink-500/50': pkg.popular }"
+          class="group bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-3xl relative flex flex-col overflow-hidden border border-transparent hover:border-blue-200 dark:hover:border-blue-500/30 shadow-lg hover:shadow-2xl hover:shadow-blue-200/50 dark:hover:shadow-blue-500/20 transition-all duration-300 hover:-translate-y-2"
+          :class="{ 'ring-2 ring-blue-400 dark:ring-blue-500/50': pkg.popular }"
           :style="{ animationDelay: `${index * 100}ms` }"
         >
           <!-- Popular Badge -->
           <div v-if="pkg.popular" class="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-            <span class="inline-flex items-center gap-1 px-4 py-1.5 bg-gradient-to-r from-pink-400 to-purple-400 text-white text-xs font-bold rounded-full shadow-lg">
-              <span>⭐</span>
+            <span class="inline-flex items-center gap-1 px-4 py-1.5 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-xs font-bold rounded-full shadow-lg">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
               {{ $t('services.popular') }}
             </span>
           </div>
 
           <!-- Header -->
-          <div class="p-6 text-center border-b border-pink-50 dark:border-pink-500/10">
-            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-pink-100 to-purple-100 dark:from-pink-500/20 dark:to-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <component :is="getIcon(pkg.icon)" class="w-8 h-8 text-pink-500 dark:text-pink-400" />
+          <div class="p-6 text-center border-b border-slate-100 dark:border-slate-700/50">
+            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-500/20 dark:to-indigo-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <component :is="getIcon(pkg.icon)" class="w-8 h-8 text-blue-500 dark:text-blue-400" />
             </div>
             <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">{{ pkg.name }}</h3>
             <p class="text-sm text-slate-500 dark:text-slate-400">{{ pkg.description }}</p>
@@ -101,14 +105,14 @@
           <!-- Price -->
           <div class="p-6 text-center">
             <div class="flex items-baseline justify-center gap-1">
-              <span v-if="pkg.price > 0" class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">
+              <span v-if="pkg.price > 0" class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
                 {{ formatPrice(pkg.price) }}
               </span>
-              <span v-else class="text-4xl font-bold text-pink-500">
+              <span v-else class="text-4xl font-bold text-blue-500">
                 {{ $t('services.contact') }}
               </span>
             </div>
-            <span v-if="pkg.price > 0" class="text-slate-500 dark:text-slate-400 text-sm">VND 💎</span>
+            <span v-if="pkg.price > 0" class="text-slate-500 dark:text-slate-400 text-sm">VND</span>
           </div>
 
           <!-- Features -->
@@ -119,8 +123,8 @@
                 :key="idx"
                 class="flex items-start gap-3"
               >
-                <div class="w-5 h-5 rounded-full bg-pink-100 dark:bg-pink-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <CheckIcon class="w-3 h-3 text-pink-500" />
+                <div class="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <CheckIcon class="w-3 h-3 text-blue-500" />
                 </div>
                 <span class="text-sm text-slate-600 dark:text-slate-300">{{ feature.text }}</span>
               </li>
@@ -133,11 +137,11 @@
               @click="selectPackage(pkg)"
               class="w-full py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2"
               :class="pkg.popular 
-                ? 'bg-gradient-to-r from-pink-400 to-purple-400 text-white shadow-lg shadow-pink-300/50 hover:shadow-xl hover:scale-[1.02]' 
-                : 'bg-pink-50 dark:bg-pink-500/10 text-pink-600 dark:text-pink-400 hover:bg-pink-100 dark:hover:bg-pink-500/20'"
+                ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg shadow-blue-300/50 hover:shadow-xl hover:scale-[1.02]' 
+                : 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20'"
             >
               <span>{{ $t('services.orderNow') }}</span>
-              <span>🛒</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
             </button>
           </div>
         </div>

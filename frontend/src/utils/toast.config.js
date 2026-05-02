@@ -6,7 +6,7 @@ import {
   InformationCircleIcon 
 } from '@heroicons/vue/24/solid';
 
-// Toast options với styling đẹp hơn
+// Modern Toast Options with Glassmorphism
 export const toastOptions = {
   position: 'top-right',
   timeout: 5000,
@@ -15,7 +15,7 @@ export const toastOptions = {
   pauseOnHover: true,
   draggable: true,
   draggablePercent: 0.6,
-  showCloseButtonOnHover: false,
+  showCloseButtonOnHover: true,
   hideProgressBar: false,
   closeButton: 'button',
   icon: true,
@@ -23,8 +23,11 @@ export const toastOptions = {
   transition: 'Vue-Toastification__bounce',
   maxToasts: 5,
   newestOnTop: true,
+  // Modern styling classes
+  toastClassName: 'modern-toast',
+  bodyClassName: 'modern-toast-body',
+  // Custom filter to prevent duplicates
   filterBeforeCreate: (toast, toasts) => {
-    // Tránh duplicate toasts
     if (toasts.filter(t => t.content === toast.content).length !== 0) {
       return false;
     }
