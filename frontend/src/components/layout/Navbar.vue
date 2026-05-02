@@ -1,15 +1,15 @@
 <template>
-  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b-2 border-pink-100 dark:border-pink-500/20">
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-blue-100 dark:border-blue-500/20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
         <div class="flex items-center gap-8">
           <router-link to="/" class="flex items-center gap-2 group">
-            <!-- Kawaii Logo -->
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 via-purple-400 to-blue-400 flex items-center justify-center shadow-lg shadow-pink-300/50 group-hover:scale-110 transition-transform">
-              <span class="text-xl">🌸</span>
+            <!-- Modern Blue Logo -->
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-300/50 group-hover:scale-110 transition-transform">
+              <span class="text-xl">�</span>
             </div>
-            <span class="text-xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent hidden sm:block">
+            <span class="text-xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-500 bg-clip-text text-transparent hidden sm:block">
               はっくす
             </span>
           </router-link>
@@ -18,15 +18,15 @@
           <div class="hidden md:flex items-center gap-1">
             <router-link 
               to="/" 
-              class="px-4 py-2 rounded-full text-sm font-medium text-slate-600 hover:text-pink-500 hover:bg-pink-50 dark:text-slate-300 dark:hover:text-pink-300 dark:hover:bg-pink-500/10 transition-all"
+              class="px-4 py-2 rounded-full text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-blue-50 dark:text-slate-300 dark:hover:text-blue-400 dark:hover:bg-blue-500/10 transition-all"
             >
-              🏠 {{ $t('nav.home') }}
+              {{ $t('nav.home') }}
             </router-link>
             <router-link 
               to="/services" 
-              class="px-4 py-2 rounded-full text-sm font-medium text-slate-600 hover:text-purple-500 hover:bg-purple-50 dark:text-slate-300 dark:hover:text-purple-300 dark:hover:bg-purple-500/10 transition-all"
+              class="px-4 py-2 rounded-full text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 dark:text-slate-300 dark:hover:text-indigo-400 dark:hover:bg-indigo-500/10 transition-all"
             >
-              ✨ {{ $t('nav.services') }}
+              {{ $t('nav.services') }}
             </router-link>
           </div>
         </div>
@@ -40,13 +40,13 @@
           <template v-if="!authStore.isAuthenticated">
             <router-link 
               to="/auth/login"
-              class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-pink-500 dark:text-slate-300 dark:hover:text-pink-300 transition-colors"
+              class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 transition-colors"
             >
-              🔐 {{ $t('nav.login') }}
+              {{ $t('nav.login') }}
             </router-link>
             <router-link 
               to="/auth/register"
-              class="px-5 py-2.5 bg-gradient-to-r from-pink-400 to-purple-400 text-white text-sm font-semibold rounded-full shadow-lg shadow-pink-300/50 hover:shadow-xl hover:scale-105 transition-all"
+              class="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-semibold rounded-full shadow-lg shadow-blue-300/50 hover:shadow-xl hover:scale-105 transition-all"
             >
               {{ $t('nav.register') }}
             </router-link>
