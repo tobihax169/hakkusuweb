@@ -62,8 +62,25 @@ const userSchema = new mongoose.Schema(
     // Vai trò và quyền hạn
     role: {
       type: String,
-      enum: ['user', 'admin', 'support'],
+      enum: ['user', 'admin', 'support', 'seller'],
       default: 'user'
+    },
+
+    // Thông tin seller (nếu role = seller)
+    sellerInfo: {
+      isVerified: { type: Boolean, default: false },
+      verifiedAt: { type: Date, default: null },
+      verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+      businessName: { type: String, default: '' },
+      businessEmail: { type: String, default: '' },
+      phone: { type: String, default: '' },
+      description: { type: String, default: '' },
+      totalEarnings: { type: Number, default: 0 },
+      availableBalance: { type: Number, default: 0 },
+      pendingBalance: { type: Number, default: 0 },
+      totalSales: { type: Number, default: 0 },
+      rating: { type: Number, min: 1, max: 5, default: 0 },
+      reviewCount: { type: Number, default: 0 }
     },
     isActive: {
       type: Boolean,

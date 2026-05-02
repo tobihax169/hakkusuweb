@@ -142,6 +142,48 @@ const orderSchema = new mongoose.Schema(
       default: 'vnd'
     },
 
+    // Thông tin seller (cho marketplace)
+    sellerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
+      index: true
+    },
+    isMarketplaceOrder: {
+      type: Boolean,
+      default: false
+    },
+    
+    // Phân chia tiền giữa seller và platform
+    platformFee: {
+      type: Number,
+      default: 0 // Số tiền platform giữ (30%)
+    },
+    platformFeePercentage: {
+      type: Number,
+      default: 30
+    },
+    sellerAmount: {
+      type: Number,
+      default: 0 // Số tiền seller nhận (70%)
+    },
+    
+    // Trạng thái chuyển tiền cho seller
+    sellerPaymentStatus: {
+      type: String,
+      enum: ['pending', 'paid', 'hold'],
+      default: 'pending'
+    },
+    sellerPaidAt: {
+      type: Date,
+      default: null
+    },
+    sellerPaymentTransactionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Transaction',
+      default: null
+    },
+
     // Phương thức thanh toán
     paymentMethod: {
       type: String,

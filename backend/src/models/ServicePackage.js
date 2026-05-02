@@ -114,6 +114,57 @@ const servicePackageSchema = new mongoose.Schema(
       default: null
     },
 
+    // Thông tin seller (cho marketplace)
+    sellerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
+      index: true
+    },
+    isMarketplaceItem: {
+      type: Boolean,
+      default: false,
+      index: true
+    },
+    
+    // Trạng thái duyệt sản phẩm
+    approvalStatus: {
+      type: String,
+      enum: ['pending', 'approved', 'rejected'],
+      default: 'approved' // Sản phẩm của admin auto approved
+    },
+    approvedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null
+    },
+    approvedAt: {
+      type: Date,
+      default: null
+    },
+    rejectionReason: {
+      type: String,
+      default: ''
+    },
+    
+    // Phí nền tảng (mặc định 30%)
+    platformFeePercentage: {
+      type: Number,
+      default: 30,
+      min: 0,
+      max: 100
+    },
+    
+    // Thống kê bán hàng
+    salesCount: {
+      type: Number,
+      default: 0
+    },
+    totalRevenue: {
+      type: Number,
+      default: 0
+    },
+
     createdAt: {
       type: Date,
       default: Date.now

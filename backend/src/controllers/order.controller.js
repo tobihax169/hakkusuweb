@@ -101,6 +101,21 @@ export const createOrder = catchAsync(async (req, res) => {
   const discountAmount = 0;
   const totalPrice = basePrice - discountAmount;
 
+  // Tính phí cho marketplace (nếu là sản phẩm của seller)
+  let sellerId = null;
+  let isMarketplaceOrder = false;
+  let platformFee = 0;
+  let platformFeePercentage = 30;
+  let sellerAmount = 0;
+
+  if (servicePackage.isMarketplaceItem && servicePackage.sellerId) {
+    sellerId = servicePackage.sellerId;
+    isMarketplaceOrder = true;
+    platformFeePercentage = servicePackage.platformFeePercentage || 30;
+    platformFee = Math.round(totalPrice * (platformFeePercentage / 100));
+    sellerAmount = totalPrice - platformFee;
+  }
+
   // Tạo mã đơn hàng
   const orderCode = await Order.generateOrderCode();
 
@@ -123,6 +138,12 @@ export const createOrder = catchAsync(async (req, res) => {
     paymentMethod,
     paymentStatus: paymentMethod === 'wallet' ? 'pending' : 'pending',
     status: 'pending',
+    // Marketplace info
+    sellerId,
+    isMarketplaceOrder,
+    platformFee,
+    platformFeePercentage,
+    sellerAmount,
     statusHistory: [{
       status: 'pending',
       changedBy: req.user._id,
@@ -220,6 +241,36 @@ export const payWithWallet = catchAsync(async (req, res) => {
 
   // Cập nhật đơn hàng
   await order.markAsPaid(transaction._id);
+
+  // Nếu là marketplace order, cộng tiền cho seller
+  if (order.isMarketplaceOrder && order.sellerId) {
+    const seller = await User.findById(order.sellerId);
+    if (seller && seller.role === 'seller') {
+      seller.sellerInfo.availableBalance += order.sellerAmount;
+      seller.sellerInfo.pendingBalance += order.sellerAmount;
+      seller.sellerInfo.totalSales += 1;
+      await seller.save();
+
+      // Tạo transaction cho seller
+      const sellerTransaction = new Transaction({
+        transactionCode: await Transaction.generateTransactionCode('bonus'),
+        userId: seller._id,
+        type: 'bonus',
+        amount: order.sellerAmount,
+        currency: order.currency,
+        status: 'success',
+        orderId: order._id,
+        description: `Nhận tiền từ đơn hàng ${order.orderCode} (sau phí ${order.platformFeePercentage}%)`
+      });
+      await sellerTransaction.save();
+
+      // Cập nhật sản phẩm
+      await ServicePackage.updateOne(
+        { packageId: order.packageId },
+        { $inc: { salesCount: 1, totalRevenue: order.sellerAmount } }
+      );
+    }
+  }
 
   // Log
   await Log.createLog({
