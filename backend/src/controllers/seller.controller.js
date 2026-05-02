@@ -1,6 +1,5 @@
 import { User, ServicePackage, Order, Withdrawal, Transaction } from '../models/index.js';
-import catchAsync from '../utils/catchAsync.js';
-import AppError from '../utils/AppError.js';
+import { catchAsync, APIError } from '../middleware/errorHandler.js';
 
 // ==================== SELLER REGISTRATION ====================
 
@@ -11,11 +10,11 @@ export const registerAsSeller = catchAsync(async (req, res) => {
 
   const user = await User.findById(userId);
   if (!user) {
-    throw new AppError('Không tìm thấy người dùng', 404);
+    throw new APIError('Không tìm thấy người dùng', 404);
   }
 
   if (user.role === 'seller') {
-    throw new AppError('Bạn đã là seller rồi', 400);
+    throw new APIError('Bạn đã là seller rồi', 400);
   }
 
   // Cập nhật thông tin seller
@@ -190,7 +189,7 @@ export const updateProduct = catchAsync(async (req, res) => {
 
   const product = await ServicePackage.findOne({ _id: id, sellerId });
   if (!product) {
-    throw new AppError('Không tìm thấy sản phẩm', 404);
+    throw new APIError('Không tìm thấy sản phẩm', 404);
   }
 
   // Không cho phép sửa nếu đang có đơn hàng pending
@@ -200,7 +199,7 @@ export const updateProduct = catchAsync(async (req, res) => {
   });
 
   if (hasPendingOrders) {
-    throw new AppError('Không thể sửa sản phẩm khi có đơn hàng đang xử lý', 400);
+    throw new APIError('Không thể sửa sản phẩm khi có đơn hàng đang xử lý', 400);
   }
 
   // Reset approval status nếu sửa thông tin quan trọng
@@ -225,13 +224,13 @@ export const deleteProduct = catchAsync(async (req, res) => {
 
   const product = await ServicePackage.findOne({ _id: id, sellerId });
   if (!product) {
-    throw new AppError('Không tìm thấy sản phẩm', 404);
+    throw new APIError('Không tìm thấy sản phẩm', 404);
   }
 
   // Không cho phép xóa nếu có đơn hàng
   const hasOrders = await Order.exists({ packageId: product.packageId });
   if (hasOrders) {
-    throw new AppError('Không thể xóa sản phẩm đã có đơn hàng', 400);
+    throw new APIError('Không thể xóa sản phẩm đã có đơn hàng', 400);
   }
 
   await ServicePackage.deleteOne({ _id: id });
@@ -340,15 +339,15 @@ export const requestWithdrawal = catchAsync(async (req, res) => {
 
   const user = await User.findById(sellerId);
   if (!user.sellerInfo.isVerified) {
-    throw new AppError('Tài khoản seller chưa được xác minh', 403);
+    throw new APIError('Tài khoản seller chưa được xác minh', 403);
   }
 
   if (amount > user.sellerInfo.availableBalance) {
-    throw new AppError('Số dư không đủ', 400);
+    throw new APIError('Số dư không đủ', 400);
   }
 
   if (amount < 10000) {
-    throw new AppError('Số tiền rút tối thiểu là 10,000đ', 400);
+    throw new APIError('Số tiền rút tối thiểu là 10,000đ', 400);
   }
 
   // Tạo withdrawal code
@@ -418,11 +417,11 @@ export const cancelWithdrawal = catchAsync(async (req, res) => {
 
   const withdrawal = await Withdrawal.findOne({ _id: id, sellerId });
   if (!withdrawal) {
-    throw new AppError('Không tìm thấy yêu cầu rút tiền', 404);
+    throw new APIError('Không tìm thấy yêu cầu rút tiền', 404);
   }
 
   if (withdrawal.status !== 'pending') {
-    throw new AppError('Không thể hủy yêu cầu đã xử lý', 400);
+    throw new APIError('Không thể hủy yêu cầu đã xử lý', 400);
   }
 
   // Hoàn tiền về available balance
@@ -449,11 +448,11 @@ export const verifySeller = catchAsync(async (req, res) => {
 
   const user = await User.findById(userId);
   if (!user) {
-    throw new AppError('Không tìm thấy người dùng', 404);
+    throw new APIError('Không tìm thấy người dùng', 404);
   }
 
   if (user.role !== 'seller') {
-    throw new AppError('Người dùng không phải seller', 400);
+    throw new APIError('Người dùng không phải seller', 400);
   }
 
   user.sellerInfo.isVerified = true;
@@ -474,7 +473,7 @@ export const rejectSeller = catchAsync(async (req, res) => {
 
   const user = await User.findById(userId);
   if (!user) {
-    throw new AppError('Không tìm thấy người dùng', 404);
+    throw new APIError('Không tìm thấy người dùng', 404);
   }
 
   // Reset seller info
@@ -495,7 +494,7 @@ export const approveProduct = catchAsync(async (req, res) => {
 
   const product = await ServicePackage.findById(id);
   if (!product) {
-    throw new AppError('Không tìm thấy sản phẩm', 404);
+    throw new APIError('Không tìm thấy sản phẩm', 404);
   }
 
   product.approvalStatus = 'approved';
@@ -516,7 +515,7 @@ export const rejectProduct = catchAsync(async (req, res) => {
 
   const product = await ServicePackage.findById(id);
   if (!product) {
-    throw new AppError('Không tìm thấy sản phẩm', 404);
+    throw new APIError('Không tìm thấy sản phẩm', 404);
   }
 
   product.approvalStatus = 'rejected';
@@ -537,11 +536,11 @@ export const processWithdrawal = catchAsync(async (req, res) => {
 
   const withdrawal = await Withdrawal.findById(id);
   if (!withdrawal) {
-    throw new AppError('Không tìm thấy yêu cầu rút tiền', 404);
+    throw new APIError('Không tìm thấy yêu cầu rút tiền', 404);
   }
 
   if (withdrawal.status !== 'pending') {
-    throw new AppError('Yêu cầu đã được xử lý', 400);
+    throw new APIError('Yêu cầu đã được xử lý', 400);
   }
 
   const user = await User.findById(withdrawal.sellerId);
@@ -561,7 +560,7 @@ export const processWithdrawal = catchAsync(async (req, res) => {
     user.sellerInfo.availableBalance += withdrawal.amount;
     user.sellerInfo.pendingBalance -= withdrawal.amount;
   } else {
-    throw new AppError('Status không hợp lệ', 400);
+    throw new APIError('Status không hợp lệ', 400);
   }
 
   withdrawal.processedBy = adminId;
