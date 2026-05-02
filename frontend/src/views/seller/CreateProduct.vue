@@ -76,8 +76,89 @@
           />
         </div>
 
-        <!-- Account Fields (for game/social accounts) -->
-        <div v-if="form.type === 'game_account' || form.type === 'google_account' || form.type === 'facebook_account'" class="space-y-4">
+        <!-- Product Images -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Hình ảnh sản phẩm
+          </label>
+          <div class="space-y-4">
+            <!-- Image Preview Grid -->
+            <div v-if="previewImages.length > 0" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+              <div 
+                v-for="(image, index) in previewImages" 
+                :key="index"
+                class="relative aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 group"
+              >
+                <img :src="image" class="w-full h-full object-cover" />
+                <button
+                  type="button"
+                  @click="removeImage(index)"
+                  class="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <XMarkIcon class="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            
+            <!-- Upload Button -->
+            <div class="flex items-center gap-4">
+              <label class="flex-1 cursor-pointer">
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  @change="handleImageUpload"
+                  class="hidden"
+                >
+                <div class="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors">
+                  <PhotoIcon class="w-6 h-6 text-gray-400" />
+                  <span class="text-sm text-gray-500">Thêm hình ảnh (tối đa 5)</span>
+                </div>
+              </label>
+            </div>
+            <p class="text-xs text-gray-500">Hỗ trợ: JPG, PNG, WebP. Tối đa 5MB mỗi ảnh.</p>
+          </div>
+        </div>
+
+        <!-- Product Files -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            File đính kèm
+          </label>
+          <div class="space-y-2">
+            <div 
+              v-for="(file, index) in attachedFiles" 
+              :key="index"
+              class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+            >
+              <DocumentIcon class="w-5 h-5 text-primary-500" />
+              <span class="flex-1 text-sm text-gray-700 dark:text-gray-300 truncate">{{ file.name }}</span>
+              <span class="text-xs text-gray-500">{{ formatFileSize(file.size) }}</span>
+              <button
+                type="button"
+                @click="removeFile(index)"
+                class="p-1 text-red-500 hover:text-red-700"
+              >
+                <XMarkIcon class="w-4 h-4" />
+              </button>
+            </div>
+            <label class="cursor-pointer">
+              <input
+                type="file"
+                multiple
+                @change="handleFileUpload"
+                class="hidden"
+              >
+              <div class="flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium cursor-pointer">
+                <PlusIcon class="w-5 h-5" />
+                Thêm file
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Account Fields (for game accounts) -->
+        <div v-if="form.type === 'game_account'" class="space-y-4">
           <div class="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
             <div class="flex items-start gap-2">
               <ExclamationTriangleIcon class="w-5 h-5 text-yellow-600 mt-0.5" />
@@ -91,7 +172,7 @@
           </div>
 
           <!-- Game Account Details -->
-          <div v-if="form.type === 'game_account'" class="space-y-4">
+          <div class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Tên game *
@@ -197,8 +278,6 @@
               <option value="SparklesIcon">Sparkles</option>
               <option value="PuzzlePieceIcon">Puzzle</option>
               <option v-if="form.type === 'game_account'" value="DeviceTabletIcon">Game</option>
-              <option v-if="form.type === 'google_account'" value="EnvelopeIcon">Email</option>
-              <option v-if="form.type === 'facebook_account'" value="UserGroupIcon">Social</option>
             </select>
           </div>
         </div>
@@ -293,11 +372,10 @@ import {
   TrashIcon,
   CubeIcon,
   DeviceTabletIcon,
-  EnvelopeIcon,
-  UserGroupIcon,
   ExclamationTriangleIcon,
-  KeyIcon,
-  DevicePhoneMobileIcon
+  PhotoIcon,
+  DocumentIcon,
+  XMarkIcon
 } from '@heroicons/vue/24/outline';
 
 const router = useRouter();
@@ -306,9 +384,7 @@ const loading = ref(false);
 
 const productTypes = [
   { value: 'digital', label: 'Sản phẩm số', icon: CubeIcon },
-  { value: 'game_account', label: 'Account Game', icon: DeviceTabletIcon },
-  { value: 'google_account', label: 'Google Account', icon: EnvelopeIcon },
-  { value: 'facebook_account', label: 'Facebook Account', icon: UserGroupIcon }
+  { value: 'game_account', label: 'Account Game', icon: DeviceTabletIcon }
 ];
 
 const form = ref({
@@ -318,6 +394,8 @@ const form = ref({
   price: 0,
   icon: 'CubeIcon',
   features: [{ text: '' }],
+  images: [],
+  files: [],
   accountDetails: {
     gameName: '',
     level: '',
@@ -328,14 +406,75 @@ const form = ref({
   }
 });
 
+const previewImages = ref([]);
+const attachedFiles = ref([]);
+
 const getNamePlaceholder = () => {
   const placeholders = {
     digital: 'VD: Bot Discord Premium, Tool Auto...',
-    game_account: 'VD: Acc Liên Quân Cao Thủ 5k2, Acc Free Fire MAX...',
-    google_account: 'VD: Gmail 5 năm tuổi, Google Drive Unlimited...',
-    facebook_account: 'VD: FB 5000 bạn bè, FB BM Verified...'
+    game_account: 'VD: Acc Liên Quân Cao Thủ 5k2, Acc Free Fire MAX...'
   };
   return placeholders[form.value.type] || 'Tên sản phẩm';
+};
+
+const handleImageUpload = (event) => {
+  const files = Array.from(event.target.files);
+  const remainingSlots = 5 - previewImages.value.length;
+  
+  if (files.length > remainingSlots) {
+    toast.warning(`Chỉ có thể thêm tối đa ${remainingSlots} ảnh nữa`);
+  }
+  
+  const validFiles = files.slice(0, remainingSlots).filter(file => {
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error(`${file.name} vượt quá 5MB`);
+      return false;
+    }
+    if (!file.type.startsWith('image/')) {
+      toast.error(`${file.name} không phải là file ảnh`);
+      return false;
+    }
+    return true;
+  });
+
+  validFiles.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      previewImages.value.push(e.target.result);
+      form.value.images.push(file);
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
+const removeImage = (index) => {
+  previewImages.value.splice(index, 1);
+  form.value.images.splice(index, 1);
+};
+
+const handleFileUpload = (event) => {
+  const files = Array.from(event.target.files);
+  files.forEach(file => {
+    if (file.size > 50 * 1024 * 1024) {
+      toast.error(`${file.name} vượt quá 50MB`);
+      return;
+    }
+    attachedFiles.value.push(file);
+    form.value.files.push(file);
+  });
+};
+
+const removeFile = (index) => {
+  attachedFiles.value.splice(index, 1);
+  form.value.files.splice(index, 1);
+};
+
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
 const formatPrice = (price) => {
