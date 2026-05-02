@@ -26,7 +26,7 @@
               {{ getTypeLabel(announcement.type) }}
             </span>
             <span v-if="announcement.pinned" class="flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-400">
-              <PinIcon class="w-3 h-3" />
+              <BookmarkIcon class="w-3 h-3" />
               Ghim
             </span>
           </div>
@@ -79,7 +79,7 @@ import {
   InformationCircleIcon,
   ArrowRightIcon,
   XMarkIcon,
-  PinIcon
+  BookmarkIcon
 } from '@heroicons/vue/24/outline';
 
 const router = useRouter();
