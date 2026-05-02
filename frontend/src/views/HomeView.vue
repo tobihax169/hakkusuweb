@@ -83,57 +83,64 @@
               <div class="absolute top-1/2 -left-12 w-24 h-24 bg-cyan-300/40 rounded-full blur-xl animate-pulse" style="animation-delay: 2s;" />
               
               <!-- Main Card -->
-              <div class="relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-[2rem] border border-blue-200 dark:border-blue-500/30 shadow-2xl shadow-blue-200/50 dark:shadow-blue-500/20 p-8 transform hover:scale-105 transition-transform duration-500">
+              <div class="relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl border border-blue-200 dark:border-blue-500/30 shadow-2xl shadow-blue-200/50 dark:shadow-blue-500/20 p-6 transform hover:scale-105 transition-transform duration-500">
                 <!-- Modern Header -->
-                <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center justify-between mb-5">
                   <div class="flex items-center gap-2">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-300/50">
                       <ShoppingBagIcon class="w-5 h-5 text-white" />
                     </div>
-                    <span class="font-bold text-slate-700 dark:text-slate-200">はっくす</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200">はっくす</span>
                   </div>
-                  <span class="text-2xl">�</span>
+                  <span class="text-xs font-medium text-blue-500 bg-blue-100 dark:bg-blue-500/20 px-2 py-1 rounded-full">Pro</span>
                 </div>
                 
-                <!-- Cute Content -->
-                <div class="space-y-4">
-                  <div class="flex items-center gap-3 p-3 bg-pink-50 dark:bg-pink-500/10 rounded-xl">
-                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-400 to-purple-400 flex items-center justify-center text-white text-xl">🎮</div>
-                    <div>
-                      <p class="font-semibold text-slate-700 dark:text-slate-200">Game Account</p>
-                      <p class="text-xs text-slate-500">Premium ✨</p>
+                <!-- Modern Content -->
+                <div class="space-y-3">
+                  <div class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-100 dark:border-slate-600">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-300/30">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
                     </div>
-                    <span class="ml-auto text-pink-500 font-bold">₫99K</span>
+                    <div class="flex-1">
+                      <p class="font-semibold text-slate-800 dark:text-slate-200 text-sm">Game Account</p>
+                      <p class="text-xs text-slate-500">Premium Tier</p>
+                    </div>
+                    <span class="text-blue-600 font-bold text-sm">₫99K</span>
                   </div>
                   
-                  <div class="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-500/10 rounded-xl">
-                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-pink-400 to-orange-400 flex items-center justify-center text-white text-xl">🤖</div>
-                    <div>
-                      <p class="font-semibold text-slate-700 dark:text-slate-200">Discord Bot</p>
-                      <p class="text-xs text-slate-500">Auto delivery 🚀</p>
+                  <div class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-100 dark:border-slate-600">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-300/30">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     </div>
-                    <span class="ml-auto text-purple-500 font-bold">₫149K</span>
+                    <div class="flex-1">
+                      <p class="font-semibold text-slate-800 dark:text-slate-200 text-sm">Discord Bot</p>
+                      <p class="text-xs text-slate-500">Auto Delivery</p>
+                    </div>
+                    <span class="text-indigo-600 font-bold text-sm">₫149K</span>
                   </div>
                   
-                  <div class="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-500/10 rounded-xl">
-                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-mint-400 to-blue-400 flex items-center justify-center text-white text-xl">⚡</div>
-                    <div>
-                      <p class="font-semibold text-slate-700 dark:text-slate-200">Server Boost</p>
-                      <p class="text-xs text-slate-500">Instant ⚡</p>
+                  <div class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-100 dark:border-slate-600">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center text-white shadow-lg shadow-cyan-300/30">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                     </div>
-                    <span class="ml-auto text-blue-500 font-bold">₫49K</span>
+                    <div class="flex-1">
+                      <p class="font-semibold text-slate-800 dark:text-slate-200 text-sm">Server Boost</p>
+                      <p class="text-xs text-slate-500">Instant Access</p>
+                    </div>
+                    <span class="text-cyan-600 font-bold text-sm">₫49K</span>
                   </div>
                 </div>
                 
                 <!-- Modern Footer -->
-                <div class="mt-6 pt-4 border-t border-blue-100 dark:border-blue-500/20 flex items-center justify-between">
-                  <span class="text-sm text-slate-500">Giao dịch an toàn</span>
-                  <div class="flex gap-1">
-                    <span class="text-yellow-400">⭐</span>
-                    <span class="text-yellow-400">⭐</span>
-                    <span class="text-yellow-400">⭐</span>
-                    <span class="text-yellow-400">⭐</span>
-                    <span class="text-yellow-400">⭐</span>
+                <div class="mt-5 pt-4 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                  <span class="text-xs text-slate-500">Giao dịch an toàn</span>
+                  <div class="flex items-center gap-0.5">
+                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <span class="text-xs text-slate-500 ml-1">5.0</span>
                   </div>
                 </div>
               </div>
