@@ -4,12 +4,9 @@
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
         <div class="flex items-center gap-8">
-          <router-link to="/" class="flex items-center gap-2 group">
-            <!-- Modern Blue Logo -->
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-300/50 group-hover:scale-110 transition-transform">
-              <span class="text-xl">�</span>
-            </div>
-            <span class="text-xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-500 bg-clip-text text-transparent hidden sm:block">
+          <router-link to="/" class="group">
+            <!-- Text Logo Only -->
+            <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-500 bg-clip-text text-transparent group-hover:opacity-80 transition-opacity">
               はっくす
             </span>
           </router-link>
