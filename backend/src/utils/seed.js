@@ -140,10 +140,17 @@ const seedData = async () => {
 
   } catch (error) {
     logger.error('Lỗi seed dữ liệu:', error);
-    process.exit(1);
+    // Không exit khi được gọi từ app.js
+    if (process.argv[1].includes('seed.js')) {
+      process.exit(1);
+    }
+    throw error;
   } finally {
-    await disconnectDB();
-    process.exit(0);
+    // Chỉ disconnect khi chạy trực tiếp file seed.js
+    if (process.argv[1].includes('seed.js')) {
+      await disconnectDB();
+      process.exit(0);
+    }
   }
 };
 
