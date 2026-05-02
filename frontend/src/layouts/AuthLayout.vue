@@ -10,7 +10,7 @@
             </svg>
           </div>
           <span class="text-2xl font-bold text-gray-900 dark:text-white">
-            Hakkusu
+            Hakkusu Shop
           </span>
         </router-link>
       </div>

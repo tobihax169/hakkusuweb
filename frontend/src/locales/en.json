@@ -31,9 +31,9 @@
   },
   "home": {
     "hero": {
-      "title": "Hakkusu Bot",
+      "title": "Hakkusu Shop",
       "subtitle": "For Your Server",
-      "description": "Service providing custom Discord bots tailored to your needs. From basic packages to premium solutions.",
+      "description": "Marketplace for buying and selling products and services. Sellers can list products and earn 70% revenue.",
       "ctaPrimary": "Get Started",
       "ctaSecondary": "Learn More"
     },

@@ -31,9 +31,9 @@
   },
   "home": {
     "hero": {
-      "title": "Hakkusu Bot",
+      "title": "Hakkusu Shop",
       "subtitle": "Dành cho Server của Bạn",
-      "description": "Dịch vụ cung cấp bot Discord tùy chỉnh theo nhu cầu. Từ gói cơ bản đến giải pháp cao cấp.",
+      "description": "Marketplace mua bán sản phẩm và dịch vụ. Người bán có thể đăng sản phẩm và nhận 70% doanh thu.",
       "ctaPrimary": "Bắt đầu ngay",
       "ctaSecondary": "Tìm hiểu thêm"
     },
