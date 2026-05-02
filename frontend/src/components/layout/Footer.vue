@@ -98,9 +98,9 @@
           © {{ currentYear }} はっくす Hakkusu Store. All rights reserved.
         </p>
         <div class="flex items-center gap-4 text-sm text-slate-400 dark:text-slate-500">
-          <a href="#" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Điều khoản</a>
+          <router-link to="/terms" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Điều khoản</router-link>
           <span class="text-slate-300">|</span>
-          <a href="#" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Bảo mật</a>
+          <router-link to="/privacy" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Bảo mật</router-link>
         </div>
       </div>
     </div>

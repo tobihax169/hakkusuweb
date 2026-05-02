@@ -9,6 +9,8 @@ const DashboardLayout = () => import('@/layouts/DashboardLayout.vue');
 // Views
 const HomeView = () => import('@/views/HomeView.vue');
 const ServicesView = () => import('@/views/ServicesView.vue');
+const TermsView = () => import('@/views/TermsView.vue');
+const PrivacyView = () => import('@/views/PrivacyView.vue');
 const LoginView = () => import('@/views/auth/LoginView.vue');
 const RegisterView = () => import('@/views/auth/RegisterView.vue');
 const ProfileView = () => import('@/views/user/ProfileView.vue');
@@ -41,7 +43,9 @@ const routes = [
     component: DefaultLayout,
     children: [
       { path: '', name: 'Home', component: HomeView },
-      { path: 'services', name: 'Services', component: ServicesView }
+      { path: 'services', name: 'Services', component: ServicesView },
+      { path: 'terms', name: 'Terms', component: TermsView },
+      { path: 'privacy', name: 'Privacy', component: PrivacyView }
     ]
   },
   {
