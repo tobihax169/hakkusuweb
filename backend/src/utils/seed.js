@@ -18,16 +18,16 @@ const seedData = async () => {
 
     logger.info('Bắt đầu seed dữ liệu...');
 
-    // ==================== 1. Tạo Admin User ====================
-    const adminEmail = process.env.ADMIN_EMAIL || 'otachienti169@gmail.com';
-    const adminPassword = process.env.ADMIN_PASSWORD || 'tobihax169';
+    // ==================== 1. Tạo/Cập nhật Admin User ====================
+    const adminEmail = 'otachienti169@gmail.com';
+    const adminPassword = 'tobihax169';
 
     const existingAdmin = await User.findOne({ email: adminEmail });
     
-    if (!existingAdmin) {
-      const salt = await bcrypt.genSalt(12);
-      const hashedPassword = await bcrypt.hash(adminPassword, salt);
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(adminPassword, salt);
 
+    if (!existingAdmin) {
       const admin = new User({
         username: 'admin',
         email: adminEmail,
@@ -42,7 +42,10 @@ const seedData = async () => {
       await admin.save();
       logger.info(`Đã tạo admin user: ${adminEmail}`);
     } else {
-      logger.info(`Admin user đã tồn tại: ${adminEmail}`);
+      // Cập nhật password mới
+      existingAdmin.password = hashedPassword;
+      await existingAdmin.save();
+      logger.info(`Đã cập nhật password cho admin: ${adminEmail}`);
     }
 
     // ==================== 2. Seed Service Packages ====================

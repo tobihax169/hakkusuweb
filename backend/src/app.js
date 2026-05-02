@@ -27,6 +27,9 @@ import routes from './routes/index.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust proxy cho rate limit hoạt động đúng trên Render
+app.set('trust proxy', 1);
+
 // ==================== MIDDLEWARE ====================
 
 // Security headers
