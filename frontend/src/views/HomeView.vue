@@ -40,7 +40,7 @@
 
           <!-- Real-time Stats -->
           <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            <div class="group bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1">
+            <div class="group pixel-panel p-6 hover:border-blue-400/60 transition-all duration-300 hover:-translate-y-1">
               <p class="text-3xl font-bold text-white tabular-nums transition-all">
                 {{ formatStat('products') }}
               </p>
@@ -50,7 +50,7 @@
                 <span class="text-xs text-emerald-400">Trực tiếp</span>
               </div>
             </div>
-            <div class="group bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 hover:border-indigo-500/30 transition-all duration-300 hover:-translate-y-1">
+            <div class="group pixel-panel p-6 hover:border-indigo-400/60 transition-all duration-300 hover:-translate-y-1">
               <p class="text-3xl font-bold text-white tabular-nums transition-all">
                 {{ formatStat('sellers') }}
               </p>
@@ -60,7 +60,7 @@
                 <span class="text-xs text-emerald-400">Trực tiếp</span>
               </div>
             </div>
-            <div class="group bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 hover:border-violet-500/30 transition-all duration-300 hover:-translate-y-1">
+            <div class="group pixel-panel p-6 hover:border-violet-400/60 transition-all duration-300 hover:-translate-y-1">
               <p class="text-3xl font-bold text-white tabular-nums transition-all">
                 {{ formatStat('users') }}
               </p>
@@ -70,7 +70,7 @@
                 <span class="text-xs text-emerald-400">Trực tiếp</span>
               </div>
             </div>
-            <div class="group bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 hover:border-amber-500/30 transition-all duration-300 hover:-translate-y-1">
+            <div class="group pixel-panel p-6 hover:border-amber-400/60 transition-all duration-300 hover:-translate-y-1">
               <p class="text-3xl font-bold text-white tabular-nums transition-all">
                 {{ formatStat('satisfaction') }}
               </p>
@@ -122,7 +122,7 @@
       <!-- CTA Section -->
       <section class="py-20 px-4 sm:px-6 lg:px-8">
         <div class="max-w-4xl mx-auto">
-          <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-12 text-center">
+          <div class="pixel-panel rounded-3xl p-12 text-center bg-gradient-to-r from-blue-700/60 to-indigo-700/60">
             <h2 class="text-3xl font-bold text-white mb-4">Sẵn sàng bắt đầu?</h2>
             <p class="text-blue-100 mb-8 max-w-xl mx-auto">Tham gia ngay hôm nay để trải nghiệm marketplace tốt nhất cho game thủ và người dùng software.</p>
             <router-link to="/auth/register" class="inline-block px-8 py-4 bg-white text-blue-600 font-semibold rounded-2xl hover:bg-blue-50 transition-all">

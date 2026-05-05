@@ -43,7 +43,7 @@
         <div class="flex flex-col lg:flex-row gap-8">
           <!-- Sidebar Categories -->
           <aside class="lg:w-64 flex-shrink-0">
-            <div class="bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-4 sticky top-24">
+            <div class="pixel-panel p-4 sticky top-24">
               <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                 <Bars3Icon class="w-5 h-5 text-blue-400" />
                 Danh mục
@@ -97,7 +97,7 @@
               <div
                 v-for="product in filteredProducts"
                 :key="product.id"
-                class="group bg-slate-800/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-slate-700/50 hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                class="group pixel-panel overflow-hidden hover:border-blue-400/60 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                 @click="viewProduct(product)"
               >
                 <div class="relative aspect-square overflow-hidden bg-slate-700/50">
@@ -140,7 +140,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import { useAuthStore } from '@/stores/auth.js';
@@ -215,28 +215,39 @@ const viewProduct = (product) => {
     router.push('/auth/login');
     return;
   }
+  serviceApi.trackView(product.id).catch(() => {});
   router.push(`/orders/new?product=${product.id}`);
 };
 
-const searchProducts = () => {};
+const searchProducts = () => {
+  fetchProducts();
+};
 
 const fetchProducts = async () => {
   try {
-    const response = await serviceApi.getServices();
+    const response = await serviceApi.getServices({
+      sort: sortBy.value,
+      search: searchQuery.value || undefined,
+      category: selectedCategory.value !== 'all' ? selectedCategory.value : undefined,
+      limit: 200
+    });
     products.value = (response.data || []).map((s, i) => ({
       id: s.id || s._id || i,
       name: s.name,
       price: s.price,
       originalPrice: s.originalPrice,
-      image: s.image,
-      category: s.category || 'other',
+      image: s.iconUrl || s.image,
+      category: s.category || s.metadata?.category || 'other',
       rating: (4 + Math.random() * 0.9).toFixed(1),
-      sold: Math.floor(Math.random() * 5000) + 100,
+      sold: s.salesCount ?? Math.floor(Math.random() * 5000) + 100,
       discount: s.discount || Math.floor(Math.random() * 30),
       seller: s.seller,
       createdAt: s.createdAt || new Date()
     }));
-    categories.value[0].count = products.value.length;
+    categories.value = categories.value.map((c) => ({
+      ...c,
+      count: c.id === 'all' ? products.value.length : products.value.filter((p) => p.category === c.id).length
+    }));
   } catch (error) {
     toast.error('Không thể tải sản phẩm');
   } finally {
@@ -245,4 +256,5 @@ const fetchProducts = async () => {
 };
 
 onMounted(fetchProducts);
+watch([selectedCategory, sortBy], fetchProducts);
 </script>

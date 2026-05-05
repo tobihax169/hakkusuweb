@@ -1,5 +1,6 @@
 <template>
-  <div class="min-h-screen bg-slate-900">
+  <div class="min-h-screen bg-slate-900 relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 opacity-20 bg-[linear-gradient(rgba(99,102,241,0.15)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.15)_1px,transparent_1px)] bg-[size:24px_24px]" />
     <!-- Top Navigation - Unified Dark Theme -->
     <header class="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-slate-700/50">
       <div class="px-4 sm:px-6 lg:px-8">
@@ -22,7 +23,7 @@
                 <span class="text-2xl font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent">
                   はっくす
                 </span>
-                <span class="ml-2 text-xs text-slate-400 font-medium">Store</span>
+                <span class="ml-2 text-xs text-slate-400 font-medium">Cửa hàng</span>
               </div>
             </router-link>
           </div>
@@ -100,10 +101,12 @@
       />
 
       <!-- Main Content -->
-      <main class="flex-1 overflow-auto bg-slate-900">
+      <main class="flex-1 overflow-auto bg-slate-900/70 relative z-10">
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
-            <component :is="Component" />
+            <div class="px-2 sm:px-4 py-3">
+              <component :is="Component" />
+            </div>
           </transition>
         </router-view>
       </main>

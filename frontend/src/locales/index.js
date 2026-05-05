@@ -7,15 +7,15 @@ const messages = {
   en
 };
 
-// Lấy ngôn ngữ mặc định từ localStorage hoặc trình duyệt
+// Ưu tiên giao diện tiếng Việt cho toàn bộ ứng dụng.
 const getDefaultLocale = () => {
   const saved = localStorage.getItem('language');
   if (saved && ['vi', 'en'].includes(saved)) {
-    return saved;
+    // Chuẩn hoá về tiếng Việt trong giai đoạn Việt hoá UI.
+    return 'vi';
   }
-  
-  const browserLang = navigator.language.split('-')[0];
-  return browserLang === 'vi' ? 'vi' : 'en';
+
+  return 'vi';
 };
 
 const i18n = createI18n({

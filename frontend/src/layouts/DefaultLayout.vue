@@ -1,8 +1,9 @@
 <template>
-  <div class="min-h-screen bg-slate-900 text-white">
+  <div class="min-h-screen bg-slate-900 text-white relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 opacity-30 bg-[linear-gradient(rgba(59,130,246,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.12)_1px,transparent_1px)] bg-[size:30px_30px]" />
     <UnifiedHeader />
     
-    <main class="pt-16">
+    <main class="pt-16 relative z-10">
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
           <component :is="Component" />

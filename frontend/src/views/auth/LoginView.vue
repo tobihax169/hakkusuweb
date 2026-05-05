@@ -13,9 +13,9 @@
         <p class="text-slate-400">Chào mừng trở lại! Đăng nhập để tiếp tục</p>
       </div>
 
-      <GlassCard class="p-8">
+      <GlassCard class="p-8 pixel-panel">
         <form @submit.prevent="handleLogin" class="space-y-6">
-          <div>
+          <div class="space-y-2">
             <label class="block text-sm font-medium text-slate-300 mb-2">Email / Username</label>
             <input 
               v-model="formData.email" 
@@ -26,7 +26,7 @@
             >
           </div>
           
-          <div>
+          <div class="space-y-2">
             <label class="block text-sm font-medium text-slate-300 mb-2">Mật khẩu</label>
             <input 
               v-model="formData.password" 
@@ -50,7 +50,7 @@
           <button 
             type="submit" 
             :disabled="loading"
-            class="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {{ loading ? 'Đang đăng nhập...' : 'Đăng nhập' }}
           </button>
