@@ -14,7 +14,7 @@
               <span class="text-2xl font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent">
                 はっくす
               </span>
-              <span class="ml-2 text-xs text-slate-400 font-medium">Store</span>
+              <span class="ml-2 text-xs text-slate-400 font-medium">Cửa hàng</span>
             </div>
           </router-link>
           
@@ -160,7 +160,7 @@
                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-purple-400 hover:bg-slate-700/50 transition-colors"
                   >
                     <ClipboardDocumentCheckIcon class="w-4 h-4" />
-                    Staff Dashboard
+                    Bảng điều khiển nhân sự
                   </router-link>
                 </div>
 
@@ -173,7 +173,7 @@
                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-green-400 hover:bg-slate-700/50 transition-colors"
                   >
                     <BuildingStorefrontIcon class="w-4 h-4" />
-                    Seller Dashboard
+                    Bảng điều khiển người bán
                   </router-link>
                 </div>
 

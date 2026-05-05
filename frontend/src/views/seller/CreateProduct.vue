@@ -41,9 +41,9 @@
               >
                 <option value="">Chọn danh mục</option>
                 <option value="game">Game</option>
-                <option value="software">Software</option>
-                <option value="mobile">Mobile</option>
-                <option value="giftcard">Gift Cards</option>
+                <option value="software">Phần mềm</option>
+                <option value="mobile">Di động</option>
+                <option value="giftcard">Thẻ quà tặng</option>
                 <option value="other">Khác</option>
               </select>
             </div>

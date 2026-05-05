@@ -9,7 +9,7 @@
       <div class="flex items-center justify-between mb-8">
         <div>
           <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent">
-            Staff Dashboard
+            Bảng điều khiển nhân sự
           </h1>
           <p class="text-slate-400 mt-1">Quản lý hỗ trợ và phê duyệt</p>
         </div>
@@ -29,7 +29,7 @@
               {{ stats.pendingTickets }} mới
             </Badge>
           </div>
-          <p class="text-rose-100 text-sm">Tickets đang chờ</p>
+          <p class="text-rose-100 text-sm">Phiếu hỗ trợ đang chờ</p>
           <p class="text-3xl font-bold">{{ stats.pendingTickets }}</p>
         </div>
 
@@ -42,7 +42,7 @@
               {{ stats.pendingSellers }} mới
             </Badge>
           </div>
-          <p class="text-blue-100 text-sm">Seller chờ duyệt</p>
+          <p class="text-blue-100 text-sm">Người bán chờ duyệt</p>
           <p class="text-3xl font-bold">{{ stats.pendingSellers }}</p>
         </div>
 
@@ -79,7 +79,7 @@
                 <TicketIcon class="w-7 h-7 text-rose-400" />
               </div>
               <div>
-                <p class="text-white font-medium">Xử lý Tickets</p>
+                <p class="text-white font-medium">Xử lý phiếu hỗ trợ</p>
                 <p class="text-slate-400 text-sm">{{ stats.pendingTickets }} đang chờ</p>
               </div>
             </div>
@@ -162,7 +162,7 @@ const stats = ref({
 
 const recentActivity = ref([
   { id: 1, type: 'ticket', title: 'Ticket mới #1234', description: 'Người dùng báo lỗi đăng nhập', createdAt: new Date() },
-  { id: 2, type: 'seller', title: 'Seller mới đăng ký', description: 'ABC Store đang chờ duyệt', createdAt: new Date(Date.now() - 3600000) },
+  { id: 2, type: 'seller', title: 'Người bán mới đăng ký', description: 'ABC Store đang chờ duyệt', createdAt: new Date(Date.now() - 3600000) },
   { id: 3, type: 'product', title: 'Sản phẩm mới', description: 'Discord Nitro 1 tháng đang chờ duyệt', createdAt: new Date(Date.now() - 7200000) }
 ]);
 

@@ -41,9 +41,9 @@
               <label class="block text-sm font-medium text-slate-300 mb-2">Danh mục (metadata)</label>
               <select v-model="formData.category" class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500/50">
                 <option value="game">Game</option>
-                <option value="software">Software</option>
-                <option value="mobile">Mobile</option>
-                <option value="giftcard">Gift Cards</option>
+                <option value="software">Phần mềm</option>
+                <option value="mobile">Di động</option>
+                <option value="giftcard">Thẻ quà tặng</option>
                 <option value="other">Khác</option>
               </select>
             </div>

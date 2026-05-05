@@ -9,7 +9,7 @@
       <div class="flex items-center justify-between mb-8">
         <div>
           <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent">
-            Seller Dashboard
+            Bảng điều khiển người bán
           </h1>
           <p class="text-slate-400 mt-1">Quản lý cửa hàng và sản phẩm</p>
         </div>

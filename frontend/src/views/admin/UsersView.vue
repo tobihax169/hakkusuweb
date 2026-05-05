@@ -28,10 +28,10 @@
           </div>
           <select v-model="filters.role" @change="fetchUsers" class="px-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none">
             <option value="">Tất cả vai trò</option>
-            <option value="user">User</option>
-            <option value="support">Support</option>
-            <option value="seller">Seller</option>
-            <option value="admin">Admin</option>
+            <option value="user">Người dùng</option>
+            <option value="support">Hỗ trợ</option>
+            <option value="seller">Người bán</option>
+            <option value="admin">Quản trị viên</option>
           </select>
           <button @click="fetchUsers" class="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:shadow-lg transition-all">
             <MagnifyingGlassIcon class="w-5 h-5" />
@@ -77,10 +77,10 @@
                     @change="updateUserRole(user)"
                     class="px-3 py-1.5 bg-slate-900/50 border border-slate-700 rounded-lg text-sm text-white outline-none"
                   >
-                    <option value="user">User</option>
-                    <option value="support">Support</option>
-                    <option value="seller">Seller</option>
-                    <option value="admin">Admin</option>
+                    <option value="user">Người dùng</option>
+                    <option value="support">Hỗ trợ</option>
+                    <option value="seller">Người bán</option>
+                    <option value="admin">Quản trị viên</option>
                   </select>
                 </td>
                 <td class="px-6 py-4 text-blue-400">{{ formatNumber(user.balance) }} ₫</td>
@@ -102,7 +102,7 @@
                       @click="toggleBan(user)" 
                       :class="user.isBanned ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'"
                       class="p-2 rounded-lg hover:bg-opacity-20 transition-colors"
-                      :title="user.isBanned ? 'Bỏ cấm' : 'Cấm user'"
+                      :title="user.isBanned ? 'Bỏ cấm' : 'Cấm người dùng'"
                     >
                       <ShieldCheckIcon v-if="user.isBanned" class="w-4 h-4" />
                       <ShieldExclamationIcon v-else class="w-4 h-4" />
@@ -233,7 +233,7 @@ const toggleBan = async (user) => {
   try {
     await userApi.toggleBanUser(user._id, { ban: !user.isBanned });
     user.isBanned = !user.isBanned;
-    toast.success(user.isBanned ? 'Đã cấm user' : 'Đã bỏ cấm user');
+    toast.success(user.isBanned ? 'Đã cấm người dùng' : 'Đã bỏ cấm người dùng');
   } catch (error) {
     toast.error('Không thể thực hiện');
   }

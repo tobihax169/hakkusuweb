@@ -13,7 +13,7 @@
         <div class="max-w-7xl mx-auto text-center">
           <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-8">
             <span class="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-            <span class="text-blue-400 text-sm font-medium">Hakkusu Store Marketplace</span>
+            <span class="text-blue-400 text-sm font-medium">Sàn thương mại Hakkusu</span>
           </div>
           
           <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6">
@@ -47,17 +47,17 @@
               <p class="text-slate-400 text-sm group-hover:text-blue-400 transition-colors">Sản phẩm</p>
               <div class="mt-2 flex items-center gap-1">
                 <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                <span class="text-xs text-emerald-400">Live</span>
+                <span class="text-xs text-emerald-400">Trực tiếp</span>
               </div>
             </div>
             <div class="group bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 hover:border-indigo-500/30 transition-all duration-300 hover:-translate-y-1">
               <p class="text-3xl font-bold text-white tabular-nums transition-all">
                 {{ formatStat('sellers') }}
               </p>
-              <p class="text-slate-400 text-sm group-hover:text-indigo-400 transition-colors">Seller</p>
+              <p class="text-slate-400 text-sm group-hover:text-indigo-400 transition-colors">Người bán</p>
               <div class="mt-2 flex items-center gap-1">
                 <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                <span class="text-xs text-emerald-400">Live</span>
+                <span class="text-xs text-emerald-400">Trực tiếp</span>
               </div>
             </div>
             <div class="group bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 hover:border-violet-500/30 transition-all duration-300 hover:-translate-y-1">
@@ -67,7 +67,7 @@
               <p class="text-slate-400 text-sm group-hover:text-violet-400 transition-colors">Người dùng</p>
               <div class="mt-2 flex items-center gap-1">
                 <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                <span class="text-xs text-emerald-400">Live</span>
+                <span class="text-xs text-emerald-400">Trực tiếp</span>
               </div>
             </div>
             <div class="group bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-slate-700/50 hover:border-amber-500/30 transition-all duration-300 hover:-translate-y-1">
@@ -77,7 +77,7 @@
               <p class="text-slate-400 text-sm group-hover:text-amber-400 transition-colors">Hài lòng</p>
               <div class="mt-2 flex items-center gap-1">
                 <span class="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></span>
-                <span class="text-xs text-amber-400">Top</span>
+                <span class="text-xs text-amber-400">Hàng đầu</span>
               </div>
             </div>
           </div>

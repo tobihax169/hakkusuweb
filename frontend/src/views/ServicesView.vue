@@ -21,7 +21,7 @@
       <!-- Hero Banner -->
       <div class="bg-gradient-to-r from-blue-600 to-indigo-600 pt-16 pb-8 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto text-center">
-          <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Marketplace</h1>
+          <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Chợ sản phẩm</h1>
           <p class="text-blue-100/90 text-base mb-5">Khám phá hàng ngàn sản phẩm từ các seller uy tín</p>
 
           <!-- Search -->
@@ -128,7 +128,7 @@
                     <span class="text-slate-600">|</span>
                     <span class="text-slate-400">Đã bán {{ formatNumber(product.sold || 0) }}</span>
                   </div>
-                  <p class="text-xs text-slate-500 mt-2">{{ product.seller?.storeName || 'Hakkusu Store' }}</p>
+                  <p class="text-xs text-slate-500 mt-2">{{ product.seller?.storeName || 'Hakkusu' }}</p>
                 </div>
               </div>
             </div>
@@ -171,9 +171,9 @@ const sortBy = ref('popular');
 const categories = ref([
   { id: 'all', name: 'Tất cả', icon: ShoppingBagIcon, count: 0 },
   { id: 'game', name: 'Game', icon: PuzzlePieceIcon, count: 0 },
-  { id: 'software', name: 'Software', icon: ComputerDesktopIcon, count: 0 },
-  { id: 'mobile', name: 'Mobile', icon: DevicePhoneMobileIcon, count: 0 },
-  { id: 'giftcard', name: 'Gift Cards', icon: GiftIcon, count: 0 },
+  { id: 'software', name: 'Phần mềm', icon: ComputerDesktopIcon, count: 0 },
+  { id: 'mobile', name: 'Di động', icon: DevicePhoneMobileIcon, count: 0 },
+  { id: 'giftcard', name: 'Thẻ quà tặng', icon: GiftIcon, count: 0 },
   { id: 'service', name: 'Dịch vụ', icon: SparklesIcon, count: 0 }
 ]);
 

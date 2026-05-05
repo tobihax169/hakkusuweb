@@ -108,8 +108,8 @@ const announcements = ref([
   },
   {
     id: 3,
-    title: 'Tính năng mới: Trở thành Seller',
-    content: 'Giờ đây bạn có thể đăng ký trở thành seller và bán sản phẩm trên Hakkusu Shop!',
+    title: 'Tính năng mới: Trở thành người bán',
+    content: 'Giờ đây bạn có thể đăng ký trở thành người bán và bán sản phẩm trên Hakkusu Shop!',
     type: 'update',
     link: '/seller/register',
     createdAt: new Date('2026-05-01')

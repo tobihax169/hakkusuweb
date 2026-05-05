@@ -30,7 +30,7 @@
             </li>
             <li>
               <router-link to="/seller/register" class="text-sm text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors">
-                Trở thành Seller
+                Trở thành người bán
               </router-link>
             </li>
           </ul>
@@ -95,7 +95,7 @@
 
       <div class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
         <p class="text-sm text-slate-400 dark:text-slate-500">
-          © {{ currentYear }} はっくす Hakkusu Store. All rights reserved.
+          © {{ currentYear }} はっくす Hakkusu Store. Bảo lưu mọi quyền.
         </p>
         <div class="flex items-center gap-4 text-sm text-slate-400 dark:text-slate-500">
           <router-link to="/terms" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Điều khoản</router-link>

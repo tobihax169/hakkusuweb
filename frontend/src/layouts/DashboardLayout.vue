@@ -143,15 +143,15 @@ const adminMenuItems = [
   { name: 'users', label: t('admin.users'), path: '/admin/users', icon: UsersIcon },
   { name: 'orders', label: t('admin.orders'), path: '/admin/orders', icon: ShoppingBagIcon },
   { name: 'announcements', label: 'Thông báo', path: '/admin/announcements', icon: MegaphoneIcon },
-  { name: 'staff', label: 'Staff Dashboard', path: '/staff', icon: ClipboardDocumentCheckIcon },
-  { name: 'tickets', label: 'Tickets', path: '/staff/tickets', icon: TicketIcon },
+  { name: 'staff', label: 'Bảng điều khiển nhân sự', path: '/staff', icon: ClipboardDocumentCheckIcon },
+  { name: 'tickets', label: 'Phiếu hỗ trợ', path: '/staff/tickets', icon: TicketIcon },
   { name: 'approvals', label: 'Duyệt đơn', path: '/staff/approvals', icon: CheckIcon }
 ];
 
 // Staff/Support menu
 const staffMenuItems = [
   { name: 'dashboard', label: 'Tổng quan', path: '/staff', icon: HomeIcon },
-  { name: 'tickets', label: 'Tickets', path: '/staff/tickets', icon: TicketIcon },
+  { name: 'tickets', label: 'Phiếu hỗ trợ', path: '/staff/tickets', icon: TicketIcon },
   { name: 'approvals', label: 'Duyệt đơn', path: '/staff/approvals', icon: ClipboardDocumentCheckIcon },
   { name: 'announcements', label: 'Thông báo', path: '/staff/announcements', icon: MegaphoneIcon }
 ];

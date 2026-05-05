@@ -48,10 +48,10 @@
             <div class="p-3 bg-amber-500/20 rounded-xl">
               <BuildingStorefrontIcon class="w-6 h-6 text-amber-400" />
             </div>
-            <Badge variant="warning">Seller</Badge>
+            <Badge variant="warning">Người bán</Badge>
           </div>
           <p class="text-3xl font-bold text-white">{{ formatNumber(stats.sellers) }}</p>
-          <p class="text-slate-400 text-sm mt-1">Tổng số seller</p>
+          <p class="text-slate-400 text-sm mt-1">Tổng số người bán</p>
         </GlassCard>
 
         <GlassCard class="p-6">
