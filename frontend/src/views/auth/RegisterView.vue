@@ -1,149 +1,103 @@
 <template>
-  <div class="min-h-[80vh] flex items-center justify-center p-4">
-    <div class="w-full max-w-md">
-      <!-- Modern Card -->
-      <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl shadow-blue-200/30 dark:shadow-blue-500/10 border border-slate-200 dark:border-slate-700">
-        <!-- Modern Header -->
-        <div class="text-center mb-6">
-          <h2 class="text-2xl font-bold text-center text-slate-800 dark:text-white mb-2 font-display">
-            {{ $t('auth.register') }}
-          </h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400">ようこそ ~ Create your account</p>
-        </div>
+  <div class="min-h-screen flex items-center justify-center px-4 py-12">
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[120px]" />
+      <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-emerald-500/10 rounded-full blur-[100px]" />
+    </div>
 
-        <!-- Error Message -->
-        <div v-if="errorMessage" class="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 text-sm flex items-center gap-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          {{ errorMessage }}
-        </div>
+    <div class="relative z-10 w-full max-w-md">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent mb-2">
+          Đăng ký
+        </h1>
+        <p class="text-slate-400">Tạo tài khoản mới để bắt đầu</p>
+      </div>
 
-        <form @submit.prevent="handleRegister" class="space-y-4">
-          <!-- Username -->
-          <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{{ $t('auth.username') }}</label>
-            <input
-              v-model="form.username"
-              type="text"
-              class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-600 bg-white/50 dark:bg-slate-700/50 text-slate-800 dark:text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30 outline-none transition-all"
-              placeholder="your_username"
-              required
-              minlength="3"
-            />
-          </div>
-
-          <!-- Email -->
-          <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{{ $t('auth.email') }}</label>
-            <input
-              v-model="form.email"
-              type="email"
-              class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-600 bg-white/50 dark:bg-slate-700/50 text-slate-800 dark:text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30 outline-none transition-all"
-              placeholder="you@example.com"
-              required
-            />
-          </div>
-
-          <!-- Password -->
-          <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{{ $t('auth.password') }}</label>
-            <div class="relative">
-              <input
-                v-model="form.password"
-                :type="showPassword ? 'text' : 'password'"
-                class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-600 bg-white/50 dark:bg-slate-700/50 text-slate-800 dark:text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30 outline-none transition-all pr-12"
-                placeholder="••••••••"
-                required
-                minlength="6"
-              />
-              <button
-                type="button"
-                @click="showPassword = !showPassword"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-500 transition-colors p-1"
-              >
-                <EyeIcon v-if="!showPassword" class="w-5 h-5" />
-                <EyeSlashIcon v-else class="w-5 h-5" />
-              </button>
-            </div>
-            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Mật khẩu cần ít nhất 6 ký tự
-            </p>
-          </div>
-
-          <!-- Confirm Password -->
-          <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{{ $t('auth.confirmPassword') }}</label>
-            <div class="relative">
-              <input
-                v-model="form.confirmPassword"
-                :type="showConfirmPassword ? 'text' : 'password'"
-                class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-600 bg-white/50 dark:bg-slate-700/50 text-slate-800 dark:text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30 outline-none transition-all pr-12"
-                placeholder="••••••••"
-                required
-              />
-              <button
-                type="button"
-                @click="showConfirmPassword = !showConfirmPassword"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-500 transition-colors p-1"
-              >
-                <EyeIcon v-if="!showConfirmPassword" class="w-5 h-5" />
-                <EyeSlashIcon v-else class="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-
-          <!-- Terms -->
-          <label class="flex items-start gap-3 cursor-pointer">
+      <GlassCard class="p-8 pixel-panel">
+        <form @submit.prevent="handleRegister" class="space-y-5">
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300 mb-2">Username</label>
             <input 
-              v-model="form.acceptTerms" 
-              type="checkbox" 
-              class="w-4 h-4 mt-0.5 rounded-lg border-2 border-slate-300 text-blue-500 focus:ring-blue-300"
+              v-model="formData.username" 
+              type="text" 
               required
-            />
-            <span class="text-sm text-slate-600 dark:text-slate-400">
-              Tôi đồng ý với 
-              <a href="#" class="text-blue-500 hover:text-blue-600 font-medium">Điều khoản</a>
-              và 
-              <a href="#" class="text-blue-500 hover:text-blue-600 font-medium">Bảo mật</a>
-            </span>
-          </label>
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 outline-none focus:border-blue-500/50 transition-colors"
+              placeholder="Nhập username"
+            >
+          </div>
 
-          <!-- Submit Button -->
-          <button
-            type="submit"
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300 mb-2">Email</label>
+            <input 
+              v-model="formData.email" 
+              type="email" 
+              required
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 outline-none focus:border-blue-500/50 transition-colors"
+              placeholder="email@example.com"
+            >
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300 mb-2">Mật khẩu</label>
+            <input 
+              v-model="formData.password" 
+              type="password" 
+              required
+              minlength="6"
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 outline-none focus:border-blue-500/50 transition-colors"
+              placeholder="Ít nhất 6 ký tự"
+            >
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-slate-300 mb-2">Xác nhận mật khẩu</label>
+            <input 
+              v-model="formData.confirmPassword" 
+              type="password" 
+              required
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 outline-none focus:border-blue-500/50 transition-colors"
+              placeholder="Nhập lại mật khẩu"
+            >
+          </div>
+
+          <button 
+            type="submit" 
             :disabled="loading"
-            class="w-full py-3.5 bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-blue-300/50 hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <LoadingSpinner v-if="loading" size="sm" color="white" />
-            <span v-else>{{ $t('auth.register') }}</span>
+            {{ loading ? 'Đang đăng ký...' : 'Tạo tài khoản' }}
           </button>
         </form>
 
-        <!-- Divider -->
-        <div class="relative my-6">
-          <div class="absolute inset-0 flex items-center">
-            <div class="w-full border-t-2 border-slate-200 dark:border-slate-700 border-dashed"></div>
+        <div class="mt-6">
+          <div class="relative">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-slate-700"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-2 bg-slate-800 text-slate-400">Hoặc đăng ký với</span>
+            </div>
           </div>
-          <div class="relative flex justify-center text-sm">
-            <span class="px-3 bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-500 rounded-full">hoặc</span>
-          </div>
+
+          <button 
+            @click="registerWithDiscord" 
+            :disabled="loading"
+            class="mt-4 w-full py-3 bg-[#5865F2] text-white font-semibold rounded-xl hover:bg-[#4752C4] transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+            </svg>
+            Discord
+          </button>
         </div>
 
-        <!-- Discord Register -->
-        <a
-          href="/api/auth/discord"
-          class="w-full py-3.5 bg-[#5865F2] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center"
-        >
-          Đăng ký bằng Discord
-        </a>
-
-        <!-- Login Link -->
-        <p class="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
-          {{ $t('auth.hasAccount') }}
-          <router-link to="/auth/login" class="text-blue-500 hover:text-blue-600 font-bold">
-            {{ $t('auth.login') }}
+        <p class="mt-6 text-center text-slate-400 text-sm">
+          Đã có tài khoản? 
+          <router-link to="/auth/login" class="text-blue-400 hover:text-blue-300 font-medium transition-colors">
+            Đăng nhập ngay
           </router-link>
         </p>
-      </div>
+      </GlassCard>
     </div>
   </div>
 </template>
@@ -151,57 +105,53 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
 import { useAuthStore } from '@/stores/auth.js';
-import {
-  EyeIcon,
-  EyeSlashIcon
-} from '@heroicons/vue/24/outline';
-import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
+import GlassCard from '@/components/ui/GlassCard.vue';
 
 const router = useRouter();
+const toast = useToast();
 const authStore = useAuthStore();
 
-const form = reactive({
+const loading = ref(false);
+const formData = reactive({
   username: '',
   email: '',
   password: '',
-  confirmPassword: '',
-  acceptTerms: false
+  confirmPassword: ''
 });
 
-const loading = ref(false);
-const showPassword = ref(false);
-const showConfirmPassword = ref(false);
-const errorMessage = ref('');
-
 const handleRegister = async () => {
-  // Validation
-  if (form.password !== form.confirmPassword) {
-    errorMessage.value = 'Mật khẩu xác nhận không khớp';
+  if (formData.password !== formData.confirmPassword) {
+    toast.error('Mật khẩu không khớp');
     return;
   }
-
-  if (form.password.length < 6) {
-    errorMessage.value = 'Mật khẩu phải có ít nhất 6 ký tự';
+  if (formData.password.length < 6) {
+    toast.error('Mật khẩu phải có ít nhất 6 ký tự');
     return;
   }
 
   loading.value = true;
-  errorMessage.value = '';
-
-  const result = await authStore.register({
-    username: form.username,
-    email: form.email,
-    password: form.password,
-    confirmPassword: form.confirmPassword
-  });
-
-  loading.value = false;
-
-  if (result.success) {
-    router.push('/');
-  } else {
-    errorMessage.value = result.error || 'Đăng ký thất bại';
+  try {
+    const result = await authStore.register({
+      username: formData.username,
+      email: formData.email,
+      password: formData.password
+    });
+    if (result.success) {
+      toast.success('Đăng ký thành công!');
+      router.push('/');
+    } else {
+      toast.error(result.message || 'Đăng ký thất bại');
+    }
+  } catch (error) {
+    toast.error(error.message || 'Đăng ký thất bại');
+  } finally {
+    loading.value = false;
   }
+};
+
+const registerWithDiscord = () => {
+  window.location.href = `${import.meta.env.VITE_API_URL}/auth/discord`;
 };
 </script>

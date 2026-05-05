@@ -5,7 +5,9 @@ import { catchAsync, APIError } from '../middleware/errorHandler.js';
 
 // Đăng ký làm seller
 export const registerAsSeller = catchAsync(async (req, res) => {
-  const { businessName, businessEmail, phone, description } = req.body;
+  const businessName = req.body.businessName ?? req.body.storeName;
+  const businessEmail = req.body.businessEmail ?? req.body.email;
+  const { phone, description } = req.body;
   const userId = req.user._id;
 
   const user = await User.findById(userId);
@@ -80,10 +82,31 @@ export const getSellerDashboard = catchAsync(async (req, res) => {
 
   const user = await User.findById(userId);
 
+  const recentOrderDocs = await Order.find({ sellerId: userId })
+    .sort({ createdAt: -1 })
+    .limit(5)
+    .populate('userId', 'username email');
+
+  const recentOrders = recentOrderDocs.map((o) => ({
+    _id: o._id,
+    orderCode: o.orderCode,
+    productName: o.packageName,
+    buyer: o.userId,
+    totalPrice: o.totalPrice,
+    status: o.status
+  }));
+
+  const viewsAgg = await ServicePackage.aggregate([
+    { $match: { sellerId: userId } },
+    { $group: { _id: null, totalSales: { $sum: '$salesCount' } } }
+  ]);
+  const viewsTotal = viewsAgg[0]?.totalSales || 0;
+
   res.status(200).json({
     success: true,
     data: {
       sellerInfo: user.sellerInfo,
+      recentOrders,
       stats: {
         products: {
           total: products,
@@ -96,10 +119,11 @@ export const getSellerDashboard = catchAsync(async (req, res) => {
         },
         revenue: {
           total: totalRevenue,
-          available: user.sellerInfo.availableBalance,
-          pending: user.sellerInfo.pendingBalance
+          available: user.sellerInfo?.availableBalance ?? 0,
+          pending: user.sellerInfo?.pendingBalance ?? 0
         },
-        withdrawals: withdrawalStats
+        withdrawals: withdrawalStats,
+        views: viewsTotal
       }
     }
   });
@@ -110,6 +134,10 @@ export const getSellerDashboard = catchAsync(async (req, res) => {
 // Đăng sản phẩm mới
 export const createProduct = catchAsync(async (req, res) => {
   const sellerId = req.user._id;
+  const seller = await User.findById(sellerId);
+  if (!seller) {
+    throw new APIError('Không tìm thấy seller', 404);
+  }
   const {
     name,
     nameEn,
@@ -118,9 +146,27 @@ export const createProduct = catchAsync(async (req, res) => {
     price,
     currency,
     icon,
+    iconUrl,
     features,
-    platformFeePercentage
+    platformFeePercentage,
+    metadata,
+    isAccountListing,
+    highValueThreshold
   } = req.body;
+  const normalizedCategory = metadata?.category || req.body.category || 'other';
+  const isAccount = Boolean(isAccountListing || metadata?.saleType === 'account' || normalizedCategory === 'account');
+  const resolvedPrice = Number(price || 0);
+  const resolvedThreshold = Number(highValueThreshold || seller?.sellerInfo?.compliance?.highValueLimit || 5000000);
+  const isHighValueAccount = isAccount && resolvedPrice >= resolvedThreshold;
+  const securityDeposit = seller?.sellerInfo?.compliance?.securityDeposit || 0;
+  const identityVerified = Boolean(seller?.sellerInfo?.compliance?.identityVerified);
+
+  if (isHighValueAccount && !identityVerified && securityDeposit < resolvedPrice * 0.2) {
+    throw new APIError(
+      'Sản phẩm account giá trị cao yêu cầu seller đã xác minh CCCD hoặc có tiền đặt cọc tối thiểu 20% giá trị',
+      403
+    );
+  }
 
   // Tạo packageId
   const packageId = `SP${Date.now()}${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
@@ -134,7 +180,12 @@ export const createProduct = catchAsync(async (req, res) => {
     price,
     currency: currency || 'vnd',
     icon: icon || 'CubeIcon',
+    iconUrl: iconUrl || null,
+    category: normalizedCategory,
+    isAccountListing: isAccount,
+    highValueThreshold: resolvedThreshold,
     features: features || [],
+    metadata: metadata && typeof metadata === 'object' ? metadata : {},
     sellerId,
     isMarketplaceItem: true,
     approvalStatus: 'pending', // Chờ admin duyệt
@@ -181,11 +232,28 @@ export const getSellerProducts = catchAsync(async (req, res) => {
   });
 });
 
+// Chi tiết một sản phẩm của seller
+export const getSellerProductById = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const sellerId = req.user._id;
+
+  const product = await ServicePackage.findOne({ _id: id, sellerId });
+  if (!product) {
+    throw new APIError('Không tìm thấy sản phẩm', 404);
+  }
+
+  res.status(200).json({
+    success: true,
+    data: product
+  });
+});
+
 // Cập nhật sản phẩm
 export const updateProduct = catchAsync(async (req, res) => {
   const { id } = req.params;
   const sellerId = req.user._id;
   const updates = req.body;
+  const seller = await User.findById(sellerId);
 
   const product = await ServicePackage.findOne({ _id: id, sellerId });
   if (!product) {
@@ -205,6 +273,23 @@ export const updateProduct = catchAsync(async (req, res) => {
   // Reset approval status nếu sửa thông tin quan trọng
   if (updates.price || updates.name || updates.description) {
     updates.approvalStatus = 'pending';
+  }
+  if (updates.metadata?.category && !updates.category) {
+    updates.category = updates.metadata.category;
+  }
+
+  const nextCategory = updates.category || product.category || updates.metadata?.category || product.metadata?.category;
+  const nextIsAccount = updates.isAccountListing ?? (nextCategory === 'account' || product.isAccountListing);
+  const nextPrice = Number(updates.price ?? product.price);
+  const nextThreshold = Number(updates.highValueThreshold ?? product.highValueThreshold ?? seller?.sellerInfo?.compliance?.highValueLimit ?? 5000000);
+  const nextIsHighValueAccount = Boolean(nextIsAccount) && nextPrice >= nextThreshold;
+  const securityDeposit = seller?.sellerInfo?.compliance?.securityDeposit || 0;
+  const identityVerified = Boolean(seller?.sellerInfo?.compliance?.identityVerified);
+  if (nextIsHighValueAccount && !identityVerified && securityDeposit < nextPrice * 0.2) {
+    throw new APIError(
+      'Sản phẩm account giá trị cao yêu cầu seller đã xác minh CCCD hoặc có tiền đặt cọc tối thiểu 20% giá trị',
+      403
+    );
   }
 
   Object.assign(product, updates);
@@ -496,6 +581,9 @@ export const approveProduct = catchAsync(async (req, res) => {
   if (!product) {
     throw new APIError('Không tìm thấy sản phẩm', 404);
   }
+  if (product.approvalStatus !== 'pending') {
+    throw new APIError('Chỉ có thể duyệt sản phẩm đang chờ duyệt', 400);
+  }
 
   product.approvalStatus = 'approved';
   product.approvedBy = adminId;
@@ -516,6 +604,9 @@ export const rejectProduct = catchAsync(async (req, res) => {
   const product = await ServicePackage.findById(id);
   if (!product) {
     throw new APIError('Không tìm thấy sản phẩm', 404);
+  }
+  if (product.approvalStatus !== 'pending') {
+    throw new APIError('Chỉ có thể từ chối sản phẩm đang chờ duyệt', 400);
   }
 
   product.approvalStatus = 'rejected';
@@ -653,5 +744,48 @@ export const getPendingWithdrawals = catchAsync(async (req, res) => {
         pages: Math.ceil(total / limit)
       }
     }
+  });
+});
+
+// Admin/Support: cập nhật compliance seller (CCCD / đặt cọc)
+export const updateSellerCompliance = catchAsync(async (req, res) => {
+  const { userId } = req.params;
+  const {
+    identityVerified,
+    identityDocumentType,
+    identityDocumentNumber,
+    identityDocumentUrl,
+    securityDeposit,
+    highValueLimit
+  } = req.body;
+
+  const seller = await User.findById(userId);
+  if (!seller) {
+    throw new APIError('Không tìm thấy seller', 404);
+  }
+  if (seller.role !== 'seller') {
+    throw new APIError('Người dùng không phải seller', 400);
+  }
+
+  seller.sellerInfo = seller.sellerInfo || {};
+  seller.sellerInfo.compliance = seller.sellerInfo.compliance || {};
+
+  if (identityVerified !== undefined) {
+    seller.sellerInfo.compliance.identityVerified = Boolean(identityVerified);
+    seller.sellerInfo.compliance.identityVerifiedAt = identityVerified ? new Date() : null;
+    seller.sellerInfo.compliance.identityVerifiedBy = identityVerified ? req.user._id : null;
+  }
+  if (identityDocumentType !== undefined) seller.sellerInfo.compliance.identityDocumentType = identityDocumentType;
+  if (identityDocumentNumber !== undefined) seller.sellerInfo.compliance.identityDocumentNumber = identityDocumentNumber;
+  if (identityDocumentUrl !== undefined) seller.sellerInfo.compliance.identityDocumentUrl = identityDocumentUrl;
+  if (securityDeposit !== undefined) seller.sellerInfo.compliance.securityDeposit = Math.max(0, Number(securityDeposit) || 0);
+  if (highValueLimit !== undefined) seller.sellerInfo.compliance.highValueLimit = Math.max(0, Number(highValueLimit) || 0);
+
+  await seller.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'Đã cập nhật compliance cho seller',
+    data: seller.sellerInfo.compliance
   });
 });

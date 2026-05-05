@@ -5,6 +5,9 @@ import orderRoutes from './order.routes.js';
 import serviceRoutes from './service.routes.js';
 import paymentRoutes from './payment.routes.js';
 import sellerRoutes from './seller.routes.js';
+import announcementRoutes from './announcement.routes.js';
+import ticketRoutes from './ticket.routes.js';
+import marketplaceRoutes from './marketplace.routes.js';
 
 const router = Router();
 
@@ -26,5 +29,8 @@ router.use('/orders', orderRoutes);
 router.use('/services', serviceRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/seller', sellerRoutes);
+router.use('/announcements', announcementRoutes);
+router.use('/tickets', ticketRoutes);
+router.use('/marketplace', marketplaceRoutes);
 
 export default router;

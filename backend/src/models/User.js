@@ -79,7 +79,17 @@ const userSchema = new mongoose.Schema(
       pendingBalance: { type: Number, default: 0 },
       totalSales: { type: Number, default: 0 },
       rating: { type: Number, min: 0, max: 5, default: 0 },
-      reviewCount: { type: Number, default: 0 }
+      reviewCount: { type: Number, default: 0 },
+      compliance: {
+        identityVerified: { type: Boolean, default: false },
+        identityDocumentType: { type: String, enum: ['cccd', 'cmnd', 'passport', 'other'], default: null },
+        identityDocumentNumber: { type: String, default: '' },
+        identityDocumentUrl: { type: String, default: '' },
+        identityVerifiedAt: { type: Date, default: null },
+        identityVerifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+        securityDeposit: { type: Number, default: 0, min: 0 },
+        highValueLimit: { type: Number, default: 5000000, min: 0 }
+      }
     },
     isActive: {
       type: Boolean,

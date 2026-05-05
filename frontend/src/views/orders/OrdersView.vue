@@ -1,255 +1,154 @@
 <template>
-  <div class="py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Header -->
-      <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">
-          {{ $t('orders.title') }}
-        </h1>
+  <div class="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px]" />
+      <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500/5 rounded-full blur-[100px]" />
+    </div>
+
+    <div class="relative z-10 max-w-6xl mx-auto">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent">
+            Đơn hàng của tôi
+          </h1>
+          <p class="text-slate-400 mt-1">Quản lý và theo dõi đơn hàng</p>
+        </div>
         <router-link 
           to="/orders/new" 
-          class="btn-primary"
+          class="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:shadow-lg transition-all flex items-center gap-2 self-start"
         >
-          <PlusIcon class="w-5 h-5 mr-2" />
-          {{ $t('orders.newOrder') }}
+          <PlusIcon class="w-5 h-5" />
+          Tạo đơn hàng
         </router-link>
       </div>
 
       <!-- Filters -->
-      <div class="card p-4 mb-6 flex flex-wrap items-center gap-4">
-        <div class="flex items-center gap-2">
-          <label class="text-sm font-medium text-slate-700 dark:text-gray-300">Trạng thái:</label>
-          <select 
-            v-model="filters.status" 
-            @change="fetchOrders"
-            class="form-input py-1.5 w-40"
-          >
-            <option value="">Tất cả</option>
-            <option value="pending">Đang chờ</option>
-            <option value="processing">Đang xử lý</option>
-            <option value="completed">Hoàn thành</option>
-            <option value="cancelled">Đã hủy</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Loading -->
-      <div v-if="loading" class="flex justify-center py-12">
-        <LoadingSpinner size="lg" />
-      </div>
-
-      <!-- Empty -->
-      <div v-else-if="orders.length === 0" class="card p-12 text-center">
-        <ShoppingBagIcon class="w-16 h-16 mx-auto text-gray-300 dark:text-slate-600 mb-4" />
-        <h3 class="text-lg font-medium text-slate-900 dark:text-white mb-2">
-          {{ $t('orders.noOrders') }}
-        </h3>
-        <p class="text-slate-500 dark:text-slate-400 mb-4">
-          Bạn chưa có đơn hàng nào. Hãy đặt dịch vụ ngay!
-        </p>
-        <router-link to="/services" class="btn-primary">
-          Xem dịch vụ
-        </router-link>
+      <div class="flex flex-wrap items-center gap-3 mb-6">
+        <button 
+          v-for="status in statusFilters" 
+          :key="status.value"
+          @click="selectedStatus = status.value"
+          :class="[
+            'px-4 py-2 rounded-xl text-sm font-medium transition-all',
+            selectedStatus === status.value
+              ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+              : 'bg-slate-800/50 text-slate-400 border border-slate-700/50 hover:bg-slate-700/50'
+          ]"
+        >
+          {{ status.label }}
+        </button>
       </div>
 
       <!-- Orders List -->
+      <div v-if="loading" class="space-y-4">
+        <div v-for="i in 3" :key="i" class="bg-slate-800/50 rounded-2xl h-32 animate-pulse" />
+      </div>
+
+      <div v-else-if="filteredOrders.length === 0" class="text-center py-20">
+        <ShoppingBagIcon class="w-16 h-16 mx-auto text-slate-600 mb-4" />
+        <h3 class="text-xl font-semibold text-white mb-2">Chưa có đơn hàng nào</h3>
+        <p class="text-slate-400 mb-6">Bắt đầu mua sắm ngay hôm nay</p>
+        <router-link to="/services" class="px-6 py-2.5 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors">
+          Khám phá sản phẩm
+        </router-link>
+      </div>
+
       <div v-else class="space-y-4">
-        <div
-          v-for="order in orders"
-          :key="order._id"
-          class="card card-hover p-6"
+        <GlassCard 
+          v-for="order in filteredOrders" 
+          :key="order._id" 
+          hover
+          class="p-6 cursor-pointer"
+          @click="viewOrder(order._id)"
         >
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <!-- Info -->
             <div class="flex-1">
               <div class="flex items-center gap-3 mb-2">
-                <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
-                  {{ order.orderCode }}
-                </h3>
-                <span :class="getStatusBadgeClass(order.status)">
-                  {{ $t(`orders.status.${order.status}`) }}
-                </span>
+                <span class="text-white font-semibold">{{ order.orderCode }}</span>
+                <Badge :variant="getStatusVariant(order.status)">
+                  {{ getStatusLabel(order.status) }}
+                </Badge>
               </div>
-              <p class="text-slate-600 dark:text-gray-300 mb-2">
-                {{ order.packageName }}
-              </p>
-              <p class="text-sm text-slate-500 dark:text-slate-400">
-                {{ $t('orders.createdAt') }}: {{ formatDate(order.createdAt) }}
-              </p>
+              <p class="text-slate-300">{{ order.productName || order.packageName }}</p>
+              <p class="text-slate-500 text-sm mt-1">{{ formatDate(order.createdAt) }}</p>
             </div>
-
-            <!-- Price & Actions -->
             <div class="flex items-center gap-4">
-              <div class="text-right">
-                <p class="text-lg font-bold text-slate-900 dark:text-white">
-                  {{ formatPrice(order.totalPrice) }} ₫
-                </p>
-                <p class="text-sm" :class="getPaymentStatusClass(order.paymentStatus)">
-                  {{ $t(`orders.paymentStatus.${order.paymentStatus}`) }}
-                </p>
-              </div>
-
-              <div class="flex items-center gap-2">
-                <button
-                  v-if="order.paymentStatus === 'pending' && order.status !== 'cancelled'"
-                  @click="payOrder(order)"
-                  class="btn-primary"
-                >
-                  {{ $t('orders.pay') }}
-                </button>
-                
-                <button
-                  v-if="order.canCancel"
-                  @click="confirmCancel(order)"
-                  class="btn-outline text-red-600 hover:text-red-700"
-                >
-                  {{ $t('orders.cancel') }}
-                </button>
-
-                <router-link
-                  :to="`/orders/${order._id}`"
-                  class="btn-outline"
-                >
-                  {{ $t('common.view') }}
-                </router-link>
-              </div>
+              <span class="text-xl font-bold text-blue-400">{{ formatPrice(order.totalPrice) }}</span>
+              <ChevronRightIcon class="w-5 h-5 text-slate-500" />
             </div>
           </div>
-        </div>
-
-        <!-- Pagination -->
-        <div v-if="pagination.pages > 1" class="flex items-center justify-between card p-4">
-          <p class="text-sm text-slate-500 dark:text-slate-400">
-            Hiển thị {{ orders.length }} / {{ pagination.total }} đơn hàng
-          </p>
-          <div class="flex items-center gap-2">
-            <button
-              :disabled="pagination.page === 1"
-              @click="changePage(pagination.page - 1)"
-              class="btn-outline py-1 px-3"
-            >
-              Trước
-            </button>
-            <span class="text-sm text-slate-600 dark:text-slate-400">
-              Trang {{ pagination.page }} / {{ pagination.pages }}
-            </span>
-            <button
-              :disabled="pagination.page === pagination.pages"
-              @click="changePage(pagination.page + 1)"
-              class="btn-outline py-1 px-3"
-            >
-              Sau
-            </button>
-          </div>
-        </div>
+        </GlassCard>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import { orderApi } from '@/services/api.js';
-import {
-  ShoppingBagIcon,
-  PlusIcon
-} from '@heroicons/vue/24/outline';
-import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
+import GlassCard from '@/components/ui/GlassCard.vue';
+import Badge from '@/components/ui/Badge.vue';
+import { PlusIcon, ShoppingBagIcon, ChevronRightIcon } from '@heroicons/vue/24/solid';
 
 const router = useRouter();
 const toast = useToast();
 
 const loading = ref(true);
 const orders = ref([]);
-const filters = reactive({
-  status: '',
-  page: 1,
-  limit: 10
-});
-const pagination = ref({
-  page: 1,
-  pages: 1,
-  total: 0
+const selectedStatus = ref('');
+
+const statusFilters = [
+  { value: '', label: 'Tất cả' },
+  { value: 'pending', label: 'Đang chờ' },
+  { value: 'processing', label: 'Đang xử lý' },
+  { value: 'completed', label: 'Hoàn thành' },
+  { value: 'cancelled', label: 'Đã hủy' }
+];
+
+const filteredOrders = computed(() => {
+  if (!selectedStatus.value) return orders.value;
+  return orders.value.filter(o => o.status === selectedStatus.value);
 });
 
 const formatPrice = (price) => {
-  return price?.toLocaleString('vi-VN') || '0';
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(price || 0);
 };
 
 const formatDate = (date) => {
-  return new Date(date).toLocaleDateString('vi-VN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  });
+  return new Date(date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 };
 
-const getStatusBadgeClass = (status) => {
-  const classes = {
-    pending: 'badge-warning',
-    processing: 'badge-info',
-    completed: 'badge-success',
-    cancelled: 'badge-danger',
-    refunded: 'badge-danger'
-  };
-  return classes[status] || 'badge-info';
-};
+const getStatusVariant = (status) => ({
+  pending: 'warning',
+  processing: 'info',
+  completed: 'success',
+  cancelled: 'danger'
+}[status] || 'default');
 
-const getPaymentStatusClass = (status) => {
-  const classes = {
-    pending: 'text-yellow-600 dark:text-yellow-400',
-    paid: 'text-green-600 dark:text-green-400',
-    failed: 'text-red-600 dark:text-red-400',
-    refunded: 'text-slate-500'
-  };
-  return classes[status] || 'text-slate-500';
+const getStatusLabel = (status) => ({
+  pending: 'Đang chờ',
+  processing: 'Đang xử lý',
+  completed: 'Hoàn thành',
+  cancelled: 'Đã hủy'
+}[status] || status);
+
+const viewOrder = (id) => {
+  router.push(`/orders/${id}`);
 };
 
 const fetchOrders = async () => {
   loading.value = true;
   try {
-    const response = await orderApi.getMyOrders({
-      status: filters.status,
-      page: filters.page,
-      limit: filters.limit
-    });
-    
+    const response = await orderApi.getMyOrders();
     if (response.success) {
       orders.value = response.data;
-      pagination.value = response.pagination;
     }
   } catch (error) {
     toast.error('Không thể tải đơn hàng');
   } finally {
     loading.value = false;
-  }
-};
-
-const changePage = (page) => {
-  filters.page = page;
-  fetchOrders();
-};
-
-const payOrder = (order) => {
-  router.push({
-    path: `/orders/${order._id}`,
-    query: { action: 'pay' }
-  });
-};
-
-const confirmCancel = async (order) => {
-  if (!confirm('Bạn có chắc muốn hủy đơn hàng này?')) return;
-
-  try {
-    const response = await orderApi.cancelOrder(order._id, 'Người dùng hủy');
-    if (response.success) {
-      toast.success('Đã hủy đơn hàng');
-      fetchOrders();
-    }
-  } catch (error) {
-    toast.error(error.message || 'Không thể hủy đơn hàng');
   }
 };
 

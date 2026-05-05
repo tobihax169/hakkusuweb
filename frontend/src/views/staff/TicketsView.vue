@@ -1,327 +1,231 @@
 <template>
-  <div>
-    <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-slate-900 dark:text-white">
-        Quản lý Tickets Hỗ trợ
-      </h1>
-      <div class="flex items-center gap-4">
-        <select
-          v-model="filterStatus"
-          class="px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white"
-        >
-          <option value="all">Tất cả trạng thái</option>
-          <option value="open">Đang mở</option>
-          <option value="pending">Đang chờ</option>
-          <option value="resolved">Đã giải quyết</option>
-          <option value="closed">Đã đóng</option>
-        </select>
-        <select
-          v-model="filterPriority"
-          class="px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white"
-        >
-          <option value="all">Tất cả mức độ</option>
-          <option value="urgent">Khẩn cấp</option>
-          <option value="high">Cao</option>
-          <option value="medium">Trung bình</option>
-          <option value="low">Thấp</option>
-        </select>
-      </div>
+  <div class="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-0 left-0 w-[400px] h-[400px] bg-rose-500/5 rounded-full blur-[100px]" />
+      <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px]" />
     </div>
 
-    <!-- Tickets Table -->
-    <div class="card">
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="bg-slate-50 dark:bg-gray-800">
-            <tr>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">ID</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tiêu đề</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Người gửi</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Mức độ</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Trạng thái</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Người xử lý</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Thời gian</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Thao tác</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-            <tr v-for="ticket in filteredTickets" :key="ticket.id" class="hover:bg-slate-50 dark:hover:bg-gray-800/50">
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">#{{ ticket.id }}</td>
-              <td class="px-6 py-4 text-sm text-slate-900 dark:text-white">
-                <div class="font-medium">{{ ticket.title }}</div>
-                <div class="text-slate-500 text-xs">{{ ticket.category }}</div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">
-                {{ ticket.user.name }}
-                <div class="text-xs">{{ ticket.user.email }}</div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span :class="getPriorityClass(ticket.priority)">
-                  {{ getPriorityLabel(ticket.priority) }}
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span :class="getStatusClass(ticket.status)">
-                  {{ getStatusLabel(ticket.status) }}
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">
-                {{ ticket.assignedTo || 'Chưa phân công' }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                {{ formatDate(ticket.createdAt) }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm">
-                <div class="flex items-center gap-2">
-                  <button
-                    @click="openTicket(ticket)"
-                    class="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/50"
-                    title="Xem chi tiết"
-                  >
-                    <EyeIcon class="w-4 h-4" />
-                  </button>
-                  <button
-                    v-if="!ticket.assignedTo"
-                    @click="assignTicket(ticket)"
-                    class="p-2 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50"
-                    title="Nhận xử lý"
-                  >
-                    <HandRaisedIcon class="w-4 h-4" />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="relative z-10 max-w-6xl mx-auto">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent">
+          Quản lý Tickets
+        </h1>
+        <p class="text-slate-400 mt-1">Xử lý yêu cầu hỗ trợ từ khách hàng</p>
       </div>
 
-      <!-- Empty State -->
-      <div v-if="filteredTickets.length === 0" class="text-center py-12">
-        <TicketIcon class="w-16 h-16 mx-auto text-gray-300 dark:text-slate-600 mb-4" />
-        <p class="text-slate-500 dark:text-slate-400">Không có ticket nào</p>
+      <!-- Filters -->
+      <div class="flex flex-wrap items-center gap-3 mb-6">
+        <button 
+          v-for="status in statusFilters" 
+          :key="status.value"
+          @click="filters.status = status.value"
+          :class="[
+            'px-4 py-2 rounded-xl text-sm font-medium transition-all',
+            filters.status === status.value
+              ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+              : 'bg-slate-800/50 text-slate-400 border border-slate-700/50 hover:bg-slate-700/50'
+          ]"
+        >
+          {{ status.label }}
+        </button>
+      </div>
+
+      <!-- Tickets List -->
+      <div v-if="loading" class="space-y-4">
+        <div v-for="i in 3" :key="i" class="bg-slate-800/50 rounded-2xl h-32 animate-pulse" />
+      </div>
+      <div v-else-if="tickets.length === 0" class="text-center py-12">
+        <TicketIcon class="w-16 h-16 mx-auto text-slate-600 mb-4" />
+        <p class="text-slate-400">Không có ticket nào</p>
+      </div>
+      <div v-else class="space-y-4">
+        <GlassCard 
+          v-for="ticket in tickets" 
+          :key="ticket._id"
+          hover
+          class="p-6 cursor-pointer"
+          @click="openTicket(ticket)"
+        >
+          <div class="flex items-start justify-between">
+            <div class="flex items-start gap-4">
+              <div :class="getPriorityClass(ticket.priority)" class="w-12 h-12 rounded-xl flex items-center justify-center">
+                <TicketIcon class="w-6 h-6" />
+              </div>
+              <div>
+                <div class="flex items-center gap-3 mb-1">
+                  <h3 class="text-white font-medium">{{ ticket.title }}</h3>
+                  <Badge :variant="getStatusVariant(ticket.status)">{{ getStatusLabel(ticket.status) }}</Badge>
+                </div>
+                <p class="text-slate-400 text-sm">{{ ticket.userId?.username }} • {{ formatDate(ticket.createdAt) }}</p>
+                <p class="text-slate-500 text-sm mt-2 line-clamp-2">{{ ticket.description }}</p>
+              </div>
+            </div>
+            <ChevronRightIcon class="w-5 h-5 text-slate-500" />
+          </div>
+        </GlassCard>
       </div>
     </div>
 
     <!-- Ticket Detail Modal -->
-    <div v-if="selectedTicket" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-      <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden">
-        <div class="p-6 border-b border-slate-200 dark:border-gray-700 flex items-center justify-between">
+    <div v-if="selectedTicket" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" @click.self="selectedTicket = null">
+      <GlassCard class="w-full max-w-2xl max-h-[80vh] flex flex-col">
+        <div class="p-6 border-b border-slate-700/50 flex items-center justify-between">
           <div>
-            <h2 class="text-xl font-bold text-slate-900 dark:text-white">#{{ selectedTicket.id }} - {{ selectedTicket.title }}</h2>
-            <p class="text-sm text-slate-500 mt-1">{{ selectedTicket.category }}</p>
+            <h3 class="text-lg font-semibold text-white">{{ selectedTicket.title }}</h3>
+            <p class="text-slate-400 text-sm">#{{ selectedTicket.ticketNumber }} • {{ selectedTicket.userId?.username }}</p>
           </div>
-          <button @click="selectedTicket = null" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-700">
-            <XMarkIcon class="w-6 h-6 text-slate-500" />
-          </button>
-        </div>
-        
-        <div class="p-6 overflow-y-auto max-h-[60vh]">
-          <!-- Ticket Info -->
-          <div class="grid grid-cols-2 gap-4 mb-6 p-4 bg-slate-50 dark:bg-gray-700 rounded-xl">
-            <div>
-              <p class="text-sm text-slate-500">Người gửi</p>
-              <p class="font-medium text-slate-900 dark:text-white">{{ selectedTicket.user.name }}</p>
-              <p class="text-sm text-slate-500">{{ selectedTicket.user.email }}</p>
-            </div>
-            <div>
-              <p class="text-sm text-slate-500">Người xử lý</p>
-              <p class="font-medium text-slate-900 dark:text-white">{{ selectedTicket.assignedTo || 'Chưa phân công' }}</p>
-            </div>
-            <div>
-              <p class="text-sm text-slate-500">Mức độ</p>
-              <span :class="getPriorityClass(selectedTicket.priority)">{{ getPriorityLabel(selectedTicket.priority) }}</span>
-            </div>
-            <div>
-              <p class="text-sm text-slate-500">Trạng thái</p>
-              <select v-model="selectedTicket.status" @change="updateStatus(selectedTicket)" class="mt-1 px-3 py-1 rounded-lg border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm">
-                <option value="open">Đang mở</option>
-                <option value="pending">Đang chờ</option>
-                <option value="resolved">Đã giải quyết</option>
-                <option value="closed">Đã đóng</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Messages -->
-          <div class="space-y-4">
-            <div v-for="message in selectedTicket.messages" :key="message.id" :class="['flex gap-4', message.isStaff ? 'flex-row-reverse' : '']">
-              <div class="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold" :class="message.isStaff ? 'bg-blue-500 text-white' : 'bg-slate-200 dark:bg-gray-600 text-slate-700 dark:text-gray-300'">
-                {{ message.author.charAt(0) }}
-              </div>
-              <div :class="['flex-1 p-4 rounded-2xl', message.isStaff ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-900 dark:text-blue-100' : 'bg-slate-100 dark:bg-gray-700 text-slate-900 dark:text-white']">
-                <p class="font-medium text-sm">{{ message.author }}</p>
-                <p class="mt-1">{{ message.content }}</p>
-                <p class="text-xs text-slate-500 mt-2">{{ formatDate(message.createdAt) }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Reply Box -->
-        <div class="p-6 border-t border-slate-200 dark:border-gray-700">
-          <div class="flex gap-4">
-            <textarea
-              v-model="replyMessage"
-              rows="3"
-              placeholder="Nhập phản hồi..."
-              class="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-slate-900 dark:text-white resize-none"
-            />
-            <button
-              @click="sendReply"
-              :disabled="!replyMessage.trim() || sending"
-              class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          <div class="flex items-center gap-2">
+            <select 
+              v-model="selectedTicket.status" 
+              @change="updateTicketStatus"
+              class="px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white outline-none"
             >
-              <span v-if="sending">Đang gửi...</span>
-              <span v-else>Gửi</span>
+              <option value="open">Đang mở</option>
+              <option value="pending">Đang xử lý</option>
+              <option value="closed">Đã đóng</option>
+            </select>
+            <button @click="selectedTicket = null" class="p-2 hover:bg-slate-700 rounded-lg">
+              <XMarkIcon class="w-5 h-5 text-slate-400" />
             </button>
           </div>
         </div>
-      </div>
+        <div class="p-6 overflow-y-auto flex-1 max-h-[50vh]">
+          <div class="space-y-4">
+            <div 
+              v-for="reply in selectedTicket.replies" 
+              :key="reply._id" 
+              :class="reply.isStaff ? 'bg-blue-500/10' : 'bg-slate-700/30'"
+              class="p-4 rounded-xl"
+            >
+              <div class="flex items-center gap-2 mb-2">
+                <span class="font-medium text-white">{{ reply.userId?.username }}</span>
+                <Badge v-if="reply.isStaff" variant="primary">Staff</Badge>
+                <span class="text-slate-500 text-xs">{{ formatDate(reply.createdAt) }}</span>
+              </div>
+              <p class="text-slate-300">{{ reply.content }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-4 border-t border-slate-700/50">
+          <div class="flex gap-2">
+            <input 
+              v-model="replyContent" 
+              @keyup.enter="sendReply"
+              type="text" 
+              placeholder="Nhập phản hồi..."
+              class="flex-1 px-4 py-2 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500/50"
+            >
+            <button 
+              @click="sendReply"
+              class="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors"
+            >
+              Gửi
+            </button>
+          </div>
+        </div>
+      </GlassCard>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, reactive, onMounted, watch } from 'vue';
 import { useToast } from 'vue-toastification';
+import { ticketApi } from '@/services/api.js';
+import GlassCard from '@/components/ui/GlassCard.vue';
+import Badge from '@/components/ui/Badge.vue';
 import {
   TicketIcon,
-  EyeIcon,
-  HandRaisedIcon,
+  ChevronRightIcon,
   XMarkIcon
-} from '@heroicons/vue/24/outline';
+} from '@heroicons/vue/24/solid';
 
 const toast = useToast();
-const loading = ref(false);
+const loading = ref(true);
 const tickets = ref([]);
-const filterStatus = ref('all');
-const filterPriority = ref('all');
+const filters = reactive({ status: '' });
 const selectedTicket = ref(null);
-const replyMessage = ref('');
-const sending = ref(false);
+const replyContent = ref('');
 
-const filteredTickets = computed(() => {
-  return tickets.value.filter(ticket => {
-    const matchStatus = filterStatus.value === 'all' || ticket.status === filterStatus.value;
-    const matchPriority = filterPriority.value === 'all' || ticket.priority === filterPriority.value;
-    return matchStatus && matchPriority;
-  });
-});
+const statusFilters = [
+  { value: '', label: 'Tất cả' },
+  { value: 'open', label: 'Đang mở' },
+  { value: 'pending', label: 'Đang xử lý' },
+  { value: 'closed', label: 'Đã đóng' }
+];
+
+const getPriorityClass = (priority) => ({
+  high: 'bg-red-500/20 text-red-400',
+  medium: 'bg-amber-500/20 text-amber-400',
+  low: 'bg-green-500/20 text-green-400'
+}[priority] || 'bg-slate-500/20 text-slate-400');
+
+const getStatusVariant = (status) => ({
+  open: 'warning',
+  pending: 'info',
+  closed: 'success'
+}[status] || 'default');
+
+const getStatusLabel = (status) => ({ open: 'Đang mở', pending: 'Đang xử lý', closed: 'Đã đóng' }[status] || status);
+
+const formatDate = (date) => new Date(date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
 const fetchTickets = async () => {
   loading.value = true;
   try {
-    // TODO: Gọi API
-    tickets.value = [
-      {
-        id: 1234,
-        title: 'Lỗi không đăng nhập được',
-        category: 'Tài khoản',
-        user: { name: 'Nguyễn Văn A', email: 'a@example.com' },
-        priority: 'high',
-        status: 'open',
-        assignedTo: null,
-        createdAt: new Date(),
-        messages: [
-          { id: 1, author: 'Nguyễn Văn A', content: 'Tôi không đăng nhập được, báo lỗi sai mật khẩu', isStaff: false, createdAt: new Date() }
-        ]
-      },
-      {
-        id: 1235,
-        title: 'Yêu cầu hoàn tiền đơn hàng #5678',
-        category: 'Đơn hàng',
-        user: { name: 'Trần Thị B', email: 'b@example.com' },
-        priority: 'urgent',
-        status: 'pending',
-        assignedTo: 'Support A',
-        createdAt: new Date(Date.now() - 3600000),
-        messages: [
-          { id: 1, author: 'Trần Thị B', content: 'Tôi muốn hoàn tiền cho đơn hàng này', isStaff: false, createdAt: new Date(Date.now() - 3600000) },
-          { id: 2, author: 'Support A', content: 'Chị vui lòng cung cấp lý do hoàn tiền', isStaff: true, createdAt: new Date(Date.now() - 1800000) }
-        ]
-      }
-    ];
+    const response = await ticketApi.getAllTickets(filters);
+    if (response.success) tickets.value = Array.isArray(response.data) ? response.data : [];
+  } catch (error) {
+    toast.error(error.message || 'Không thể tải tickets');
+    tickets.value = [];
   } finally {
     loading.value = false;
   }
 };
 
-const openTicket = (ticket) => {
-  selectedTicket.value = { ...ticket };
-};
-
-const assignTicket = async (ticket) => {
+const openTicket = async (ticket) => {
   try {
-    // TODO: API call
-    ticket.assignedTo = 'Tôi';
-    toast.success('Đã nhận ticket #' + ticket.id);
+    const response = await ticketApi.getTicketById(ticket._id);
+    if (response.success && response.data) {
+      selectedTicket.value = response.data;
+    } else {
+      selectedTicket.value = ticket;
+    }
   } catch (error) {
-    toast.error('Không thể nhận ticket');
+    toast.error(error.message || 'Không thể mở ticket');
   }
 };
 
-const updateStatus = async (ticket) => {
+const updateTicketStatus = async () => {
+  if (!selectedTicket.value) return;
   try {
-    // TODO: API call
-    toast.success('Đã cập nhật trạng thái');
+    await ticketApi.updateTicket(selectedTicket.value._id, { status: selectedTicket.value.status });
+    toast.success('Cập nhật trạng thái thành công');
+    const res = await ticketApi.getTicketById(selectedTicket.value._id);
+    if (res.success && res.data) selectedTicket.value = res.data;
   } catch (error) {
-    toast.error('Không thể cập nhật');
+    toast.error(error.message || 'Không thể cập nhật');
   }
 };
 
 const sendReply = async () => {
-  if (!replyMessage.value.trim()) return;
-  
-  sending.value = true;
+  if (!replyContent.value.trim() || !selectedTicket.value) return;
   try {
-    // TODO: API call
-    selectedTicket.value.messages.push({
-      id: Date.now(),
-      author: 'Support Staff',
-      content: replyMessage.value,
-      isStaff: true,
-      createdAt: new Date()
-    });
-    replyMessage.value = '';
+    const res = await ticketApi.replyToTicket(selectedTicket.value._id, { content: replyContent.value });
     toast.success('Đã gửi phản hồi');
+    replyContent.value = '';
+    if (res.success && res.data) {
+      selectedTicket.value = res.data;
+    }
+    await fetchTickets();
   } catch (error) {
-    toast.error('Không thể gửi');
-  } finally {
-    sending.value = false;
+    toast.error(error.message || 'Không thể gửi phản hồi');
   }
 };
 
-const getPriorityClass = (priority) => {
-  const classes = {
-    urgent: 'px-3 py-1 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400',
-    high: 'px-3 py-1 rounded-full text-xs font-medium bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400',
-    medium: 'px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400',
-    low: 'px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
-  };
-  return classes[priority] || classes.medium;
-};
-
-const getPriorityLabel = (priority) => {
-  const labels = { urgent: 'Khẩn cấp', high: 'Cao', medium: 'Trung bình', low: 'Thấp' };
-  return labels[priority] || priority;
-};
-
-const getStatusClass = (status) => {
-  const classes = {
-    open: 'px-3 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
-    pending: 'px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400',
-    resolved: 'px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400',
-    closed: 'px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-gray-700 text-slate-600 dark:text-slate-400'
-  };
-  return classes[status] || classes.open;
-};
-
-const getStatusLabel = (status) => {
-  const labels = { open: 'Đang mở', pending: 'Đang chờ', resolved: 'Đã giải quyết', closed: 'Đã đóng' };
-  return labels[status] || status;
-};
-
-const formatDate = (date) => new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(date));
+watch(() => filters.status, () => {
+  fetchTickets();
+});
 
 onMounted(fetchTickets);
 </script>

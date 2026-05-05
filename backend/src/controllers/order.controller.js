@@ -91,9 +91,27 @@ export const createOrder = catchAsync(async (req, res) => {
   } = req.body;
 
   // Kiểm tra gói dịch vụ
-  const servicePackage = await ServicePackage.findOne({ packageId, isActive: true });
+  const servicePackage = await ServicePackage.findOne({
+    packageId,
+    isActive: true,
+    approvalStatus: 'approved'
+  });
   if (!servicePackage) {
     throw new APIError('Gói dịch vụ không tồn tại hoặc đã bị vô hiệu hóa', 400);
+  }
+
+  if (servicePackage.isMarketplaceItem && servicePackage.sellerId) {
+    const seller = await User.findById(servicePackage.sellerId).select('role sellerInfo.compliance');
+    if (!seller || seller.role !== 'seller') {
+      throw new APIError('Seller không hợp lệ cho sản phẩm marketplace', 400);
+    }
+
+    const isHighValueAccount = Boolean(servicePackage.isAccountListing) && Number(servicePackage.price) >= Number(servicePackage.highValueThreshold || 5000000);
+    const hasVerifiedIdentity = Boolean(seller?.sellerInfo?.compliance?.identityVerified);
+    const depositAmount = Number(seller?.sellerInfo?.compliance?.securityDeposit || 0);
+    if (isHighValueAccount && !hasVerifiedIdentity && depositAmount < Number(servicePackage.price) * 0.2) {
+      throw new APIError('Sản phẩm tạm khóa giao dịch: seller chưa đạt điều kiện CCCD/đặt cọc cho account giá trị cao', 403);
+    }
   }
 
   // Tính giá (có thể thêm discount logic sau)

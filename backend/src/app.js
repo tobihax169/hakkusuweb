@@ -13,7 +13,6 @@ import { connectDB } from './config/database.js';
 import passport from './config/passport.js';
 import { logger } from './utils/logger.js';
 import { generalLimiter } from './middleware/rateLimiter.js';
-import seedData from './utils/seed.js';
 import {
   handleValidationError,
   handleMongoError,
@@ -41,6 +40,8 @@ app.use(helmet({
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:3000',
   'https://hakkusu.xyz',
   'https://www.hakkusu.xyz'
 ].filter(Boolean);
@@ -106,9 +107,6 @@ const startServer = async () => {
   try {
     // Kết nối database
     await connectDB();
-
-    // Seed dữ liệu mặc định (admin, support, demo user)
-    await seedData();
 
     // Khởi động server
     app.listen(PORT, () => {

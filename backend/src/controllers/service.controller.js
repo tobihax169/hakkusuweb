@@ -1,7 +1,6 @@
 import ServicePackage from '../models/ServicePackage.js';
 import { catchAsync, APIError } from '../middleware/errorHandler.js';
 import Log from '../models/Log.js';
-import { DEFAULT_PACKAGES } from '../../../shared/constants.js';
 
 /**
  * Lấy danh sách gói dịch vụ (public)
@@ -9,12 +8,32 @@ import { DEFAULT_PACKAGES } from '../../../shared/constants.js';
  */
 export const getServices = catchAsync(async (req, res) => {
   const lang = req.query.lang || req.user?.language || 'vi';
-  
-  const services = await ServicePackage.getActivePackages(lang);
+  const {
+    search,
+    category,
+    sort = 'popular',
+    sellerId,
+    page = 1,
+    limit = 50
+  } = req.query;
+
+  const services = await ServicePackage.getActivePackages(lang, {
+    search,
+    category,
+    sort,
+    sellerId,
+    page,
+    limit,
+    marketplaceOnly: true
+  });
 
   res.json({
     success: true,
-    data: services
+    data: services,
+    pagination: {
+      page: parseInt(page, 10) || 1,
+      limit: parseInt(limit, 10) || 50
+    }
   });
 });
 
@@ -35,6 +54,61 @@ export const getServiceById = catchAsync(async (req, res) => {
   res.json({
     success: true,
     data: service
+  });
+});
+
+/**
+ * Lấy danh sách sản phẩm theo seller (public storefront)
+ * GET /api/services/seller/:sellerId
+ */
+export const getServicesBySeller = catchAsync(async (req, res) => {
+  const lang = req.query.lang || req.user?.language || 'vi';
+  const { sellerId } = req.params;
+  const { search, category, sort = 'popular', page = 1, limit = 50 } = req.query;
+
+  const services = await ServicePackage.getActivePackages(lang, {
+    search,
+    category,
+    sort,
+    sellerId,
+    page,
+    limit,
+    marketplaceOnly: true
+  });
+
+  res.json({
+    success: true,
+    data: services,
+    pagination: {
+      page: parseInt(page, 10) || 1,
+      limit: parseInt(limit, 10) || 50
+    }
+  });
+});
+
+/**
+ * Tăng lượt xem cho dịch vụ (public analytics hook)
+ * POST /api/services/:packageId/view
+ */
+export const trackServiceView = catchAsync(async (req, res) => {
+  const { packageId } = req.params;
+  const service = await ServicePackage.findOne({
+    packageId,
+    isActive: true,
+    approvalStatus: 'approved'
+  });
+
+  if (!service) {
+    throw new APIError('Gói dịch vụ không tồn tại', 404);
+  }
+
+  service.metadata = service.metadata || {};
+  service.metadata.views = (service.metadata.views || 0) + 1;
+  await service.save();
+
+  res.json({
+    success: true,
+    data: { views: service.metadata.views }
   });
 });
 
@@ -91,7 +165,7 @@ export const updateService = catchAsync(async (req, res) => {
   // Cập nhật các trường cho phép
   const allowedFields = [
     'name', 'nameEn', 'description', 'descriptionEn',
-    'price', 'currency', 'icon', 'iconUrl', 'features',
+    'price', 'currency', 'icon', 'iconUrl', 'category', 'features',
     'sortOrder', 'popular', 'isActive', 'limits', 'metadata'
   ];
 
@@ -176,55 +250,3 @@ export const deleteService = catchAsync(async (req, res) => {
   });
 });
 
-/**
- * Seed dữ liệu gói dịch vụ mặc định
- * POST /api/admin/services/seed
- */
-export const seedServices = catchAsync(async (req, res) => {
-  const results = {
-    created: 0,
-    updated: 0,
-    errors: []
-  };
-
-  for (const pkg of DEFAULT_PACKAGES) {
-    try {
-      const existing = await ServicePackage.findOne({ packageId: pkg.id });
-      
-      const serviceData = {
-        packageId: pkg.id,
-        name: pkg.name,
-        nameEn: pkg.nameEn,
-        description: pkg.description,
-        descriptionEn: pkg.descriptionEn,
-        price: pkg.price,
-        currency: pkg.currency,
-        icon: pkg.icon,
-        features: pkg.features.map((f, i) => ({
-          text: f,
-          textEn: pkg.featuresEn[i] || f,
-          included: true
-        })),
-        popular: pkg.popular,
-        isActive: pkg.isActive,
-        createdBy: req.user._id
-      };
-
-      if (existing) {
-        await ServicePackage.updateOne({ packageId: pkg.id }, serviceData);
-        results.updated++;
-      } else {
-        await ServicePackage.create(serviceData);
-        results.created++;
-      }
-    } catch (error) {
-      results.errors.push({ packageId: pkg.id, error: error.message });
-    }
-  }
-
-  res.json({
-    success: true,
-    message: 'Seed dữ liệu hoàn tất',
-    data: results
-  });
-});

@@ -57,6 +57,12 @@ const servicePackageSchema = new mongoose.Schema(
       enum: ['vnd', 'usd', 'gem', 'coin'],
       default: 'vnd'
     },
+    category: {
+      type: String,
+      enum: ['game', 'software', 'mobile', 'giftcard', 'service', 'other'],
+      default: 'other',
+      index: true
+    },
 
     // Icon/Emoji đại diện
     icon: {
@@ -100,6 +106,16 @@ const servicePackageSchema = new mongoose.Schema(
     metadata: {
       type: mongoose.Schema.Types.Mixed,
       default: {}
+    },
+    isAccountListing: {
+      type: Boolean,
+      default: false,
+      index: true
+    },
+    highValueThreshold: {
+      type: Number,
+      default: 5000000,
+      min: 0
     },
 
     // Người tạo/cập nhật
@@ -185,6 +201,7 @@ const servicePackageSchema = new mongoose.Schema(
 servicePackageSchema.index({ isActive: 1, sortOrder: 1 });
 servicePackageSchema.index({ popular: 1 });
 servicePackageSchema.index({ price: 1 });
+servicePackageSchema.index({ isActive: 1, approvalStatus: 1, isMarketplaceItem: 1, category: 1 });
 
 // ==================== VIRTUALS ====================
 // Giá đã định dạng
@@ -227,21 +244,72 @@ servicePackageSchema.methods.getLocalized = function (lang = 'vi') {
     formattedPrice: this.formattedPrice,
     icon: this.icon,
     iconUrl: this.iconUrl,
+    category: this.category || this.metadata?.category || 'other',
     features: this.features.map(f => ({
       text: isEnglish && f.textEn ? f.textEn : f.text,
       included: f.included
     })),
     popular: this.popular,
     limits: this.limits,
-    isActive: this.isActive
+    isActive: this.isActive,
+    isMarketplaceItem: this.isMarketplaceItem,
+    seller: this.sellerId || null,
+    approvalStatus: this.approvalStatus,
+    viewCount: this.metadata?.views || 0
   };
 };
 
 // ==================== STATIC METHODS ====================
-// Lấy danh sách gói đang active
-servicePackageSchema.statics.getActivePackages = async function (lang = 'vi') {
-  const packages = await this.find({ isActive: true })
-    .sort({ sortOrder: 1, price: 1 })
+// Lấy danh sách gói đang active + đã duyệt theo điều kiện filter marketplace
+servicePackageSchema.statics.getActivePackages = async function (lang = 'vi', options = {}) {
+  const {
+    search,
+    category,
+    sort = 'popular',
+    sellerId,
+    marketplaceOnly = true,
+    page = 1,
+    limit = 50
+  } = options;
+
+  const query = {
+    isActive: true,
+    approvalStatus: 'approved'
+  };
+
+  if (marketplaceOnly) {
+    query.isMarketplaceItem = true;
+  }
+  if (sellerId) {
+    query.sellerId = sellerId;
+  }
+  if (category && category !== 'all') {
+    query.category = category;
+  }
+  if (search) {
+    query.$or = [
+      { name: { $regex: search, $options: 'i' } },
+      { nameEn: { $regex: search, $options: 'i' } },
+      { description: { $regex: search, $options: 'i' } },
+      { descriptionEn: { $regex: search, $options: 'i' } }
+    ];
+  }
+
+  const sortMap = {
+    popular: { popular: -1, salesCount: -1, sortOrder: 1, price: 1 },
+    'price-asc': { price: 1 },
+    'price-desc': { price: -1 },
+    newest: { createdAt: -1 }
+  };
+
+  const safeLimit = Math.min(Math.max(parseInt(limit, 10) || 50, 1), 200);
+  const safePage = Math.max(parseInt(page, 10) || 1, 1);
+
+  const packages = await this.find(query)
+    .sort(sortMap[sort] || sortMap.popular)
+    .skip((safePage - 1) * safeLimit)
+    .limit(safeLimit)
+    .populate('sellerId', 'username sellerInfo.businessName')
     .lean();
   
   return packages.map(pkg => {
@@ -252,7 +320,11 @@ servicePackageSchema.statics.getActivePackages = async function (lang = 'vi') {
 
 // Lấy gói theo ID
 servicePackageSchema.statics.getByPackageId = async function (packageId, lang = 'vi') {
-  const pkg = await this.findOne({ packageId, isActive: true });
+  const pkg = await this.findOne({
+    packageId,
+    isActive: true,
+    approvalStatus: 'approved'
+  }).populate('sellerId', 'username sellerInfo.businessName');
   
   if (!pkg) return null;
   

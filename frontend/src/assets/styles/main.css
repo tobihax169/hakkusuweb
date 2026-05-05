@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,6 +12,15 @@
   body {
     @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100;
     @apply transition-colors duration-200;
+    font-family: 'VT323', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    font-size: 1.35rem;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: 0.04em;
+    line-height: 1.1;
   }
 }
 
@@ -151,6 +161,11 @@
   /* Gradient text */
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-purple-600;
+  }
+
+  .pixel-panel {
+    @apply border border-blue-500/30 bg-slate-900/80 backdrop-blur-md rounded-xl;
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2), 0 8px 24px rgba(15, 23, 42, 0.35);
   }
   
   /* Glass effect */

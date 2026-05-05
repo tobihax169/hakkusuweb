@@ -1,174 +1,145 @@
 <template>
-  <div class="py-8">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Modern Header -->
-      <div class="mb-6 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-300/50">
-          <img src="/user.png" alt="User" class="w-7 h-7 object-contain filter brightness-0 invert" />
-        </div>
-        <div>
-          <span class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-300 rounded-full text-sm font-medium mb-1">プロフィール Profile</span>
-          <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent font-display">
-            {{ $t('nav.profile') }}
-          </h1>
-        </div>
-      </div>
+  <div class="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px]" />
+      <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500/5 rounded-full blur-[100px]" />
+    </div>
 
-      <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-xl shadow-blue-100/20">
-        <!-- Avatar & Balance -->
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-6">
-          <div class="flex items-center gap-4">
-            <img 
-              v-if="authStore.userAvatar" 
-              :src="authStore.userAvatar" 
-              class="w-20 h-20 rounded-full ring-4 ring-blue-200 dark:ring-blue-500/30 object-cover"
-            />
-            <div v-else class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-500 flex items-center justify-center ring-4 ring-blue-200 dark:ring-blue-500/30 shadow-lg">
-              <img src="/user.png" alt="User" class="w-10 h-10 object-contain filter brightness-0 invert" />
-            </div>
-            <div>
-              <h2 class="text-xl font-semibold text-slate-800 dark:text-white">
-                {{ authStore.userDisplayName }}
-              </h2>
-              <p class="text-slate-500 dark:text-slate-400">{{ authStore.user?.email }}</p>
-              <div class="flex items-center gap-2 mt-2">
-                <span 
-                  :class="[
-                    'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold',
-                    authStore.user?.role === 'admin' 
-                      ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white'
-                      : authStore.user?.role === 'support'
-                        ? 'bg-gradient-to-r from-cyan-400 to-blue-400 text-white'
-                        : authStore.user?.role === 'seller'
-                          ? 'bg-gradient-to-r from-amber-400 to-orange-400 text-white'
-                          : 'bg-gradient-to-r from-slate-300 to-slate-400 text-white'
-                  ]"
-                >
-                  <img v-if="authStore.user?.role === 'admin'" src="/user.png" class="w-3 h-3 mr-1 filter brightness-0 invert" />
-                  <img v-else-if="authStore.user?.role === 'seller'" src="/wallet.png" class="w-3 h-3 mr-1 filter brightness-0 invert" />
-                  <img v-else src="/user.png" class="w-3 h-3 mr-1 filter brightness-0 invert" />
-                  {{ authStore.user?.role }}
-                </span>
-              </div>
-            </div>
+    <div class="relative z-10 max-w-3xl mx-auto">
+      <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent mb-8">
+        Hồ sơ của tôi
+      </h1>
+
+      <!-- Profile Card -->
+      <GlassCard class="p-8 mb-6">
+        <div class="flex items-center gap-6 mb-8">
+          <div class="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-4xl font-bold text-white shadow-lg shadow-blue-500/30">
+            {{ user?.username?.charAt(0).toUpperCase() || 'U' }}
           </div>
-
-          <!-- Modern Balance Cards -->
-          <div class="flex gap-3 sm:ml-auto">
-            <div class="px-4 py-2 bg-gradient-to-r from-blue-400 to-blue-500 rounded-2xl text-white shadow-lg shadow-blue-300/50">
-              <p class="text-xs text-blue-100">Gem</p>
-              <p class="text-lg font-bold">{{ formatNumber(wallet.gem) }}</p>
-            </div>
-            <div class="px-4 py-2 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-2xl text-white shadow-lg shadow-cyan-300/50">
-              <p class="text-xs text-cyan-100">Coin</p>
-              <p class="text-lg font-bold">{{ formatNumber(wallet.coin) }}</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Form -->
-        <form @submit.prevent="updateProfile" class="space-y-4">
           <div>
-            <label class="form-label">Username</label>
-            <input
-              v-model="form.username"
-              type="text"
-              class="form-input"
-              required
-            />
+            <h2 class="text-2xl font-semibold text-white">{{ user?.username }}</h2>
+            <p class="text-slate-400">{{ user?.email }}</p>
+            <Badge :variant="getRoleBadge(user?.role)" class="mt-2">
+              {{ getRoleLabel(user?.role) }}
+            </Badge>
           </div>
+        </div>
 
-          <div>
-            <label class="form-label">Email</label>
-            <input
-              v-model="form.email"
-              type="email"
-              class="form-input"
-              disabled
-            />
-            <p class="text-xs text-slate-500 mt-1">Email không thể thay đổi</p>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
+        <form @submit.prevent="updateProfile" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label class="form-label">Ngôn ngữ</label>
-              <select v-model="form.language" class="form-input">
-                <option value="vi">Tiếng Việt</option>
-                <option value="en">English</option>
-              </select>
+              <label class="block text-sm font-medium text-slate-300 mb-2">Tên hiển thị</label>
+              <input 
+                v-model="formData.username" 
+                type="text"
+                class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500/50"
+              >
             </div>
-
             <div>
-              <label class="form-label">Giao diện</label>
-              <select v-model="form.theme" class="form-input">
-                <option value="dark">Tối</option>
-                <option value="light">Sáng</option>
-                <option value="auto">Tự động</option>
-              </select>
+              <label class="block text-sm font-medium text-slate-300 mb-2">Email</label>
+              <input 
+                v-model="formData.email" 
+                type="email" 
+                disabled
+                class="w-full px-4 py-3 bg-slate-900/30 border border-slate-700 rounded-xl text-slate-500 cursor-not-allowed"
+              >
             </div>
           </div>
 
-          <div class="flex items-center justify-between pt-4">
-            <router-link to="/user/wallet" class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all">
-              <WalletIcon class="w-4 h-4" />
-              Nạp tiền ngay
-            </router-link>
-            <button
-              type="submit"
+          <div class="pt-4 border-t border-slate-700/50">
+            <button 
+              type="submit" 
               :disabled="updating"
-              class="btn-primary"
+              class="px-8 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors disabled:opacity-50"
             >
-              <LoadingSpinner v-if="updating" size="sm" color="white" class="mr-2" />
-              Lưu thay đổi
+              {{ updating ? 'Đang cập nhật...' : 'Cập nhật hồ sơ' }}
             </button>
           </div>
         </form>
-      </div>
+      </GlassCard>
 
-      <!-- Change Password -->
-      <div class="card p-6 mt-6">
-        <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-          Đổi mật khẩu
-        </h3>
+      <!-- Security Card -->
+      <GlassCard class="p-8">
+        <h3 class="text-xl font-semibold text-white mb-6">Bảo mật</h3>
+        <div class="space-y-4">
+          <div class="flex items-center justify-between p-4 bg-slate-900/30 rounded-xl">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                <KeyIcon class="w-5 h-5 text-blue-400" />
+              </div>
+              <div>
+                <p class="text-white font-medium">Mật khẩu</p>
+                <p class="text-slate-400 text-sm">Thay đổi mật khẩu định kỳ để bảo mật</p>
+              </div>
+            </div>
+            <button 
+              @click="showPasswordModal = true"
+              class="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors"
+            >
+              Đổi mật khẩu
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between p-4 bg-slate-900/30 rounded-xl">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                <ShieldCheckIcon class="w-5 h-5 text-emerald-400" />
+              </div>
+              <div>
+                <p class="text-white font-medium">Xác thực 2 yếu tố</p>
+                <p class="text-slate-400 text-sm">Tăng cường bảo mật tài khoản</p>
+              </div>
+            </div>
+            <Badge variant="warning">Sắp ra mắt</Badge>
+          </div>
+        </div>
+      </GlassCard>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div v-if="showPasswordModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" @click.self="showPasswordModal = false">
+      <GlassCard class="w-full max-w-md p-6">
+        <h3 class="text-lg font-semibold text-white mb-6">Đổi mật khẩu</h3>
         <form @submit.prevent="changePassword" class="space-y-4">
-          <div>
-            <label class="form-label">Mật khẩu hiện tại</label>
-            <input
-              v-model="passwordForm.currentPassword"
-              type="password"
-              class="form-input"
-              required
-            />
-          </div>
-          <div>
-            <label class="form-label">Mật khẩu mới</label>
-            <input
-              v-model="passwordForm.newPassword"
-              type="password"
-              class="form-input"
-              required
-              minlength="6"
-            />
-          </div>
-          <div>
-            <label class="form-label">Xác nhận mật khẩu mới</label>
-            <input
-              v-model="passwordForm.confirmNewPassword"
-              type="password"
-              class="form-input"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            :disabled="changingPassword"
-            class="btn-outline"
+          <input 
+            v-model="passwordData.current" 
+            type="password" 
+            placeholder="Mật khẩu hiện tại"
+            class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500/50"
+            required
           >
-            <LoadingSpinner v-if="changingPassword" size="sm" class="mr-2" />
-            Đổi mật khẩu
-          </button>
+          <input 
+            v-model="passwordData.new" 
+            type="password" 
+            placeholder="Mật khẩu mới"
+            class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500/50"
+            required
+          >
+          <input 
+            v-model="passwordData.confirm" 
+            type="password" 
+            placeholder="Xác nhận mật khẩu mới"
+            class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500/50"
+            required
+          >
+          <div class="flex gap-3 pt-2">
+            <button 
+              type="button" 
+              @click="showPasswordModal = false"
+              class="flex-1 py-2.5 bg-slate-700 text-white rounded-xl hover:bg-slate-600 transition-colors"
+            >
+              Hủy
+            </button>
+            <button 
+              type="submit" 
+              :disabled="changingPassword"
+              class="flex-1 py-2.5 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors disabled:opacity-50"
+            >
+              {{ changingPassword ? 'Đang đổi...' : 'Xác nhận' }}
+            </button>
+          </div>
         </form>
-      </div>
+      </GlassCard>
     </div>
   </div>
 </template>
@@ -177,94 +148,77 @@
 import { ref, reactive, onMounted } from 'vue';
 import { useToast } from 'vue-toastification';
 import { useAuthStore } from '@/stores/auth.js';
-import { useThemeStore } from '@/stores/theme.js';
 import { userApi } from '@/services/api.js';
-import { WalletIcon } from '@heroicons/vue/24/outline';
-import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
+import GlassCard from '@/components/ui/GlassCard.vue';
+import Badge from '@/components/ui/Badge.vue';
+import { KeyIcon, ShieldCheckIcon } from '@heroicons/vue/24/outline';
 
 const toast = useToast();
 const authStore = useAuthStore();
-const themeStore = useThemeStore();
 
-const wallet = reactive({
-  gem: 0,
-  coin: 0
-});
-
-const form = reactive({
-  username: '',
-  email: '',
-  language: 'vi',
-  theme: 'dark'
-});
-
-const passwordForm = reactive({
-  currentPassword: '',
-  newPassword: '',
-  confirmNewPassword: ''
-});
-
+const user = ref(null);
+const formData = reactive({ username: '', email: '' });
 const updating = ref(false);
+const showPasswordModal = ref(false);
 const changingPassword = ref(false);
+const passwordData = reactive({ current: '', new: '', confirm: '' });
 
-const formatNumber = (num) => num?.toLocaleString('vi-VN') || '0';
+const getRoleBadge = (role) => ({
+  admin: 'danger',
+  support: 'info',
+  seller: 'warning',
+  user: 'default'
+}[role] || 'default');
 
-const fetchWallet = async () => {
-  try {
-    const response = await userApi.getWallet();
-    if (response.success) {
-      wallet.gem = response.data.balance.gem;
-      wallet.coin = response.data.balance.coin;
-    }
-  } catch (error) {
-    // Silent fail - error handled by API interceptor
-  }
+const getRoleLabel = (role) => ({
+  admin: 'Admin',
+  support: 'Support',
+  seller: 'Seller',
+  user: 'User'
+}[role] || role);
+
+const fetchUser = async () => {
+  await authStore.fetchUser();
+  user.value = authStore.user;
+  formData.username = user.value?.username || '';
+  formData.email = user.value?.email || '';
 };
 
 const updateProfile = async () => {
   updating.value = true;
-  
-  // Apply theme change immediately
-  themeStore.setTheme(form.theme);
-  
-  const result = await authStore.updateProfile({
-    username: form.username,
-    language: form.language,
-    theme: form.theme
-  });
-  
-  updating.value = false;
+  try {
+    await userApi.updateProfile({ username: formData.username });
+    toast.success('Cập nhật thành công');
+    await authStore.fetchUser();
+  } catch (error) {
+    toast.error('Không thể cập nhật');
+  } finally {
+    updating.value = false;
+  }
 };
 
 const changePassword = async () => {
-  if (passwordForm.newPassword !== passwordForm.confirmNewPassword) {
-    toast.error('Mật khẩu xác nhận không khớp');
+  if (passwordData.new !== passwordData.confirm) {
+    toast.error('Mật khẩu mới không khớp');
     return;
   }
-
   changingPassword.value = true;
-  const result = await authStore.changePassword({
-    currentPassword: passwordForm.currentPassword,
-    newPassword: passwordForm.newPassword,
-    confirmNewPassword: passwordForm.confirmNewPassword
-  });
-  
-  if (result.success) {
-    passwordForm.currentPassword = '';
-    passwordForm.newPassword = '';
-    passwordForm.confirmNewPassword = '';
+  try {
+    await userApi.changePassword({
+      currentPassword: passwordData.current,
+      newPassword: passwordData.new
+    });
+    toast.success('Đổi mật khẩu thành công');
+    showPasswordModal.value = false;
+    passwordData.current = '';
+    passwordData.new = '';
+    passwordData.confirm = '';
+  } catch (error) {
+    toast.error(error.message || 'Không thể đổi mật khẩu');
+  } finally {
+    changingPassword.value = false;
   }
-  
-  changingPassword.value = false;
 };
 
-onMounted(() => {
-  if (authStore.user) {
-    form.username = authStore.user.username;
-    form.email = authStore.user.email;
-    form.language = authStore.user.language || 'vi';
-    form.theme = authStore.user.theme || 'dark';
-  }
-  fetchWallet();
-});
+onMounted(fetchUser);
 </script>
