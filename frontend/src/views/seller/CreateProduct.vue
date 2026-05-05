@@ -7,7 +7,7 @@
 
     <div class="relative z-10 max-w-2xl mx-auto">
       <div class="flex items-center gap-4 mb-8">
-        <button @click="$router.back()" class="p-2 bg-slate-800/50 rounded-xl hover:bg-slate-700/50 transition-colors">
+        <button type="button" @click="$router.back()" class="p-2 bg-slate-800/50 rounded-xl hover:bg-slate-700/50 transition-colors">
           <ArrowLeftIcon class="w-5 h-5 text-slate-400" />
         </button>
         <div>
@@ -22,9 +22,9 @@
         <form @submit.prevent="handleSubmit" class="space-y-6">
           <div>
             <label class="block text-sm font-medium text-slate-300 mb-2">Tên sản phẩm</label>
-            <input 
-              v-model="formData.name" 
-              type="text" 
+            <input
+              v-model="formData.name"
+              type="text"
               required
               class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 outline-none focus:border-blue-500/50"
               placeholder="Nhập tên sản phẩm"
@@ -33,27 +33,27 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-slate-300 mb-2">Danh mục</label>
-              <select 
-                v-model="formData.category" 
+              <label class="block text-sm font-medium text-slate-300 mb-2">Loại hàng</label>
+              <select
+                v-model="formData.category"
                 required
                 class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500/50"
               >
-                <option value="">Chọn danh mục</option>
-                <option value="game">Game</option>
-                <option value="software">Phần mềm</option>
-                <option value="mobile">Di động</option>
-                <option value="giftcard">Thẻ quà tặng</option>
-                <option value="account">Tài khoản</option>
+                <option value="" disabled>Chọn loại</option>
+                <option value="game_account">Account game</option>
+                <option value="social_account">Tài khoản mạng xã hội</option>
+                <option value="game_item">Vật phẩm trong game</option>
+                <option value="giftcard">Gift card</option>
+                <option value="digital_file">Bán file</option>
                 <option value="other">Khác</option>
               </select>
             </div>
             <div>
               <label class="block text-sm font-medium text-slate-300 mb-2">Giá (VNĐ)</label>
-              <input 
-                v-model.number="formData.price" 
-                type="number" 
-                required 
+              <input
+                v-model.number="formData.price"
+                type="number"
+                required
                 min="1000"
                 class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 outline-none focus:border-blue-500/50"
                 placeholder="100000"
@@ -63,9 +63,9 @@
 
           <div>
             <label class="block text-sm font-medium text-slate-300 mb-2">Mô tả</label>
-            <textarea 
-              v-model="formData.description" 
-              rows="4" 
+            <textarea
+              v-model="formData.description"
+              rows="4"
               required
               class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 outline-none focus:border-blue-500/50"
               placeholder="Mô tả chi tiết về sản phẩm..."
@@ -73,21 +73,35 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-300 mb-2">Hình ảnh (URL)</label>
-            <input 
-              v-model="formData.image" 
-              type="url"
-              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 outline-none focus:border-blue-500/50"
-              placeholder="https://example.com/image.jpg"
+            <label class="block text-sm font-medium text-slate-300 mb-2">Hình ảnh (tối đa 5, JPG/PNG/WebP)</label>
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              multiple
+              class="block w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-slate-700 file:text-white"
+              @change="onFiles"
             >
+            <p class="text-xs text-slate-500 mt-2">{{ imageFiles.length }}/5 ảnh đã chọn</p>
+            <div v-if="previews.length" class="flex flex-wrap gap-2 mt-3">
+              <div v-for="(src, i) in previews" :key="i" class="relative w-20 h-20 rounded-lg overflow-hidden border border-slate-600">
+                <img :src="src" alt="" class="w-full h-full object-cover">
+                <button
+                  type="button"
+                  class="absolute top-0 right-0 p-0.5 bg-black/60 text-white text-xs rounded-bl"
+                  @click="removeImage(i)"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-slate-300 mb-2">Số lượng tồn kho</label>
-            <input 
-              v-model.number="formData.stock" 
-              type="number" 
-              required 
+            <input
+              v-model.number="formData.stock"
+              type="number"
+              required
               min="0"
               class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 outline-none focus:border-blue-500/50"
               placeholder="100"
@@ -97,7 +111,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label class="flex items-center gap-2 text-sm text-slate-300">
               <input v-model="formData.isAccountListing" type="checkbox" class="rounded border-slate-600 bg-slate-900/50">
-              Đây là sản phẩm bán account
+              Ghi chú: đây là sản phẩm dạng account (áp dụng quy tắc giá trị cao)
             </label>
             <div>
               <label class="block text-sm font-medium text-slate-300 mb-2">Ngưỡng giá trị cao (VNĐ)</label>
@@ -111,8 +125,8 @@
           </div>
 
           <div class="pt-4 border-t border-slate-700/50">
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               :disabled="submitting"
               class="w-full py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all disabled:opacity-50"
             >
@@ -130,6 +144,7 @@ import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import { productApi } from '@/services/api.js';
+import { uploadProductImages } from '@/utils/uploadProductImages.js';
 import GlassCard from '@/components/ui/GlassCard.vue';
 import { ArrowLeftIcon } from '@heroicons/vue/24/solid';
 
@@ -137,18 +152,37 @@ const router = useRouter();
 const toast = useToast();
 
 const submitting = ref(false);
+const imageFiles = ref([]);
+const previews = ref([]);
+
 const formData = reactive({
   name: '',
   category: '',
   price: 10000,
   description: '',
-  image: '',
   stock: 100,
   isAccountListing: false,
   highValueThreshold: 5000000
 });
 
-const buildPayload = () => ({
+const onFiles = (e) => {
+  const picked = Array.from(e.target.files || []);
+  const merged = [...imageFiles.value, ...picked].slice(0, 5);
+  imageFiles.value = merged;
+  previews.value.forEach((u) => URL.revokeObjectURL(u));
+  previews.value = merged.map((f) => URL.createObjectURL(f));
+  e.target.value = '';
+};
+
+const removeImage = (index) => {
+  const next = [...imageFiles.value];
+  next.splice(index, 1);
+  imageFiles.value = next;
+  previews.value.forEach((u) => URL.revokeObjectURL(u));
+  previews.value = next.map((f) => URL.createObjectURL(f));
+};
+
+const buildPayload = (imageUrls) => ({
   name: formData.name.trim(),
   description: formData.description.trim(),
   price: Number(formData.price),
@@ -156,9 +190,9 @@ const buildPayload = () => ({
   descriptionEn: '',
   currency: 'vnd',
   category: formData.category || 'other',
-  isAccountListing: formData.isAccountListing || formData.category === 'account',
+  isAccountListing: formData.isAccountListing,
   highValueThreshold: Number(formData.highValueThreshold) || 5000000,
-  iconUrl: formData.image?.trim() || null,
+  imageUrls,
   metadata: {
     category: formData.category || 'other',
     stock: Number(formData.stock) || 0
@@ -168,7 +202,11 @@ const buildPayload = () => ({
 const handleSubmit = async () => {
   submitting.value = true;
   try {
-    const response = await productApi.createProduct(buildPayload());
+    let imageUrls = [];
+    if (imageFiles.value.length) {
+      imageUrls = await uploadProductImages(imageFiles.value, 5);
+    }
+    const response = await productApi.createProduct(buildPayload(imageUrls));
     if (response.success) {
       toast.success('Tạo sản phẩm thành công!');
       router.push('/seller/products');

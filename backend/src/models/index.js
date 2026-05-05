@@ -10,3 +10,6 @@ export { default as Log } from './Log.js';
 export { default as Withdrawal } from './Withdrawal.js';
 export { default as Announcement } from './Announcement.js';
 export { default as Ticket } from './Ticket.js';
+export { default as SellerFollow } from './SellerFollow.js';
+export { default as ShopReview } from './ShopReview.js';
+export { default as ShopMessage } from './ShopMessage.js';

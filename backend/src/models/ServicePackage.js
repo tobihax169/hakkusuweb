@@ -59,7 +59,19 @@ const servicePackageSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ['game', 'software', 'mobile', 'giftcard', 'service', 'other'],
+      enum: [
+        'game_account',
+        'social_account',
+        'game_item',
+        'giftcard',
+        'digital_file',
+        'other',
+        'game',
+        'software',
+        'mobile',
+        'service',
+        'account'
+      ],
       default: 'other',
       index: true
     },
@@ -72,6 +84,17 @@ const servicePackageSchema = new mongoose.Schema(
     iconUrl: {
       type: String,
       default: null
+    },
+    /** Up to 5 gallery image URLs (first is cover / iconUrl sync on save). */
+    imageUrls: {
+      type: [String],
+      default: [],
+      validate: {
+        validator(arr) {
+          return !arr || arr.length <= 5;
+        },
+        message: 'Tối đa 5 hình ảnh'
+      }
     },
 
     // Danh sách tính năng
@@ -227,6 +250,12 @@ servicePackageSchema.virtual('formattedPrice').get(function () {
 // ==================== MIDDLEWARE ====================
 servicePackageSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
+  let urls = [...new Set((this.imageUrls || []).filter(Boolean))].slice(0, 5);
+  if (!urls.length && this.iconUrl) {
+    urls = [this.iconUrl];
+  }
+  this.imageUrls = urls;
+  this.iconUrl = urls[0] || null;
   next();
 });
 
@@ -235,6 +264,11 @@ servicePackageSchema.pre('save', function (next) {
 servicePackageSchema.methods.getLocalized = function (lang = 'vi') {
   const isEnglish = lang === 'en';
   
+  const imgs = Array.isArray(this.imageUrls)
+    ? this.imageUrls.filter(Boolean).slice(0, 5)
+    : [];
+  const cover = imgs[0] || this.iconUrl || null;
+
   return {
     id: this.packageId,
     name: isEnglish && this.nameEn ? this.nameEn : this.name,
@@ -243,7 +277,8 @@ servicePackageSchema.methods.getLocalized = function (lang = 'vi') {
     currency: this.currency,
     formattedPrice: this.formattedPrice,
     icon: this.icon,
-    iconUrl: this.iconUrl,
+    iconUrl: cover,
+    imageUrls: imgs.length ? imgs : cover ? [cover] : [],
     category: this.category || this.metadata?.category || 'other',
     features: this.features.map(f => ({
       text: isEnglish && f.textEn ? f.textEn : f.text,
@@ -255,7 +290,9 @@ servicePackageSchema.methods.getLocalized = function (lang = 'vi') {
     isMarketplaceItem: this.isMarketplaceItem,
     seller: this.sellerId || null,
     approvalStatus: this.approvalStatus,
-    viewCount: this.metadata?.views || 0
+    viewCount: this.metadata?.views || 0,
+    salesCount: this.salesCount ?? 0,
+    createdAt: this.createdAt
   };
 };
 

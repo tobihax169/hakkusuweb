@@ -38,6 +38,7 @@ const SellerProducts = () => import('@/views/seller/SellerProducts.vue');
 const CreateProduct = () => import('@/views/seller/CreateProduct.vue');
 const EditProduct = () => import('@/views/seller/EditProduct.vue');
 const SellerOrdersView = () => import('@/views/seller/SellerOrdersView.vue');
+const ShopPublicView = () => import('@/views/shop/ShopPublicView.vue');
 
 const routes = [
   {
@@ -47,7 +48,8 @@ const routes = [
       { path: '', name: 'Home', component: HomeView },
       { path: 'services', name: 'Services', component: ServicesView },
       { path: 'terms', name: 'Terms', component: TermsView },
-      { path: 'privacy', name: 'Privacy', component: PrivacyView }
+      { path: 'privacy', name: 'Privacy', component: PrivacyView },
+      { path: 'shop/:username', name: 'ShopPublic', component: ShopPublicView }
     ]
   },
   {

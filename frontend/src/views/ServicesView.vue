@@ -128,7 +128,15 @@
                     <span class="text-slate-600">|</span>
                     <span class="text-slate-400">Đã bán {{ formatNumber(product.sold || 0) }}</span>
                   </div>
-                  <p class="text-xs text-slate-500 mt-2">{{ product.seller?.storeName || 'Hakkusu' }}</p>
+                  <p class="text-xs text-slate-500 mt-2">{{ product.seller?.storeName || product.seller?.businessName || 'Seller' }}</p>
+                  <router-link
+                    v-if="product.sellerUsername"
+                    :to="`/shop/${product.sellerUsername}`"
+                    class="text-xs text-blue-400 hover:underline mt-1 inline-block"
+                    @click.stop
+                  >
+                    Xem cửa hàng
+                  </router-link>
                 </div>
               </div>
             </div>
@@ -152,10 +160,10 @@ import {
   Bars3Icon,
   CubeIcon,
   GiftIcon,
-  DevicePhoneMobileIcon,
-  ComputerDesktopIcon,
   PuzzlePieceIcon,
-  SparklesIcon
+  UserCircleIcon,
+  AtSymbolIcon,
+  DocumentArrowDownIcon
 } from '@heroicons/vue/24/solid';
 
 const router = useRouter();
@@ -170,12 +178,30 @@ const sortBy = ref('popular');
 
 const categories = ref([
   { id: 'all', name: 'Tất cả', icon: ShoppingBagIcon, count: 0 },
-  { id: 'game', name: 'Game', icon: PuzzlePieceIcon, count: 0 },
-  { id: 'software', name: 'Phần mềm', icon: ComputerDesktopIcon, count: 0 },
-  { id: 'mobile', name: 'Di động', icon: DevicePhoneMobileIcon, count: 0 },
-  { id: 'giftcard', name: 'Thẻ quà tặng', icon: GiftIcon, count: 0 },
-  { id: 'service', name: 'Dịch vụ', icon: SparklesIcon, count: 0 }
+  { id: 'game_account', name: 'Account game', icon: UserCircleIcon, count: 0 },
+  { id: 'social_account', name: 'MXH', icon: AtSymbolIcon, count: 0 },
+  { id: 'game_item', name: 'Vật phẩm game', icon: PuzzlePieceIcon, count: 0 },
+  { id: 'giftcard', name: 'Gift card', icon: GiftIcon, count: 0 },
+  { id: 'digital_file', name: 'Bán file', icon: DocumentArrowDownIcon, count: 0 },
+  { id: 'other', name: 'Khác', icon: CubeIcon, count: 0 }
 ]);
+
+const normalizeListingCategory = (c) => {
+  const m = {
+    game: 'game_item',
+    software: 'digital_file',
+    mobile: 'game_item',
+    service: 'other',
+    account: 'game_account',
+    game_account: 'game_account',
+    social_account: 'social_account',
+    game_item: 'game_item',
+    giftcard: 'giftcard',
+    digital_file: 'digital_file',
+    other: 'other'
+  };
+  return m[c] || 'other';
+};
 
 const filteredProducts = computed(() => {
   let result = [...products.value];
@@ -231,19 +257,28 @@ const fetchProducts = async () => {
       category: selectedCategory.value !== 'all' ? selectedCategory.value : undefined,
       limit: 200
     });
-    products.value = (response.data || []).map((s, i) => ({
-      id: s.id || s._id || i,
-      name: s.name,
-      price: s.price,
-      originalPrice: s.originalPrice,
-      image: s.iconUrl || s.image,
-      category: s.category || s.metadata?.category || 'other',
-      rating: (4 + Math.random() * 0.9).toFixed(1),
-      sold: s.salesCount ?? Math.floor(Math.random() * 5000) + 100,
-      discount: s.discount || Math.floor(Math.random() * 30),
-      seller: s.seller,
-      createdAt: s.createdAt || new Date()
-    }));
+    products.value = (response.data || []).map((s, i) => {
+      const seller = s.seller;
+      const sellerUsername =
+        seller && typeof seller === 'object' ? seller.username : null;
+      const imgs = s.imageUrls;
+      const cover =
+        (Array.isArray(imgs) && imgs[0]) || s.iconUrl || s.image || null;
+      return {
+        id: s.id || s._id || i,
+        name: s.name,
+        price: s.price,
+        originalPrice: s.originalPrice,
+        image: cover,
+        category: normalizeListingCategory(s.category || s.metadata?.category || 'other'),
+        rating: (4 + Math.random() * 0.9).toFixed(1),
+        sold: s.salesCount ?? Math.floor(Math.random() * 5000) + 100,
+        discount: s.discount || Math.floor(Math.random() * 30),
+        seller,
+        sellerUsername,
+        createdAt: s.createdAt || new Date()
+      };
+    });
     categories.value = categories.value.map((c) => ({
       ...c,
       count: c.id === 'all' ? products.value.length : products.value.filter((p) => p.category === c.id).length

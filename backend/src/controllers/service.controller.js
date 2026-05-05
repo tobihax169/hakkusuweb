@@ -165,7 +165,7 @@ export const updateService = catchAsync(async (req, res) => {
   // Cập nhật các trường cho phép
   const allowedFields = [
     'name', 'nameEn', 'description', 'descriptionEn',
-    'price', 'currency', 'icon', 'iconUrl', 'category', 'features',
+    'price', 'currency', 'icon', 'iconUrl', 'imageUrls', 'category', 'features',
     'sortOrder', 'popular', 'isActive', 'limits', 'metadata'
   ];
 

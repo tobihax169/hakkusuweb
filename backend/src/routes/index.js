@@ -8,6 +8,8 @@ import sellerRoutes from './seller.routes.js';
 import announcementRoutes from './announcement.routes.js';
 import ticketRoutes from './ticket.routes.js';
 import marketplaceRoutes from './marketplace.routes.js';
+import uploadRoutes from './upload.routes.js';
+import shopRoutes from './shop.routes.js';
 
 const router = Router();
 
@@ -32,5 +34,7 @@ router.use('/seller', sellerRoutes);
 router.use('/announcements', announcementRoutes);
 router.use('/tickets', ticketRoutes);
 router.use('/marketplace', marketplaceRoutes);
+router.use('/uploads', uploadRoutes);
+router.use('/shops', shopRoutes);
 
 export default router;

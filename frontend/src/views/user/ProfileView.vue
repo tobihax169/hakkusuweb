@@ -10,6 +10,20 @@
         Hồ sơ của tôi
       </h1>
 
+      <GlassCard v-if="user?.role === 'seller'" class="p-8 mb-6">
+        <h2 class="text-xl font-semibold text-white mb-2">Cửa hàng của bạn</h2>
+        <p class="text-slate-400 text-sm mb-4">
+          Trang công khai: sản phẩm, theo dõi, đánh giá và tin nhắn với khách.
+        </p>
+        <router-link
+          v-if="user?.username"
+          :to="`/shop/${user.username}`"
+          class="inline-flex items-center px-5 py-2.5 rounded-xl text-sm font-medium bg-emerald-600/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-600/30 transition-colors"
+        >
+          Xem trang cửa hàng
+        </router-link>
+      </GlassCard>
+
       <!-- Profile Card -->
       <GlassCard class="p-8 mb-6">
         <div class="flex items-center gap-6 mb-8">
@@ -148,7 +162,7 @@
 import { ref, reactive, onMounted } from 'vue';
 import { useToast } from 'vue-toastification';
 import { useAuthStore } from '@/stores/auth.js';
-import { userApi } from '@/services/api.js';
+import { authApi } from '@/services/api.js';
 import GlassCard from '@/components/ui/GlassCard.vue';
 import Badge from '@/components/ui/Badge.vue';
 import { KeyIcon, ShieldCheckIcon } from '@heroicons/vue/24/outline';
@@ -187,7 +201,7 @@ const fetchUser = async () => {
 const updateProfile = async () => {
   updating.value = true;
   try {
-    await userApi.updateProfile({ username: formData.username });
+    await authApi.updateProfile({ username: formData.username });
     toast.success('Cập nhật thành công');
     await authStore.fetchUser();
   } catch (error) {

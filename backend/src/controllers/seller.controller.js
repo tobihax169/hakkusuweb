@@ -1,5 +1,11 @@
 import { User, ServicePackage, Order, Withdrawal, Transaction } from '../models/index.js';
+import ShopMessage from '../models/ShopMessage.js';
 import { catchAsync, APIError } from '../middleware/errorHandler.js';
+import {
+  normalizeCategoryForStore,
+  isAccountLikeCategory,
+  sanitizeImageUrls
+} from '../constants/productCategories.js';
 
 // ==================== SELLER REGISTRATION ====================
 
@@ -147,14 +153,23 @@ export const createProduct = catchAsync(async (req, res) => {
     currency,
     icon,
     iconUrl,
+    imageUrls,
     features,
     platformFeePercentage,
     metadata,
     isAccountListing,
     highValueThreshold
   } = req.body;
-  const normalizedCategory = metadata?.category || req.body.category || 'other';
-  const isAccount = Boolean(isAccountListing || metadata?.saleType === 'account' || normalizedCategory === 'account');
+  const rawCategory = metadata?.category || req.body.category || 'other';
+  const normalizedCategory = normalizeCategoryForStore(rawCategory);
+  const isAccount = Boolean(
+    isAccountListing ||
+      metadata?.saleType === 'account' ||
+      isAccountLikeCategory(rawCategory) ||
+      isAccountLikeCategory(normalizedCategory)
+  );
+  const gallery = sanitizeImageUrls(imageUrls?.length ? imageUrls : iconUrl ? [iconUrl] : [], 5);
+  const resolvedIconUrl = gallery[0] || iconUrl || null;
   const resolvedPrice = Number(price || 0);
   const resolvedThreshold = Number(highValueThreshold || seller?.sellerInfo?.compliance?.highValueLimit || 5000000);
   const isHighValueAccount = isAccount && resolvedPrice >= resolvedThreshold;
@@ -180,7 +195,8 @@ export const createProduct = catchAsync(async (req, res) => {
     price,
     currency: currency || 'vnd',
     icon: icon || 'CubeIcon',
-    iconUrl: iconUrl || null,
+    iconUrl: resolvedIconUrl,
+    imageUrls: gallery,
     category: normalizedCategory,
     isAccountListing: isAccount,
     highValueThreshold: resolvedThreshold,
@@ -278,8 +294,28 @@ export const updateProduct = catchAsync(async (req, res) => {
     updates.category = updates.metadata.category;
   }
 
-  const nextCategory = updates.category || product.category || updates.metadata?.category || product.metadata?.category;
-  const nextIsAccount = updates.isAccountListing ?? (nextCategory === 'account' || product.isAccountListing);
+  const rawNextCat =
+    updates.category ||
+    product.category ||
+    updates.metadata?.category ||
+    product.metadata?.category ||
+    'other';
+  const nextCategory = normalizeCategoryForStore(rawNextCat);
+  updates.category = nextCategory;
+  const nextIsAccount = Boolean(
+    updates.isAccountListing ??
+      (isAccountLikeCategory(rawNextCat) || isAccountLikeCategory(nextCategory) || product.isAccountListing)
+  );
+  updates.isAccountListing = nextIsAccount;
+
+  if (updates.imageUrls !== undefined || updates.iconUrl !== undefined) {
+    const gallery = sanitizeImageUrls(
+      updates.imageUrls?.length ? updates.imageUrls : updates.iconUrl ? [updates.iconUrl] : product.imageUrls,
+      5
+    );
+    updates.imageUrls = gallery;
+    updates.iconUrl = gallery[0] || null;
+  }
   const nextPrice = Number(updates.price ?? product.price);
   const nextThreshold = Number(updates.highValueThreshold ?? product.highValueThreshold ?? seller?.sellerInfo?.compliance?.highValueLimit ?? 5000000);
   const nextIsHighValueAccount = Boolean(nextIsAccount) && nextPrice >= nextThreshold;
@@ -327,6 +363,40 @@ export const deleteProduct = catchAsync(async (req, res) => {
 });
 
 // ==================== ORDERS & EARNINGS ====================
+
+// Hội thoại tin nhắn shop (theo buyer)
+export const getShopMessageThreads = catchAsync(async (req, res) => {
+  const sellerId = req.user._id;
+  const threads = await ShopMessage.aggregate([
+    { $match: { sellerId } },
+    { $sort: { createdAt: -1 } },
+    {
+      $group: {
+        _id: '$buyerId',
+        lastAt: { $first: '$createdAt' },
+        preview: { $first: '$body' }
+      }
+    },
+    { $sort: { lastAt: -1 } },
+    { $limit: 50 }
+  ]);
+
+  const buyerIds = threads.map((t) => t._id);
+  const users = await User.find({ _id: { $in: buyerIds } })
+    .select('username')
+    .lean();
+  const nameById = Object.fromEntries(users.map((u) => [u._id.toString(), u.username]));
+
+  res.status(200).json({
+    success: true,
+    data: threads.map((t) => ({
+      buyerId: t._id,
+      username: nameById[t._id.toString()] || 'User',
+      preview: t.preview,
+      lastAt: t.lastAt
+    }))
+  });
+});
 
 // Lấy đơn hàng của seller
 export const getSellerOrders = catchAsync(async (req, res) => {

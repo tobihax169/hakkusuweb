@@ -154,6 +154,7 @@ export const sellerApi = {
   /** Alias dashboard payload (no separate /me on server). */
   getMySellerInfo: () => api.get('/seller/dashboard'),
   getDashboard: () => api.get('/seller/dashboard'),
+  getShopMessageThreads: () => api.get('/seller/shop-message-threads'),
   getMyOrders: (params) => api.get('/seller/orders', { params }),
   // Staff/Admin — paths match seller.routes.js
   getPendingSellers: (params) => api.get('/seller/admin/pending-sellers', { params }),
@@ -173,6 +174,18 @@ export const productApi = {
   getPendingProducts: (params) => api.get('/seller/admin/pending-products', { params }),
   approveProduct: (id) => api.put(`/seller/admin/products/${id}/approve`),
   rejectProduct: (id, data) => api.put(`/seller/admin/products/${id}/reject`, data || {})
+};
+
+export const shopApi = {
+  getShop: (username) => api.get(`/shops/${encodeURIComponent(username)}`),
+  getReviews: (username, params) =>
+    api.get(`/shops/${encodeURIComponent(username)}/reviews`, { params }),
+  follow: (username) => api.post(`/shops/${encodeURIComponent(username)}/follow`),
+  unfollow: (username) => api.delete(`/shops/${encodeURIComponent(username)}/follow`),
+  createReview: (username, data) => api.post(`/shops/${encodeURIComponent(username)}/reviews`, data),
+  getMessages: (username, params) =>
+    api.get(`/shops/${encodeURIComponent(username)}/messages`, { params }),
+  sendMessage: (username, data) => api.post(`/shops/${encodeURIComponent(username)}/messages`, data)
 };
 
 export default api;

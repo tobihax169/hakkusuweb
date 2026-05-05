@@ -50,6 +50,7 @@ router.post('/register', requireUser, sellerController.registerAsSeller);
 
 // ==================== SELLER DASHBOARD ====================
 router.get('/dashboard', requireSeller, sellerController.getSellerDashboard);
+router.get('/shop-message-threads', requireSeller, sellerController.getShopMessageThreads);
 
 // ==================== PRODUCT MANAGEMENT ====================
 router.post('/products', requireSeller, sellerController.createProduct);

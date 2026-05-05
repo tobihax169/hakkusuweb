@@ -38,13 +38,13 @@
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-slate-300 mb-2">Danh mục</label>
+              <label class="block text-sm font-medium text-slate-300 mb-2">Loại hàng</label>
               <select v-model="formData.category" class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500/50">
-                <option value="game">Game</option>
-                <option value="software">Phần mềm</option>
-                <option value="mobile">Di động</option>
-                <option value="giftcard">Thẻ quà tặng</option>
-                <option value="account">Tài khoản</option>
+                <option value="game_account">Account game</option>
+                <option value="social_account">Tài khoản mạng xã hội</option>
+                <option value="game_item">Vật phẩm trong game</option>
+                <option value="giftcard">Gift card</option>
+                <option value="digital_file">Bán file</option>
                 <option value="other">Khác</option>
               </select>
             </div>
@@ -69,17 +69,42 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-slate-300 mb-2">Hình ảnh (URL)</label>
+            <label class="block text-sm font-medium text-slate-300 mb-2">Hình ảnh (tối đa 5)</label>
+            <p class="text-xs text-slate-500 mb-2">Giữ ảnh hiện có hoặc chọn file mới để thay toàn bộ gallery.</p>
             <input
-              v-model="formData.image"
-              type="url"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              multiple
+              class="block w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-slate-700 file:text-white"
+              @change="onFiles"
+            >
+            <p class="text-xs text-slate-500 mt-2">{{ imageFiles.length ? imageFiles.length : existingUrls.length }}/5 ảnh</p>
+            <div v-if="previewBlobs.length" class="flex flex-wrap gap-2 mt-3">
+              <div v-for="(src, i) in previewBlobs" :key="'n'+i" class="relative w-20 h-20 rounded-lg overflow-hidden border border-slate-600">
+                <img :src="src" alt="" class="w-full h-full object-cover">
+                <button type="button" class="absolute top-0 right-0 p-0.5 bg-black/60 text-white text-xs rounded-bl" @click="removeNewImage(i)">×</button>
+              </div>
+            </div>
+            <div v-else-if="existingUrls.length" class="flex flex-wrap gap-2 mt-3">
+              <div v-for="(src, i) in existingUrls" :key="'e'+i" class="relative w-20 h-20 rounded-lg overflow-hidden border border-slate-600">
+                <img :src="src" alt="" class="w-full h-full object-cover">
+                <button type="button" class="absolute top-0 right-0 p-0.5 bg-black/60 text-white text-xs rounded-bl" @click="removeExistingUrl(i)">×</button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">Số lượng tồn kho</label>
+            <input
+              v-model.number="formData.stock"
+              type="number"
+              min="0"
               class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500/50"
             >
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label class="flex items-center gap-2 text-sm text-slate-300">
               <input v-model="formData.isAccountListing" type="checkbox" class="rounded border-slate-600 bg-slate-900/50">
-              Đây là sản phẩm bán account
+              Sản phẩm dạng account (quy tắc giá trị cao)
             </label>
             <div>
               <label class="block text-sm font-medium text-slate-300 mb-2">Ngưỡng giá trị cao (VNĐ)</label>
@@ -111,6 +136,7 @@ import { ref, reactive, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import { productApi } from '@/services/api.js';
+import { uploadProductImages } from '@/utils/uploadProductImages.js';
 import GlassCard from '@/components/ui/GlassCard.vue';
 import { ArrowLeftIcon } from '@heroicons/vue/24/solid';
 
@@ -121,12 +147,20 @@ const toast = useToast();
 const pageLoading = ref(true);
 const submitting = ref(false);
 const loadError = ref('');
+const imageFiles = ref([]);
+const existingUrls = ref([]);
+const previewBlobs = ref([]);
+
+const revokeBlobs = () => {
+  previewBlobs.value.forEach((u) => URL.revokeObjectURL(u));
+  previewBlobs.value = [];
+};
+
 const formData = reactive({
   name: '',
   category: 'other',
   price: 0,
   description: '',
-  image: '',
   stock: 0,
   isAccountListing: false,
   highValueThreshold: 5000000
@@ -134,7 +168,46 @@ const formData = reactive({
 
 const productId = () => route.params.id;
 
-const buildPayload = () => ({
+const mapLegacyCategory = (c) => {
+  const m = {
+    game: 'game_item',
+    software: 'digital_file',
+    mobile: 'game_item',
+    service: 'digital_file',
+    account: 'game_account',
+    giftcard: 'giftcard',
+    game_account: 'game_account',
+    social_account: 'social_account',
+    game_item: 'game_item',
+    digital_file: 'digital_file',
+    other: 'other'
+  };
+  return m[c] || 'other';
+};
+
+const onFiles = (e) => {
+  revokeBlobs();
+  const picked = Array.from(e.target.files || []).slice(0, 5);
+  imageFiles.value = picked;
+  previewBlobs.value = picked.map((f) => URL.createObjectURL(f));
+  e.target.value = '';
+};
+
+const removeNewImage = (index) => {
+  revokeBlobs();
+  const n = [...imageFiles.value];
+  n.splice(index, 1);
+  imageFiles.value = n;
+  previewBlobs.value = n.map((f) => URL.createObjectURL(f));
+};
+
+const removeExistingUrl = (index) => {
+  const n = [...existingUrls.value];
+  n.splice(index, 1);
+  existingUrls.value = n;
+};
+
+const buildPayload = (imageUrls) => ({
   name: formData.name.trim(),
   description: formData.description.trim(),
   price: Number(formData.price),
@@ -142,11 +215,11 @@ const buildPayload = () => ({
   descriptionEn: '',
   currency: 'vnd',
   category: formData.category || 'other',
-  isAccountListing: formData.isAccountListing || formData.category === 'account',
+  isAccountListing: formData.isAccountListing,
   highValueThreshold: Number(formData.highValueThreshold) || 5000000,
-  iconUrl: formData.image || null,
+  imageUrls,
   metadata: {
-    ...(formData.category ? { category: formData.category } : {}),
+    category: formData.category || 'other',
     stock: Number(formData.stock) || 0
   }
 });
@@ -164,11 +237,17 @@ const load = async () => {
     formData.name = p.name || '';
     formData.description = p.description || '';
     formData.price = p.price ?? 0;
-    formData.image = p.iconUrl || '';
-    formData.category = p.category || p.metadata?.category || 'other';
+    const cat = p.category || p.metadata?.category || 'other';
+    formData.category = mapLegacyCategory(cat);
     formData.stock = p.metadata?.stock ?? 0;
-    formData.isAccountListing = Boolean(p.isAccountListing || formData.category === 'account');
+    formData.isAccountListing = Boolean(p.isAccountListing);
     formData.highValueThreshold = Number(p.highValueThreshold || 5000000);
+    const imgs = Array.isArray(p.imageUrls) && p.imageUrls.length
+      ? p.imageUrls
+      : p.iconUrl
+        ? [p.iconUrl]
+        : [];
+    existingUrls.value = imgs.slice(0, 5);
   } catch (e) {
     loadError.value = e.message || 'Không tải được sản phẩm';
   } finally {
@@ -179,7 +258,13 @@ const load = async () => {
 const handleSubmit = async () => {
   submitting.value = true;
   try {
-    const res = await productApi.updateProduct(productId(), buildPayload());
+    let imageUrls;
+    if (imageFiles.value.length) {
+      imageUrls = await uploadProductImages(imageFiles.value, 5);
+    } else {
+      imageUrls = [...existingUrls.value].slice(0, 5);
+    }
+    const res = await productApi.updateProduct(productId(), buildPayload(imageUrls));
     if (res.success) {
       toast.success('Đã cập nhật sản phẩm');
       router.push('/seller/products');

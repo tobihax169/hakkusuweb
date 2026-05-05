@@ -2,11 +2,11 @@
   "name": "hakkusu-store-backend",
   "version": "1.0.0",
   "description": "Backend API for Hakkusu Store - Modern Marketplace Platform",
-  "main": "src/app.js",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
     "seed": "node src/utils/seed.js",
     "dev:all": "concurrently \"npm run dev\" \"cd ../frontend && npm run dev\" --names \"BACKEND,FRONTEND\" --prefix-colors \"blue,green\""
   },
@@ -27,7 +27,10 @@
     "qrcode": "^1.5.3",
     "axios": "^1.6.2",
     "uuid": "^9.0.1",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "@aws-sdk/client-s3": "^3.670.0",
+    "@aws-sdk/s3-request-presigner": "^3.670.0",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",
