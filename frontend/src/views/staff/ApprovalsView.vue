@@ -55,6 +55,12 @@
                 </div>
               </div>
               <div class="flex gap-2">
+                <button
+                  @click="verifySellerIdentity(seller._id)"
+                  class="px-3 py-2 bg-cyan-500/10 text-cyan-400 rounded-lg hover:bg-cyan-500/20 transition-colors text-xs"
+                >
+                  Xác minh CCCD
+                </button>
                 <button 
                   @click="approveSeller(seller._id)"
                   class="px-4 py-2 bg-green-500/10 text-green-400 rounded-lg hover:bg-green-500/20 transition-colors"
@@ -176,6 +182,15 @@ const rejectSeller = async (id) => {
     pendingSellers.value = pendingSellers.value.filter(s => s._id !== id);
   } catch (error) {
     toast.error(error.message || 'Không thể từ chối');
+  }
+};
+
+const verifySellerIdentity = async (id) => {
+  try {
+    await sellerApi.updateSellerCompliance(id, { identityVerified: true, identityDocumentType: 'cccd' });
+    toast.success('Đã xác minh CCCD cho seller');
+  } catch (error) {
+    toast.error(error.message || 'Không thể xác minh CCCD');
   }
 };
 

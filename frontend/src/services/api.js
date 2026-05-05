@@ -92,13 +92,22 @@ export const orderApi = {
 
 // ==================== SERVICE API ====================
 export const serviceApi = {
-  getServices: (lang) => api.get('/services', { params: { lang } }),
+  getServices: (params = {}) => api.get('/services', { params }),
+  getServicesBySeller: (sellerId, params = {}) => api.get(`/services/seller/${sellerId}`, { params }),
   getServiceById: (packageId, lang) => api.get(`/services/${packageId}`, { params: { lang } }),
+  trackView: (packageId) => api.post(`/services/${packageId}/view`),
   // Admin
   createService: (data) => api.post('/services/admin', data),
   updateService: (packageId, data) => api.put(`/services/admin/${packageId}`, data),
-  deleteService: (packageId) => api.delete(`/services/admin/${packageId}`),
-  seedServices: () => api.post('/services/admin/seed')
+  deleteService: (packageId) => api.delete(`/services/admin/${packageId}`)
+};
+
+// ==================== MARKETPLACE API ====================
+export const marketplaceApi = {
+  getProducts: (params = {}) => api.get('/marketplace/products', { params }),
+  getProductById: (packageId, lang) => api.get(`/marketplace/products/${packageId}`, { params: { lang } }),
+  getSellerProducts: (sellerId, params = {}) => api.get(`/marketplace/sellers/${sellerId}/products`, { params }),
+  trackView: (packageId) => api.post(`/marketplace/products/${packageId}/view`)
 };
 
 // ==================== PAYMENT API ====================
@@ -144,7 +153,8 @@ export const sellerApi = {
   // Staff/Admin — paths match seller.routes.js
   getPendingSellers: (params) => api.get('/seller/admin/pending-sellers', { params }),
   approveSeller: (userId) => api.put(`/seller/admin/sellers/${userId}/verify`),
-  rejectSeller: (userId, data) => api.put(`/seller/admin/sellers/${userId}/reject`, data || {})
+  rejectSeller: (userId, data) => api.put(`/seller/admin/sellers/${userId}/reject`, data || {}),
+  updateSellerCompliance: (userId, data) => api.put(`/seller/admin/sellers/${userId}/compliance`, data)
 };
 
 // ==================== PRODUCT API (seller marketplace products under /seller) ====================

@@ -13,7 +13,6 @@ import { connectDB } from './config/database.js';
 import passport from './config/passport.js';
 import { logger } from './utils/logger.js';
 import { generalLimiter } from './middleware/rateLimiter.js';
-import seedData from './utils/seed.js';
 import {
   handleValidationError,
   handleMongoError,
@@ -108,9 +107,6 @@ const startServer = async () => {
   try {
     // Kết nối database
     await connectDB();
-
-    // Seed dữ liệu mặc định (admin, support, demo user)
-    await seedData();
 
     // Khởi động server
     app.listen(PORT, () => {

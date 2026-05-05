@@ -71,6 +71,7 @@ router.put('/withdrawals/:id/cancel', requireSeller, sellerController.cancelWith
 // Duyệt seller (support + admin)
 router.put('/admin/sellers/:userId/verify', requireSupport, sellerController.verifySeller);
 router.put('/admin/sellers/:userId/reject', requireSupport, sellerController.rejectSeller);
+router.put('/admin/sellers/:userId/compliance', requireSupport, sellerController.updateSellerCompliance);
 router.get('/admin/pending-sellers', requireSupport, sellerController.getPendingSellers);
 
 // Duyệt sản phẩm

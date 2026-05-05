@@ -44,6 +44,7 @@
                 <option value="software">Phần mềm</option>
                 <option value="mobile">Di động</option>
                 <option value="giftcard">Thẻ quà tặng</option>
+                <option value="account">Tài khoản</option>
                 <option value="other">Khác</option>
               </select>
             </div>
@@ -93,6 +94,22 @@
             >
           </div>
 
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label class="flex items-center gap-2 text-sm text-slate-300">
+              <input v-model="formData.isAccountListing" type="checkbox" class="rounded border-slate-600 bg-slate-900/50">
+              Đây là sản phẩm bán account
+            </label>
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-2">Ngưỡng giá trị cao (VNĐ)</label>
+              <input
+                v-model.number="formData.highValueThreshold"
+                type="number"
+                min="0"
+                class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 outline-none focus:border-blue-500/50"
+              >
+            </div>
+          </div>
+
           <div class="pt-4 border-t border-slate-700/50">
             <button 
               type="submit" 
@@ -126,7 +143,9 @@ const formData = reactive({
   price: 10000,
   description: '',
   image: '',
-  stock: 100
+  stock: 100,
+  isAccountListing: false,
+  highValueThreshold: 5000000
 });
 
 const buildPayload = () => ({
@@ -136,6 +155,9 @@ const buildPayload = () => ({
   nameEn: '',
   descriptionEn: '',
   currency: 'vnd',
+  category: formData.category || 'other',
+  isAccountListing: formData.isAccountListing || formData.category === 'account',
+  highValueThreshold: Number(formData.highValueThreshold) || 5000000,
   iconUrl: formData.image?.trim() || null,
   metadata: {
     category: formData.category || 'other',

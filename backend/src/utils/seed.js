@@ -1,32 +1,33 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import User from '../models/User.js';
-import ServicePackage from '../models/ServicePackage.js';
-import { DEFAULT_PACKAGES } from '../../../shared/constants.js';
 import { connectDB, disconnectDB } from '../config/database.js';
 import { logger } from './logger.js';
 
 dotenv.config();
 
 /**
- * Seed dữ liệu mặc định cho ứng dụng
+ * Seed tối thiểu cho môi trường vận hành (không seed dữ liệu ví dụ)
  */
 const seedData = async () => {
   try {
     await connectDB();
 
-    logger.info('Bắt đầu seed dữ liệu...');
+    logger.info('Khởi tạo dữ liệu runtime tối thiểu...');
 
-    // ==================== 1. Tạo/Cập nhật Admin User ====================
-    const adminEmail = 'otachienti169@gmail.com';
-    const adminPassword = 'tobihax169';
+    // ==================== 1. Tạo/Cập nhật Admin User từ ENV ====================
+    const adminEmail = process.env.BOOTSTRAP_ADMIN_EMAIL;
+    const adminPassword = process.env.BOOTSTRAP_ADMIN_PASSWORD;
+    const adminUsername = process.env.BOOTSTRAP_ADMIN_USERNAME || 'admin';
+    if (!adminEmail || !adminPassword) {
+      logger.info('Bỏ qua bootstrap admin: thiếu BOOTSTRAP_ADMIN_EMAIL/BOOTSTRAP_ADMIN_PASSWORD');
+      return;
+    }
 
     const existingAdmin = await User.findOne({ email: adminEmail });
 
     if (!existingAdmin) {
       const admin = new User({
-        username: 'admin',
+        username: adminUsername,
         email: adminEmail,
         password: adminPassword, // pre-save hook sẽ hash
         role: 'admin',
@@ -37,64 +38,13 @@ const seedData = async () => {
       });
 
       await admin.save();
-      logger.info(`Đã tạo admin user: ${adminEmail}`);
+      logger.info(`Đã tạo admin runtime user: ${adminEmail}`);
     } else {
-      // Cập nhật password và reset gem/coin về 0
       existingAdmin.password = adminPassword;
-      existingAdmin.gem = 0;
-      existingAdmin.coin = 0;
       await existingAdmin.save();
-      logger.info(`Đã cập nhật password và reset số dư cho admin: ${adminEmail}`);
+      logger.info(`Đã cập nhật mật khẩu admin runtime: ${adminEmail}`);
     }
-
-    // ==================== 2. Seed Service Packages ====================
-    let createdPackages = 0;
-    let updatedPackages = 0;
-
-    for (const pkg of DEFAULT_PACKAGES) {
-      const existing = await ServicePackage.findOne({ packageId: pkg.id });
-      
-      const serviceData = {
-        packageId: pkg.id,
-        name: pkg.name,
-        nameEn: pkg.nameEn,
-        description: pkg.description,
-        descriptionEn: pkg.descriptionEn,
-        price: pkg.price,
-        currency: pkg.currency,
-        icon: pkg.icon,
-        features: pkg.features.map((f, i) => ({
-          text: f,
-          textEn: pkg.featuresEn[i] || f,
-          included: true
-        })),
-        popular: pkg.popular,
-        isActive: pkg.isActive,
-        sortOrder: ['basic', 'vip', 'premium', 'custom'].indexOf(pkg.id)
-      };
-
-      if (existing) {
-        await ServicePackage.updateOne({ packageId: pkg.id }, serviceData);
-        updatedPackages++;
-      } else {
-        const newPackage = new ServicePackage(serviceData);
-        await newPackage.save();
-        createdPackages++;
-      }
-    }
-
-    logger.info(`Service Packages: ${createdPackages} tạo mới, ${updatedPackages} cập nhật`);
-
-    // Không tạo demo/support user với số dư có sẵn
-    // User phải nạp tiền thật mới có Gem/Coin
-
-    logger.info('Seed dữ liệu hoàn tất!');
-    
-    // Hiển thị thông tin đăng nhập
-    console.log('\n=== THÔNG TIN ĐĂNG NHẬP ===');
-    console.log(`Admin:    otachienti169@gmail.com / tobihax169`);
-    console.log('===========================\n');
-    console.log('Lưu ý: Số dư Gem/Coin = 0, cần nạp tiền qua SePay để có Gem\n');
+    logger.info('Khởi tạo runtime hoàn tất!');
 
   } catch (error) {
     logger.error('Lỗi seed dữ liệu:', error);

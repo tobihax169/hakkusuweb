@@ -38,12 +38,13 @@
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-slate-300 mb-2">Danh mục (metadata)</label>
+              <label class="block text-sm font-medium text-slate-300 mb-2">Danh mục</label>
               <select v-model="formData.category" class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500/50">
                 <option value="game">Game</option>
                 <option value="software">Phần mềm</option>
                 <option value="mobile">Di động</option>
                 <option value="giftcard">Thẻ quà tặng</option>
+                <option value="account">Tài khoản</option>
                 <option value="other">Khác</option>
               </select>
             </div>
@@ -74,6 +75,21 @@
               type="url"
               class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500/50"
             >
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label class="flex items-center gap-2 text-sm text-slate-300">
+              <input v-model="formData.isAccountListing" type="checkbox" class="rounded border-slate-600 bg-slate-900/50">
+              Đây là sản phẩm bán account
+            </label>
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-2">Ngưỡng giá trị cao (VNĐ)</label>
+              <input
+                v-model.number="formData.highValueThreshold"
+                type="number"
+                min="0"
+                class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500/50"
+              >
+            </div>
           </div>
           <div class="pt-4 border-t border-slate-700/50">
             <button
@@ -111,7 +127,9 @@ const formData = reactive({
   price: 0,
   description: '',
   image: '',
-  stock: 0
+  stock: 0,
+  isAccountListing: false,
+  highValueThreshold: 5000000
 });
 
 const productId = () => route.params.id;
@@ -123,6 +141,9 @@ const buildPayload = () => ({
   nameEn: '',
   descriptionEn: '',
   currency: 'vnd',
+  category: formData.category || 'other',
+  isAccountListing: formData.isAccountListing || formData.category === 'account',
+  highValueThreshold: Number(formData.highValueThreshold) || 5000000,
   iconUrl: formData.image || null,
   metadata: {
     ...(formData.category ? { category: formData.category } : {}),
@@ -144,8 +165,10 @@ const load = async () => {
     formData.description = p.description || '';
     formData.price = p.price ?? 0;
     formData.image = p.iconUrl || '';
-    formData.category = p.metadata?.category || 'other';
+    formData.category = p.category || p.metadata?.category || 'other';
     formData.stock = p.metadata?.stock ?? 0;
+    formData.isAccountListing = Boolean(p.isAccountListing || formData.category === 'account');
+    formData.highValueThreshold = Number(p.highValueThreshold || 5000000);
   } catch (e) {
     loadError.value = e.message || 'Không tải được sản phẩm';
   } finally {

@@ -144,7 +144,7 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import { useAuthStore } from '@/stores/auth.js';
-import { serviceApi } from '@/services/api.js';
+import { marketplaceApi } from '@/services/api.js';
 import {
   MagnifyingGlassIcon,
   ShoppingBagIcon,
@@ -215,7 +215,7 @@ const viewProduct = (product) => {
     router.push('/auth/login');
     return;
   }
-  serviceApi.trackView(product.id).catch(() => {});
+  marketplaceApi.trackView(product.id).catch(() => {});
   router.push(`/orders/new?product=${product.id}`);
 };
 
@@ -225,7 +225,7 @@ const searchProducts = () => {
 
 const fetchProducts = async () => {
   try {
-    const response = await serviceApi.getServices({
+    const response = await marketplaceApi.getProducts({
       sort: sortBy.value,
       search: searchQuery.value || undefined,
       category: selectedCategory.value !== 'all' ? selectedCategory.value : undefined,

@@ -40,14 +40,20 @@ export const createTopup = catchAsync(async (req, res) => {
 
   await transaction.save();
 
-  // Tạo QR code (demo - trong production sẽ tích hợp API thực)
+  // Tạo QR code theo cấu hình runtime (realtime, không hard-code demo)
   let qrCodeData = null;
   if (paymentMethod === 'qr_code') {
-    // Demo: Tạo QR chứa thông tin chuyển khoản
+    const bankId = process.env.PAYMENT_BANK_ID;
+    const accountNumber = process.env.PAYMENT_ACCOUNT_NUMBER;
+    const accountName = process.env.PAYMENT_ACCOUNT_NAME;
+    if (!bankId || !accountNumber || !accountName) {
+      throw new APIError('Thiếu cấu hình thanh toán realtime (PAYMENT_BANK_ID/PAYMENT_ACCOUNT_NUMBER/PAYMENT_ACCOUNT_NAME)', 500);
+    }
+
     const bankInfo = {
-      bankId: 'Vietcombank',
-      accountNumber: '1234567890',
-      accountName: 'DISCORD BOT SERVICE',
+      bankId,
+      accountNumber,
+      accountName,
       amount: amount,
       description: `TOPUP ${transaction.transactionCode}`
     };
@@ -95,9 +101,14 @@ export const createTopup = catchAsync(async (req, res) => {
 export const paymentWebhook = catchAsync(async (req, res) => {
   const { transactionCode, status, providerData } = req.body;
 
-  // Verify webhook signature (trong production)
-  // const isValid = verifyWebhookSignature(req);
-  // if (!isValid) throw new APIError('Invalid signature', 401);
+  // Verify webhook signature theo secret chia sẻ
+  const webhookSecret = process.env.PAYMENT_WEBHOOK_SECRET;
+  if (webhookSecret) {
+    const incoming = req.headers['x-webhook-secret'];
+    if (!incoming || incoming !== webhookSecret) {
+      throw new APIError('Webhook signature không hợp lệ', 401);
+    }
+  }
 
   const transaction = await Transaction.findOne({ transactionCode });
   if (!transaction) {
