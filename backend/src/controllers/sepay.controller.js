@@ -21,22 +21,71 @@ export const createSePayTopup = catchAsync(async (req, res) => {
   }
 
   const user = await User.findById(req.user._id);
+  const now = new Date();
 
-  // Tạo transaction
-  const transaction = new Transaction({
-    transactionCode: await Transaction.generateTransactionCode('topup'),
+  // Tránh tạo trùng: nếu user đã có giao dịch SePay pending cùng amount và chưa hết hạn thì trả lại luôn.
+  const reusableTransaction = await Transaction.findOne({
     userId: req.user._id,
     type: 'topup',
-    amount,
-    currency: 'vnd',
-    status: 'pending',
-    paymentMethod: 'qr_code',
     paymentProvider: 'sepay',
-    description: `Nạp ${amount.toLocaleString('vi-VN')} VND qua SePay`,
-    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
-  });
+    status: 'pending',
+    amount,
+    expiresAt: { $gt: now },
+    qrCodeUrl: { $ne: null }
+  }).sort({ createdAt: -1 });
 
-  await transaction.save();
+  if (reusableTransaction) {
+    return res.status(200).json({
+      success: true,
+      message: 'Đã sử dụng yêu cầu nạp tiền đang chờ xử lý',
+      data: {
+        transaction: {
+          id: reusableTransaction._id,
+          transactionCode: reusableTransaction.transactionCode,
+          amount: reusableTransaction.amount,
+          status: reusableTransaction.status,
+          expiresAt: reusableTransaction.expiresAt
+        },
+        payment: {
+          qrCodeUrl: reusableTransaction.qrCodeUrl,
+          qrCodeData: reusableTransaction.providerMetadata?.qrCodeData,
+          deeplink: reusableTransaction.providerMetadata?.deeplink,
+          bankInfo: reusableTransaction.bankInfo,
+          isVietQR: reusableTransaction.providerMetadata?.isVietQR || false
+        }
+      }
+    });
+  }
+
+  // Tạo transaction và retry nếu trùng transactionCode (race condition hiếm).
+  let transaction = null;
+  for (let i = 0; i < 5; i += 1) {
+    try {
+      transaction = new Transaction({
+        transactionCode: await Transaction.generateTransactionCode('topup'),
+        userId: req.user._id,
+        type: 'topup',
+        amount,
+        currency: 'vnd',
+        status: 'pending',
+        paymentMethod: 'qr_code',
+        paymentProvider: 'sepay',
+        description: `Nạp ${amount.toLocaleString('vi-VN')} VND qua SePay`,
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
+      });
+      await transaction.save();
+      break;
+    } catch (error) {
+      if (error?.code === 11000 && i < 4) {
+        continue;
+      }
+      throw error;
+    }
+  }
+
+  if (!transaction) {
+    throw new APIError('Không thể tạo giao dịch SePay, vui lòng thử lại', 500);
+  }
 
   // Tạo QR code qua SePay
   const qrResult = await sepayService.createQRCode({
@@ -46,6 +95,7 @@ export const createSePayTopup = catchAsync(async (req, res) => {
   });
 
   if (!qrResult.success) {
+    await transaction.fail('Không tạo được QR SePay');
     throw new APIError('Không thể tạo mã QR thanh toán', 500);
   }
 
@@ -59,6 +109,7 @@ export const createSePayTopup = catchAsync(async (req, res) => {
   };
   transaction.providerMetadata = {
     sepayTransactionId: qrResult.transactionId,
+    qrCodeData: qrResult.qrCodeData,
     deeplink: qrResult.deeplink,
     isVietQR: qrResult.isVietQR || false,
     expiresAt: qrResult.expiresAt
