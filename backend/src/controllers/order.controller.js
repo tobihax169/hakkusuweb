@@ -5,6 +5,58 @@ import User from '../models/User.js';
 import { catchAsync, APIError } from '../middleware/errorHandler.js';
 import Log from '../models/Log.js';
 
+const releaseEscrowToSeller = async (order, actorId) => {
+  if (!order.isMarketplaceOrder || !order.sellerId || order.sellerPaymentStatus !== 'hold') return;
+
+  const seller = await User.findById(order.sellerId);
+  if (!seller || seller.role !== 'seller') return;
+
+  seller.sellerInfo.pendingBalance = Math.max(0, (seller.sellerInfo.pendingBalance || 0) - order.sellerAmount);
+  seller.sellerInfo.availableBalance = (seller.sellerInfo.availableBalance || 0) + order.sellerAmount;
+  await seller.save();
+
+  const releaseTransaction = new Transaction({
+    transactionCode: await Transaction.generateTransactionCode('bonus'),
+    userId: seller._id,
+    type: 'bonus',
+    amount: order.sellerAmount,
+    currency: order.currency,
+    status: 'success',
+    orderId: order._id,
+    description: `Giải ngân escrow đơn ${order.orderCode}`
+  });
+  await releaseTransaction.save();
+
+  order.sellerPaymentStatus = 'paid';
+  order.sellerPaidAt = new Date();
+  order.sellerPaymentTransactionId = releaseTransaction._id;
+  await order.save();
+};
+
+const reverseEscrowForCancelledOrder = async (order) => {
+  if (!order.isMarketplaceOrder || !order.sellerId) return;
+
+  const seller = await User.findById(order.sellerId);
+  if (!seller || seller.role !== 'seller') return;
+
+  if (order.sellerPaymentStatus === 'hold') {
+    seller.sellerInfo.pendingBalance = Math.max(0, (seller.sellerInfo.pendingBalance || 0) - order.sellerAmount);
+  } else if (order.sellerPaymentStatus === 'paid') {
+    const remaining = Math.max(0, order.sellerAmount - (seller.sellerInfo.availableBalance || 0));
+    seller.sellerInfo.availableBalance = Math.max(0, (seller.sellerInfo.availableBalance || 0) - order.sellerAmount);
+    if (remaining > 0) {
+      seller.sellerInfo.pendingBalance = Math.max(0, (seller.sellerInfo.pendingBalance || 0) - remaining);
+    }
+  }
+
+  seller.sellerInfo.totalSales = Math.max(0, (seller.sellerInfo.totalSales || 0) - 1);
+  await seller.save();
+
+  order.sellerPaymentStatus = 'pending';
+  order.sellerPaidAt = null;
+  await order.save();
+};
+
 /**
  * Lấy danh sách đơn hàng của user hiện tại
  * GET /api/orders
@@ -264,23 +316,26 @@ export const payWithWallet = catchAsync(async (req, res) => {
   if (order.isMarketplaceOrder && order.sellerId) {
     const seller = await User.findById(order.sellerId);
     if (seller && seller.role === 'seller') {
-      seller.sellerInfo.availableBalance += order.sellerAmount;
       seller.sellerInfo.pendingBalance += order.sellerAmount;
       seller.sellerInfo.totalSales += 1;
       await seller.save();
 
-      // Tạo transaction cho seller
-      const sellerTransaction = new Transaction({
+      // Tạo transaction escrow giữ tiền seller
+      const escrowTransaction = new Transaction({
         transactionCode: await Transaction.generateTransactionCode('bonus'),
         userId: seller._id,
         type: 'bonus',
         amount: order.sellerAmount,
         currency: order.currency,
-        status: 'success',
+        status: 'pending',
         orderId: order._id,
-        description: `Nhận tiền từ đơn hàng ${order.orderCode} (sau phí ${order.platformFeePercentage}%)`
+        description: `Escrow giữ tiền đơn ${order.orderCode} (sau phí ${order.platformFeePercentage}%)`
       });
-      await sellerTransaction.save();
+      await escrowTransaction.save();
+
+      order.sellerPaymentStatus = 'hold';
+      order.sellerPaymentTransactionId = escrowTransaction._id;
+      await order.save();
 
       // Cập nhật sản phẩm
       await ServicePackage.updateOne(
@@ -366,6 +421,8 @@ export const cancelOrder = catchAsync(async (req, res) => {
     await refundTransaction.save();
     order.paymentStatus = 'refunded';
   }
+
+  await reverseEscrowForCancelledOrder(order);
 
   // Cập nhật trạng thái
   await order.changeStatus('cancelled', req.user._id, reason || 'Người dùng hủy đơn');
@@ -509,17 +566,26 @@ export const updateOrder = catchAsync(async (req, res) => {
     'estimatedCompletionDate', 'internalNotes', 'discountAmount'
   ];
 
+  const nextStatus = updates.status;
+  const hasStatusChange = nextStatus && nextStatus !== order.status;
+
   allowedUpdates.forEach(field => {
-    if (updates[field] !== undefined) {
+    if (field !== 'status' && updates[field] !== undefined) {
       order[field] = updates[field];
     }
   });
 
-  // Nếu đổi status, thêm vào history
-  if (updates.status && updates.status !== order.status) {
-    await order.changeStatus(updates.status, req.user._id, updates.statusNote || 'Cập nhật bởi admin');
+  if (hasStatusChange) {
+    await order.changeStatus(nextStatus, req.user._id, updates.statusNote || 'Cập nhật bởi admin');
   } else {
     await order.save();
+  }
+
+  if (hasStatusChange && nextStatus === 'completed' && order.paymentStatus === 'paid') {
+    await releaseEscrowToSeller(order, req.user._id);
+  }
+  if (hasStatusChange && ['cancelled', 'refunded'].includes(nextStatus)) {
+    await reverseEscrowForCancelledOrder(order);
   }
 
   // Log

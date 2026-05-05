@@ -113,6 +113,11 @@ export const marketplaceApi = {
 // ==================== PAYMENT API ====================
 export const paymentApi = {
   createTopup: (data) => api.post('/payments/topup', data),
+  createSePayTopup: (data) => api.post('/payments/sepay/topup', data),
+  getSePayConfig: () => api.get('/payments/sepay/config'),
+  getSePayStatus: (code) => api.get(`/payments/sepay/${code}/status`),
+  cancelSePayTransaction: (code) => api.put(`/payments/sepay/${code}/cancel`),
+  getSePayHistory: (params) => api.get('/payments/sepay/history', { params }),
   getTransactionHistory: (params) => api.get('/payments/history', { params }),
   getTransactionByCode: (code) => api.get(`/payments/${code}`),
   checkPaymentStatus: (code) => api.get(`/payments/${code}/status`),

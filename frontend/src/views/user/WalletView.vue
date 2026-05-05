@@ -13,7 +13,8 @@
       <!-- Balance Card -->
       <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-8 mb-8 shadow-xl shadow-blue-500/20">
         <p class="text-blue-100 text-sm mb-2">Số dư khả dụng</p>
-        <p class="text-5xl font-bold text-white mb-6">{{ formatPrice(balance) }}</p>
+        <p class="text-4xl font-bold text-white mb-2">{{ formatGem(balance.gem) }} GEM</p>
+        <p class="text-blue-100 text-sm mb-6">{{ formatCoin(balance.coin) }} COIN</p>
         <div class="flex gap-4">
           <button 
             @click="showDeposit = true"
@@ -38,9 +39,10 @@
           <h2 class="text-lg font-semibold text-white">Lịch sử giao dịch</h2>
           <select v-model="filter" class="px-3 py-1.5 bg-slate-900/50 border border-slate-700 rounded-lg text-sm text-white outline-none">
             <option value="">Tất cả</option>
-            <option value="deposit">Nạp tiền</option>
+            <option value="topup">Nạp tiền</option>
             <option value="withdraw">Rút tiền</option>
-            <option value="order">Mua hàng</option>
+            <option value="payment">Thanh toán</option>
+            <option value="refund">Hoàn tiền</option>
           </select>
         </div>
         
@@ -68,7 +70,7 @@
               </div>
             </div>
             <span :class="getTxAmountClass(tx.type)" class="font-semibold">
-              {{ getTxSign(tx.type) }}{{ formatPrice(tx.amount) }}
+              {{ getTxSign(tx.type) }}{{ formatTxAmount(tx) }}
             </span>
           </div>
         </div>
@@ -90,6 +92,13 @@
               class="w-full mt-1 px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500"
               placeholder="Tối thiểu 10,000₫"
             >
+          </div>
+          <div v-if="sepayPayment" class="rounded-xl border border-slate-700 bg-slate-900/40 p-4 text-center space-y-3">
+            <p class="text-slate-300 text-sm">Quét QR để nạp tiền</p>
+            <img :src="sepayPayment.qrCodeUrl" alt="QR nạp tiền" class="w-52 h-52 mx-auto rounded-lg bg-white p-2">
+            <p class="text-xs text-slate-400">{{ sepayPayment.bankInfo?.bankName }} - {{ sepayPayment.bankInfo?.accountNumber }}</p>
+            <p class="text-xs text-slate-400">Nội dung: {{ sepayPayment.bankInfo?.transferContent }}</p>
+            <p class="text-emerald-400 text-sm">{{ sepayStatusText }}</p>
           </div>
           <div class="flex gap-3">
             <button 
@@ -157,7 +166,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useToast } from 'vue-toastification';
 import { userApi, paymentApi } from '@/services/api.js';
 import GlassCard from '@/components/ui/GlassCard.vue';
@@ -172,7 +181,7 @@ import {
 const toast = useToast();
 
 const loading = ref(true);
-const balance = ref(0);
+const balance = ref({ gem: 0, coin: 0, totalInGem: 0 });
 const transactions = ref([]);
 const filter = ref('');
 const showDeposit = ref(false);
@@ -181,6 +190,10 @@ const depositAmount = ref('');
 const withdrawAmount = ref('');
 const withdrawInfo = ref('');
 const processing = ref(false);
+const sepayPayment = ref(null);
+const currentTopupCode = ref('');
+const sepayStatusText = ref('');
+let pollTimer = null;
 
 const filteredTransactions = computed(() => {
   if (!filter.value) return transactions.value;
@@ -190,61 +203,99 @@ const filteredTransactions = computed(() => {
 const formatPrice = (price) => {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(price || 0);
 };
+const formatGem = (value) => new Intl.NumberFormat('vi-VN').format(value || 0);
+const formatCoin = (value) => new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 }).format(value || 0);
+const formatTxAmount = (tx) => {
+  if (tx.currency === 'vnd') return formatPrice(tx.amount);
+  return `${new Intl.NumberFormat('vi-VN').format(tx.amount || 0)} ${String(tx.currency || '').toUpperCase()}`;
+};
 
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 };
 
 const getTxIcon = (type) => ({
-  deposit: ArrowDownIcon,
+  topup: ArrowDownIcon,
   withdraw: ArrowUpIcon,
-  credit: PlusIcon,
-  debit: WalletIcon,
-  order: ShoppingBagIcon
+  refund: PlusIcon,
+  payment: ShoppingBagIcon,
+  bonus: WalletIcon
 }[type] || WalletIcon);
 
 const getTxIconClass = (type) => ({
-  deposit: 'bg-emerald-500/20 text-emerald-400',
+  topup: 'bg-emerald-500/20 text-emerald-400',
   withdraw: 'bg-red-500/20 text-red-400',
-  credit: 'bg-blue-500/20 text-blue-400',
-  debit: 'bg-amber-500/20 text-amber-400',
-  order: 'bg-violet-500/20 text-violet-400'
+  refund: 'bg-blue-500/20 text-blue-400',
+  payment: 'bg-violet-500/20 text-violet-400',
+  bonus: 'bg-amber-500/20 text-amber-400'
 }[type] || 'bg-slate-500/20 text-slate-400');
 
 const getTxAmountClass = (type) => ({
-  deposit: 'text-emerald-400',
+  topup: 'text-emerald-400',
   withdraw: 'text-red-400',
-  credit: 'text-blue-400',
-  debit: 'text-amber-400',
-  order: 'text-violet-400'
+  refund: 'text-blue-400',
+  payment: 'text-violet-400',
+  bonus: 'text-amber-400'
 }[type] || 'text-slate-400');
 
 const getTxLabel = (type) => ({
-  deposit: 'Nạp tiền',
+  topup: 'Nạp tiền',
   withdraw: 'Rút tiền',
-  credit: 'Nhận tiền',
-  debit: 'Thanh toán',
-  order: 'Mua hàng'
+  refund: 'Hoàn tiền',
+  payment: 'Thanh toán',
+  bonus: 'Thưởng/hoa hồng'
 }[type] || type);
 
 const getTxSign = (type) => ({
+  payment: '-',
   withdraw: '-',
-  order: '-',
-  debit: '-'
+  transfer: '-'
 }[type] || '+');
 
 const fetchWallet = async () => {
   try {
-    const response = await userApi.getWallet();
-    if (response.success) {
-      balance.value = response.data.balance;
-      transactions.value = response.data.transactions || [];
-    }
+    const [walletRes, txRes] = await Promise.all([
+      userApi.getWallet(),
+      paymentApi.getTransactionHistory({ limit: 100 })
+    ]);
+    if (walletRes.success) balance.value = walletRes.data.balance || { gem: 0, coin: 0, totalInGem: 0 };
+    if (txRes.success) transactions.value = txRes.data || [];
   } catch (error) {
     toast.error('Không thể tải thông tin ví');
   } finally {
     loading.value = false;
   }
+};
+
+const stopPolling = () => {
+  if (pollTimer) {
+    clearInterval(pollTimer);
+    pollTimer = null;
+  }
+};
+
+const startPollingTopupStatus = () => {
+  stopPolling();
+  pollTimer = setInterval(async () => {
+    if (!currentTopupCode.value) return;
+    try {
+      const statusRes = await paymentApi.getSePayStatus(currentTopupCode.value);
+      const st = statusRes?.data?.status;
+      if (st === 'success') {
+        sepayStatusText.value = 'Nạp tiền thành công!';
+        stopPolling();
+        toast.success('Nạp tiền thành công');
+        await fetchWallet();
+      } else if (['failed', 'cancelled'].includes(st) || statusRes?.data?.isExpired) {
+        sepayStatusText.value = 'Giao dịch thất bại hoặc hết hạn';
+        stopPolling();
+      } else {
+        sepayStatusText.value = 'Đang chờ thanh toán...';
+      }
+    } catch {
+      // ignore transient polling errors
+    }
+  }, 5000);
 };
 
 const processDeposit = async () => {
@@ -254,12 +305,16 @@ const processDeposit = async () => {
   }
   processing.value = true;
   try {
-    const response = await paymentApi.createDeposit({ amount: depositAmount.value });
-    if (response.success && response.data.paymentUrl) {
-      window.location.href = response.data.paymentUrl;
+    const response = await paymentApi.createSePayTopup({ amount: depositAmount.value });
+    if (!response.success) {
+      throw new Error(response.message || 'Không thể tạo yêu cầu nạp tiền');
     }
+    currentTopupCode.value = response.data?.transaction?.transactionCode || '';
+    sepayPayment.value = response.data?.payment || null;
+    sepayStatusText.value = 'Đang chờ thanh toán...';
+    startPollingTopupStatus();
   } catch (error) {
-    toast.error('Không thể tạo yêu cầu nạp tiền');
+    toast.error(error.message || 'Không thể tạo yêu cầu nạp tiền');
   } finally {
     processing.value = false;
   }
@@ -274,23 +329,9 @@ const processWithdraw = async () => {
     toast.error('Vui lòng nhập thông tin rút tiền');
     return;
   }
-  processing.value = true;
-  try {
-    await paymentApi.createWithdraw({
-      amount: withdrawAmount.value,
-      bankInfo: withdrawInfo.value
-    });
-    toast.success('Yêu cầu rút tiền đã được gửi');
-    showWithdraw.value = false;
-    withdrawAmount.value = '';
-    withdrawInfo.value = '';
-    fetchWallet();
-  } catch (error) {
-    toast.error(error.message || 'Không thể tạo yêu cầu rút tiền');
-  } finally {
-    processing.value = false;
-  }
+  toast.info('Rút tiền user chưa được bật trong phiên bản này');
 };
 
 onMounted(fetchWallet);
+onUnmounted(stopPolling);
 </script>

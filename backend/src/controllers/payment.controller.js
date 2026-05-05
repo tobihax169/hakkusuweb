@@ -23,6 +23,18 @@ export const createTopup = catchAsync(async (req, res) => {
   }
 
   const user = await User.findById(req.user._id);
+  if (!user) {
+    throw new APIError('Không tìm thấy người dùng', 404);
+  }
+
+  if (paymentMethod === 'qr_code') {
+    const bankId = process.env.PAYMENT_BANK_ID;
+    const accountNumber = process.env.PAYMENT_ACCOUNT_NUMBER;
+    const accountName = process.env.PAYMENT_ACCOUNT_NAME;
+    if (!bankId || !accountNumber || !accountName) {
+      throw new APIError('Thiếu cấu hình thanh toán realtime (PAYMENT_BANK_ID/PAYMENT_ACCOUNT_NUMBER/PAYMENT_ACCOUNT_NAME)', 500);
+    }
+  }
 
   // Tạo transaction
   const transaction = new Transaction({
@@ -103,6 +115,9 @@ export const paymentWebhook = catchAsync(async (req, res) => {
 
   // Verify webhook signature theo secret chia sẻ
   const webhookSecret = process.env.PAYMENT_WEBHOOK_SECRET;
+  if (process.env.NODE_ENV === 'production' && !webhookSecret) {
+    throw new APIError('Thiếu cấu hình PAYMENT_WEBHOOK_SECRET trong production', 500);
+  }
   if (webhookSecret) {
     const incoming = req.headers['x-webhook-secret'];
     if (!incoming || incoming !== webhookSecret) {
