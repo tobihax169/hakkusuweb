@@ -114,4 +114,50 @@ export const paymentApi = {
   getPaymentStats: (params) => api.get('/payments/admin/stats', { params })
 };
 
+// ==================== ANNOUNCEMENT API ====================
+export const announcementApi = {
+  getAll: (params) => api.get('/announcements', { params }),
+  getById: (id) => api.get(`/announcements/${id}`),
+  create: (data) => api.post('/announcements', data),
+  update: (id, data) => api.put(`/announcements/${id}`, data),
+  delete: (id) => api.delete(`/announcements/${id}`)
+};
+
+// ==================== TICKET API ====================
+export const ticketApi = {
+  getAllTickets: (params) => api.get('/tickets', { params }),
+  getMyTickets: () => api.get('/tickets/my'),
+  getTicketById: (id) => api.get(`/tickets/${id}`),
+  createTicket: (data) => api.post('/tickets', data),
+  replyToTicket: (id, data) => api.post(`/tickets/${id}/reply`, data),
+  updateTicket: (id, data) => api.put(`/tickets/${id}`, data),
+  closeTicket: (id) => api.put(`/tickets/${id}/close`)
+};
+
+// ==================== SELLER API (base: /api/seller) ====================
+export const sellerApi = {
+  registerSeller: (data) => api.post('/seller/register', data),
+  /** Alias dashboard payload (no separate /me on server). */
+  getMySellerInfo: () => api.get('/seller/dashboard'),
+  getDashboard: () => api.get('/seller/dashboard'),
+  getMyOrders: (params) => api.get('/seller/orders', { params }),
+  // Staff/Admin — paths match seller.routes.js
+  getPendingSellers: (params) => api.get('/seller/admin/pending-sellers', { params }),
+  approveSeller: (userId) => api.put(`/seller/admin/sellers/${userId}/verify`),
+  rejectSeller: (userId, data) => api.put(`/seller/admin/sellers/${userId}/reject`, data || {})
+};
+
+// ==================== PRODUCT API (seller marketplace products under /seller) ====================
+export const productApi = {
+  getMyProducts: (params) => api.get('/seller/products', { params }),
+  getProductById: (id) => api.get(`/seller/products/${id}`),
+  createProduct: (data) => api.post('/seller/products', data),
+  updateProduct: (id, data) => api.put(`/seller/products/${id}`, data),
+  deleteProduct: (id) => api.delete(`/seller/products/${id}`),
+  // Staff/Admin
+  getPendingProducts: (params) => api.get('/seller/admin/pending-products', { params }),
+  approveProduct: (id) => api.put(`/seller/admin/products/${id}/approve`),
+  rejectProduct: (id, data) => api.put(`/seller/admin/products/${id}/reject`, data || {})
+};
+
 export default api;

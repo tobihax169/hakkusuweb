@@ -5,7 +5,9 @@ import { catchAsync, APIError } from '../middleware/errorHandler.js';
 
 // Đăng ký làm seller
 export const registerAsSeller = catchAsync(async (req, res) => {
-  const { businessName, businessEmail, phone, description } = req.body;
+  const businessName = req.body.businessName ?? req.body.storeName;
+  const businessEmail = req.body.businessEmail ?? req.body.email;
+  const { phone, description } = req.body;
   const userId = req.user._id;
 
   const user = await User.findById(userId);
@@ -80,10 +82,31 @@ export const getSellerDashboard = catchAsync(async (req, res) => {
 
   const user = await User.findById(userId);
 
+  const recentOrderDocs = await Order.find({ sellerId: userId })
+    .sort({ createdAt: -1 })
+    .limit(5)
+    .populate('userId', 'username email');
+
+  const recentOrders = recentOrderDocs.map((o) => ({
+    _id: o._id,
+    orderCode: o.orderCode,
+    productName: o.packageName,
+    buyer: o.userId,
+    totalPrice: o.totalPrice,
+    status: o.status
+  }));
+
+  const viewsAgg = await ServicePackage.aggregate([
+    { $match: { sellerId: userId } },
+    { $group: { _id: null, totalSales: { $sum: '$salesCount' } } }
+  ]);
+  const viewsTotal = viewsAgg[0]?.totalSales || 0;
+
   res.status(200).json({
     success: true,
     data: {
       sellerInfo: user.sellerInfo,
+      recentOrders,
       stats: {
         products: {
           total: products,
@@ -96,10 +119,11 @@ export const getSellerDashboard = catchAsync(async (req, res) => {
         },
         revenue: {
           total: totalRevenue,
-          available: user.sellerInfo.availableBalance,
-          pending: user.sellerInfo.pendingBalance
+          available: user.sellerInfo?.availableBalance ?? 0,
+          pending: user.sellerInfo?.pendingBalance ?? 0
         },
-        withdrawals: withdrawalStats
+        withdrawals: withdrawalStats,
+        views: viewsTotal
       }
     }
   });
@@ -118,8 +142,10 @@ export const createProduct = catchAsync(async (req, res) => {
     price,
     currency,
     icon,
+    iconUrl,
     features,
-    platformFeePercentage
+    platformFeePercentage,
+    metadata
   } = req.body;
 
   // Tạo packageId
@@ -134,7 +160,9 @@ export const createProduct = catchAsync(async (req, res) => {
     price,
     currency: currency || 'vnd',
     icon: icon || 'CubeIcon',
+    iconUrl: iconUrl || null,
     features: features || [],
+    metadata: metadata && typeof metadata === 'object' ? metadata : {},
     sellerId,
     isMarketplaceItem: true,
     approvalStatus: 'pending', // Chờ admin duyệt
@@ -178,6 +206,22 @@ export const getSellerProducts = catchAsync(async (req, res) => {
         pages: Math.ceil(total / limit)
       }
     }
+  });
+});
+
+// Chi tiết một sản phẩm của seller
+export const getSellerProductById = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const sellerId = req.user._id;
+
+  const product = await ServicePackage.findOne({ _id: id, sellerId });
+  if (!product) {
+    throw new APIError('Không tìm thấy sản phẩm', 404);
+  }
+
+  res.status(200).json({
+    success: true,
+    data: product
   });
 });
 

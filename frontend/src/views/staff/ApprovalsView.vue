@@ -1,204 +1,118 @@
 <template>
-  <div>
-    <h1 class="text-2xl font-bold text-slate-900 dark:text-white mb-6">
-      Duyệt Seller & Sản phẩm
-    </h1>
-
-    <!-- Tabs -->
-    <div class="flex gap-4 mb-6 border-b border-slate-200 dark:border-gray-700">
-      <button
-        v-for="tab in tabs"
-        :key="tab.id"
-        @click="activeTab = tab.id"
-        :class="['px-4 py-3 font-medium text-sm border-b-2 transition-colors', activeTab === tab.id ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-gray-300']"
-      >
-        <span class="flex items-center gap-2">
-          <component :is="tab.icon" class="w-5 h-5" />
-          {{ tab.label }}
-          <span v-if="tab.count > 0" class="px-2 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs rounded-full">{{ tab.count }}</span>
-        </span>
-      </button>
+  <div class="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px]" />
+      <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-500/5 rounded-full blur-[100px]" />
     </div>
 
-    <!-- Sellers Tab -->
-    <div v-if="activeTab === 'sellers'" class="card">
-      <div class="p-6 border-b border-slate-200 dark:border-gray-700 flex items-center justify-between">
-        <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Seller đang chờ duyệt</h2>
-        <span class="text-sm text-slate-500">{{ pendingSellers.length }} seller</span>
+    <div class="relative z-10 max-w-6xl mx-auto">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent">
+          Phê duyệt
+        </h1>
+        <p class="text-slate-400 mt-1">Duyệt seller và sản phẩm mới</p>
       </div>
-      
-      <div class="divide-y divide-gray-200 dark:divide-gray-700">
-        <div v-for="seller in pendingSellers" :key="seller.id" class="p-6 hover:bg-slate-50 dark:hover:bg-gray-800/50">
-          <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
-              {{ seller.businessName.charAt(0) }}
-            </div>
-            <div class="flex-1">
-              <div class="flex items-start justify-between">
-                <div>
-                  <h3 class="font-semibold text-slate-900 dark:text-white">{{ seller.businessName }}</h3>
-                  <p class="text-sm text-slate-500">{{ seller.businessEmail }}</p>
-                  <p class="text-sm text-slate-500 mt-1">{{ seller.phone || 'Chưa có SĐT' }}</p>
+
+      <!-- Tabs -->
+      <div class="flex gap-2 mb-6">
+        <button 
+          @click="activeTab = 'sellers'" 
+          :class="activeTab === 'sellers' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : 'bg-slate-800/50 text-slate-400 border-slate-700/50'"
+          class="px-6 py-2.5 rounded-xl border font-medium transition-all"
+        >
+          Seller ({{ pendingSellers.length }})
+        </button>
+        <button 
+          @click="activeTab = 'products'" 
+          :class="activeTab === 'products' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : 'bg-slate-800/50 text-slate-400 border-slate-700/50'"
+          class="px-6 py-2.5 rounded-xl border font-medium transition-all"
+        >
+          Sản phẩm ({{ pendingProducts.length }})
+        </button>
+      </div>
+
+      <!-- Pending Sellers -->
+      <div v-if="activeTab === 'sellers'">
+        <div v-if="pendingSellers.length === 0" class="text-center py-12">
+          <BuildingStorefrontIcon class="w-16 h-16 mx-auto text-slate-600 mb-4" />
+          <p class="text-slate-400">Không có seller nào chờ duyệt</p>
+        </div>
+        <div v-else class="space-y-4">
+          <GlassCard 
+            v-for="seller in pendingSellers" 
+            :key="seller._id"
+            class="p-6"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                  <BuildingStorefrontIcon class="w-6 h-6 text-blue-400" />
                 </div>
-                <span class="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400">
-                  Đang chờ duyệt
-                </span>
+                <div>
+                  <h3 class="text-white font-medium">{{ seller.sellerInfo?.businessName || seller.username }}</h3>
+                  <p class="text-slate-400 text-sm">{{ seller.username }} • {{ seller.sellerInfo?.businessEmail || seller.email }}</p>
+                  <p class="text-slate-500 text-xs mt-1">Đăng ký: {{ formatDate(seller.createdAt) }}</p>
+                </div>
               </div>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-3">{{ seller.description }}</p>
-              <div class="flex items-center gap-2 mt-3 text-xs text-slate-500">
-                <UserIcon class="w-4 h-4" />
-                <span>Đăng ký bởi: {{ seller.user.name }} ({{ seller.user.email }})</span>
-              </div>
-              <div class="flex items-center gap-2 mt-4">
-                <button
-                  @click="approveSeller(seller)"
-                  :disabled="processing[seller.id]"
-                  class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium disabled:opacity-50"
+              <div class="flex gap-2">
+                <button 
+                  @click="approveSeller(seller._id)"
+                  class="px-4 py-2 bg-green-500/10 text-green-400 rounded-lg hover:bg-green-500/20 transition-colors"
                 >
-                  <span class="flex items-center gap-2">
-                    <CheckIcon class="w-4 h-4" />
-                    {{ processing[seller.id] === 'approve' ? 'Đang duyệt...' : 'Duyệt' }}
-                  </span>
+                  <CheckIcon class="w-5 h-5" />
                 </button>
-                <button
-                  @click="rejectSeller(seller)"
-                  :disabled="processing[seller.id]"
-                  class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium disabled:opacity-50"
+                <button 
+                  @click="rejectSeller(seller._id)"
+                  class="px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors"
                 >
-                  <span class="flex items-center gap-2">
-                    <XMarkIcon class="w-4 h-4" />
-                    {{ processing[seller.id] === 'reject' ? 'Đang từ chối...' : 'Từ chối' }}
-                  </span>
-                </button>
-                <button
-                  @click="viewSellerDetail(seller)"
-                  class="px-4 py-2 bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-slate-200 dark:hover:bg-gray-600"
-                >
-                  Xem chi tiết
+                  <XMarkIcon class="w-5 h-5" />
                 </button>
               </div>
             </div>
-          </div>
+          </GlassCard>
         </div>
       </div>
 
-      <div v-if="pendingSellers.length === 0" class="text-center py-12">
-        <BuildingStorefrontIcon class="w-16 h-16 mx-auto text-gray-300 dark:text-slate-600 mb-4" />
-        <p class="text-slate-500 dark:text-slate-400">Không có seller nào đang chờ duyệt</p>
-      </div>
-    </div>
-
-    <!-- Products Tab -->
-    <div v-if="activeTab === 'products'" class="card">
-      <div class="p-6 border-b border-slate-200 dark:border-gray-700 flex items-center justify-between">
-        <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Sản phẩm đang chờ duyệt</h2>
-        <span class="text-sm text-slate-500">{{ pendingProducts.length }} sản phẩm</span>
-      </div>
-      
-      <div class="divide-y divide-gray-200 dark:divide-gray-700">
-        <div v-for="product in pendingProducts" :key="product.id" class="p-6 hover:bg-slate-50 dark:hover:bg-gray-800/50">
-          <div class="flex items-start gap-4">
-            <div class="w-20 h-20 rounded-xl bg-slate-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
-              <img v-if="product.image" :src="product.image" :alt="product.name" class="w-full h-full object-cover rounded-xl" />
-              <CubeIcon v-else class="w-8 h-8 text-slate-400" />
-            </div>
-            <div class="flex-1">
-              <div class="flex items-start justify-between">
-                <div>
-                  <h3 class="font-semibold text-slate-900 dark:text-white">{{ product.name }}</h3>
-                  <p class="text-sm text-slate-500">{{ product.category }}</p>
-                  <p class="text-lg font-bold text-blue-600 dark:text-blue-400 mt-1">{{ formatPrice(product.price) }}</p>
-                </div>
-                <span class="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400">
-                  Đang chờ duyệt
-                </span>
-              </div>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 line-clamp-2">{{ product.description }}</p>
-              <div class="flex items-center gap-4 mt-3 text-xs text-slate-500">
-                <span class="flex items-center gap-1">
-                  <BuildingStorefrontIcon class="w-4 h-4" />
-                  {{ product.seller.businessName }}
-                </span>
-                <span class="flex items-center gap-1">
-                  <CubeIcon class="w-4 h-4" />
-                  Kho: {{ product.stock }}
-                </span>
-              </div>
-              <div class="flex items-center gap-2 mt-4">
-                <button
-                  @click="approveProduct(product)"
-                  :disabled="processing[product.id]"
-                  class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium disabled:opacity-50"
-                >
-                  <span class="flex items-center gap-2">
-                    <CheckIcon class="w-4 h-4" />
-                    {{ processing[product.id] === 'approve' ? 'Đang duyệt...' : 'Duyệt' }}
-                  </span>
-                </button>
-                <button
-                  @click="rejectProduct(product)"
-                  :disabled="processing[product.id]"
-                  class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium disabled:opacity-50"
-                >
-                  <span class="flex items-center gap-2">
-                    <XMarkIcon class="w-4 h-4" />
-                    {{ processing[product.id] === 'reject' ? 'Đang từ chối...' : 'Từ chối' }}
-                  </span>
-                </button>
-                <button
-                  @click="viewProductDetail(product)"
-                  class="px-4 py-2 bg-slate-100 dark:bg-gray-700 text-slate-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-slate-200 dark:hover:bg-gray-600"
-                >
-                  Xem chi tiết
-                </button>
-              </div>
-            </div>
-          </div>
+      <!-- Pending Products -->
+      <div v-if="activeTab === 'products'">
+        <div v-if="pendingProducts.length === 0" class="text-center py-12">
+          <CubeIcon class="w-16 h-16 mx-auto text-slate-600 mb-4" />
+          <p class="text-slate-400">Không có sản phẩm nào chờ duyệt</p>
         </div>
-      </div>
-
-      <div v-if="pendingProducts.length === 0" class="text-center py-12">
-        <CubeIcon class="w-16 h-16 mx-auto text-gray-300 dark:text-slate-600 mb-4" />
-        <p class="text-slate-500 dark:text-slate-400">Không có sản phẩm nào đang chờ duyệt</p>
-      </div>
-    </div>
-
-    <!-- History Tab -->
-    <div v-if="activeTab === 'history'" class="card">
-      <div class="p-6 border-b border-slate-200 dark:border-gray-700">
-        <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Lịch sử duyệt</h2>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="bg-slate-50 dark:bg-gray-800">
-            <tr>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Thời gian</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Loại</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Tên</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Người yêu cầu</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Hành động</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Người duyệt</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-            <tr v-for="item in history" :key="item.id" class="hover:bg-slate-50 dark:hover:bg-gray-800/50">
-              <td class="px-6 py-4 text-sm text-slate-500">{{ formatDate(item.date) }}</td>
-              <td class="px-6 py-4">
-                <span :class="['px-2 py-1 rounded-full text-xs font-medium', item.type === 'seller' ? 'bg-blue-100 text-blue-600' : 'bg-indigo-100 text-indigo-600']">
-                  {{ item.type === 'seller' ? 'Seller' : 'Sản phẩm' }}
-                </span>
-              </td>
-              <td class="px-6 py-4 font-medium text-slate-900 dark:text-white">{{ item.name }}</td>
-              <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{{ item.requester }}</td>
-              <td class="px-6 py-4">
-                <span :class="['px-2 py-1 rounded-full text-xs font-medium', item.action === 'approved' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600']">
-                  {{ item.action === 'approved' ? 'Đã duyệt' : 'Đã từ chối' }}
-                </span>
-              </td>
-              <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{{ item.approver }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div v-else class="space-y-4">
+          <GlassCard 
+            v-for="product in pendingProducts" 
+            :key="product._id"
+            class="p-6"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                  <CubeIcon class="w-6 h-6 text-amber-400" />
+                </div>
+                <div>
+                  <h3 class="text-white font-medium">{{ product.name }}</h3>
+                  <p class="text-slate-400 text-sm">{{ (product.currency || 'vnd').toUpperCase() }} • {{ formatPrice(product.price) }}</p>
+                  <p class="text-slate-500 text-xs mt-1">Seller: {{ sellerDisplayName(product) }}</p>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button 
+                  @click="approveProduct(product._id)"
+                  class="px-4 py-2 bg-green-500/10 text-green-400 rounded-lg hover:bg-green-500/20 transition-colors"
+                >
+                  <CheckIcon class="w-5 h-5" />
+                </button>
+                <button 
+                  @click="rejectProduct(product._id)"
+                  class="px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors"
+                >
+                  <XMarkIcon class="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </GlassCard>
+        </div>
       </div>
     </div>
   </div>
@@ -207,145 +121,83 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useToast } from 'vue-toastification';
+import { sellerApi, productApi } from '@/services/api.js';
+import GlassCard from '@/components/ui/GlassCard.vue';
 import {
   BuildingStorefrontIcon,
   CubeIcon,
   CheckIcon,
-  XMarkIcon,
-  UserIcon,
-  ClockIcon
-} from '@heroicons/vue/24/outline';
+  XMarkIcon
+} from '@heroicons/vue/24/solid';
 
 const toast = useToast();
 const activeTab = ref('sellers');
-const processing = ref({});
+const pendingSellers = ref([]);
+const pendingProducts = ref([]);
 
-const tabs = [
-  { id: 'sellers', label: 'Seller', icon: BuildingStorefrontIcon, count: 0 },
-  { id: 'products', label: 'Sản phẩm', icon: CubeIcon, count: 0 },
-  { id: 'history', label: 'Lịch sử', icon: ClockIcon, count: 0 }
-];
+const formatPrice = (price) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(price || 0);
+const formatDate = (date) => new Date(date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-const pendingSellers = ref([
-  {
-    id: 1,
-    businessName: 'ABC Store',
-    businessEmail: 'abc@store.com',
-    phone: '0901234567',
-    description: 'Chuyên cung cấp các sản phẩm Discord Nitro, Spotify Premium với giá tốt nhất thị trường.',
-    user: { name: 'Nguyễn Văn A', email: 'a@example.com' },
-    status: 'pending'
-  },
-  {
-    id: 2,
-    businessName: 'Game Key Shop',
-    businessEmail: 'contact@gamekey.com',
-    phone: '0912345678',
-    description: 'Bán key game Steam, Epic Games chính hãng giá rẻ.',
-    user: { name: 'Trần Thị B', email: 'b@example.com' },
-    status: 'pending'
-  }
-]);
+const sellerDisplayName = (product) => {
+  const s = product.sellerId;
+  if (!s) return '—';
+  return s.sellerInfo?.businessName || s.username || '—';
+};
 
-const pendingProducts = ref([
-  {
-    id: 1,
-    name: 'Discord Nitro 1 tháng',
-    category: 'Discord',
-    price: 99000,
-    stock: 50,
-    description: 'Discord Nitro 1 tháng full perk, gửi qua gift link.',
-    seller: { businessName: 'ABC Store' },
-    image: null
-  },
-  {
-    id: 2,
-    name: 'Spotify Premium 3 tháng',
-    category: 'Spotify',
-    price: 149000,
-    stock: 30,
-    description: 'Spotify Premium 3 tháng cho tài khoản cá nhân.',
-    seller: { businessName: 'Music Store' },
-    image: null
-  }
-]);
-
-const history = ref([
-  { id: 1, type: 'seller', name: 'XYZ Shop', requester: 'user@example.com', action: 'approved', approver: 'admin', date: new Date(Date.now() - 86400000) },
-  { id: 2, type: 'product', name: 'Netflix 4K 1 tháng', requester: 'ABC Store', action: 'rejected', approver: 'admin', date: new Date(Date.now() - 172800000) }
-]);
-
-const approveSeller = async (seller) => {
-  processing.value[seller.id] = 'approve';
+const fetchPendingItems = async () => {
   try {
-    // TODO: API call
-    await new Promise(r => setTimeout(r, 1000));
-    pendingSellers.value = pendingSellers.value.filter(s => s.id !== seller.id);
-    toast.success(`Đã duyệt seller "${seller.businessName}"`);
+    const [sellersRes, productsRes] = await Promise.all([
+      sellerApi.getPendingSellers(),
+      productApi.getPendingProducts()
+    ]);
+    if (sellersRes.success) pendingSellers.value = sellersRes.data?.sellers || [];
+    if (productsRes.success) pendingProducts.value = productsRes.data?.products || [];
   } catch (error) {
-    toast.error('Không thể duyệt seller');
-  } finally {
-    delete processing.value[seller.id];
+    pendingSellers.value = [];
+    pendingProducts.value = [];
+    toast.error(error.message || 'Không thể tải danh sách chờ duyệt');
   }
 };
 
-const rejectSeller = async (seller) => {
-  processing.value[seller.id] = 'reject';
+const approveSeller = async (id) => {
   try {
-    // TODO: API call
-    await new Promise(r => setTimeout(r, 1000));
-    pendingSellers.value = pendingSellers.value.filter(s => s.id !== seller.id);
-    toast.success(`Đã từ chối seller "${seller.businessName}"`);
+    await sellerApi.approveSeller(id);
+    toast.success('Đã phê duyệt seller');
+    pendingSellers.value = pendingSellers.value.filter(s => s._id !== id);
   } catch (error) {
-    toast.error('Không thể từ chối seller');
-  } finally {
-    delete processing.value[seller.id];
+    toast.error(error.message || 'Không thể phê duyệt');
   }
 };
 
-const approveProduct = async (product) => {
-  processing.value[product.id] = 'approve';
+const rejectSeller = async (id) => {
   try {
-    // TODO: API call
-    await new Promise(r => setTimeout(r, 1000));
-    pendingProducts.value = pendingProducts.value.filter(p => p.id !== product.id);
-    toast.success(`Đã duyệt sản phẩm "${product.name}"`);
+    await sellerApi.rejectSeller(id, {});
+    toast.success('Đã từ chối seller');
+    pendingSellers.value = pendingSellers.value.filter(s => s._id !== id);
   } catch (error) {
-    toast.error('Không thể duyệt sản phẩm');
-  } finally {
-    delete processing.value[product.id];
+    toast.error(error.message || 'Không thể từ chối');
   }
 };
 
-const rejectProduct = async (product) => {
-  processing.value[product.id] = 'reject';
+const approveProduct = async (id) => {
   try {
-    // TODO: API call
-    await new Promise(r => setTimeout(r, 1000));
-    pendingProducts.value = pendingProducts.value.filter(p => p.id !== product.id);
-    toast.success(`Đã từ chối sản phẩm "${product.name}"`);
+    await productApi.approveProduct(id);
+    toast.success('Đã phê duyệt sản phẩm');
+    pendingProducts.value = pendingProducts.value.filter(p => p._id !== id);
   } catch (error) {
-    toast.error('Không thể từ chối sản phẩm');
-  } finally {
-    delete processing.value[product.id];
+    toast.error(error.message || 'Không thể phê duyệt');
   }
 };
 
-const viewSellerDetail = (seller) => {
-  // TODO: Implement seller detail modal
-  toast.info('Chức năng xem chi tiết đang phát triển');
+const rejectProduct = async (id) => {
+  try {
+    await productApi.rejectProduct(id, {});
+    toast.success('Đã từ chối sản phẩm');
+    pendingProducts.value = pendingProducts.value.filter(p => p._id !== id);
+  } catch (error) {
+    toast.error(error.message || 'Không thể từ chối');
+  }
 };
 
-const viewProductDetail = (product) => {
-  // TODO: Implement product detail modal
-  toast.info('Chức năng xem chi tiết đang phát triển');
-};
-
-const formatPrice = (price) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
-const formatDate = (date) => new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(date));
-
-onMounted(() => {
-  tabs[0].count = pendingSellers.value.length;
-  tabs[1].count = pendingProducts.value.length;
-});
+onMounted(fetchPendingItems);
 </script>

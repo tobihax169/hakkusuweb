@@ -1,139 +1,83 @@
 <template>
-  <div class="py-8">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Back -->
-      <button 
-        @click="$router.back()"
-        class="flex items-center gap-2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white mb-6"
-      >
-        <ArrowLeftIcon class="w-5 h-5" />
-        Quay lại
-      </button>
+  <div class="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px]" />
+      <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500/5 rounded-full blur-[100px]" />
+    </div>
 
-      <div v-if="loading" class="flex justify-center py-12">
-        <LoadingSpinner size="lg" />
+    <div class="relative z-10 max-w-3xl mx-auto">
+      <div class="flex items-center gap-4 mb-8">
+        <button @click="$router.back()" class="p-2 bg-slate-800/50 rounded-xl hover:bg-slate-700/50 transition-colors">
+          <ArrowLeftIcon class="w-5 h-5 text-slate-400" />
+        </button>
+        <div>
+          <h1 class="text-2xl font-bold text-white">Chi tiết đơn hàng</h1>
+          <p class="text-slate-400 text-sm">{{ order?.orderCode }}</p>
+        </div>
       </div>
 
-      <div v-else-if="order" class="space-y-6">
-        <!-- Header Card -->
-        <div class="card p-6">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div v-if="loading" class="flex justify-center py-12">
+        <div class="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
+      </div>
+
+      <div v-else-if="!order" class="text-center py-12">
+        <p class="text-slate-400">Không tìm thấy đơn hàng</p>
+      </div>
+
+      <div v-else class="space-y-6">
+        <!-- Status Card -->
+        <GlassCard class="p-6">
+          <div class="flex items-center justify-between">
             <div>
-              <div class="flex items-center gap-3 mb-2">
-                <h1 class="text-2xl font-bold text-slate-900 dark:text-white">
-                  {{ order.orderCode }}
-                </h1>
-                <span :class="getStatusBadgeClass(order.status)">
-                  {{ $t(`orders.status.${order.status}`) }}
-                </span>
-              </div>
-              <p class="text-slate-500 dark:text-slate-400">
-                {{ formatDate(order.createdAt) }}
-              </p>
+              <p class="text-slate-400 text-sm mb-2">Trạng thái đơn hàng</p>
+              <Badge :variant="getStatusVariant(order.status)" size="lg">
+                {{ getStatusLabel(order.status) }}
+              </Badge>
             </div>
-
             <div class="text-right">
-              <p class="text-2xl font-bold text-slate-900 dark:text-white">
-                {{ formatPrice(order.totalPrice) }} ₫
-              </p>
-              <p class="text-sm" :class="getPaymentStatusClass(order.paymentStatus)">
-                {{ $t(`orders.paymentStatus.${order.paymentStatus}`) }}
-              </p>
+              <p class="text-slate-400 text-sm mb-2">Ngày đặt</p>
+              <p class="text-white">{{ formatDate(order.createdAt) }}</p>
             </div>
           </div>
-        </div>
+        </GlassCard>
 
-        <!-- Order Info -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Package Info -->
-          <div class="card p-6">
-            <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-              Thông tin gói
-            </h3>
-            <div class="space-y-3">
-              <div class="flex justify-between">
-                <span class="text-slate-500 dark:text-slate-400">Gói:</span>
-                <span class="font-medium text-slate-900 dark:text-white">{{ order.packageName }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-slate-500 dark:text-slate-400">Giá gốc:</span>
-                <span>{{ formatPrice(order.basePrice) }} ₫</span>
-              </div>
-              <div v-if="order.discountAmount > 0" class="flex justify-between text-green-600">
-                <span>Giảm giá:</span>
-                <span>-{{ formatPrice(order.discountAmount) }} ₫</span>
-              </div>
-              <div class="flex justify-between font-semibold pt-2 border-t border-slate-200 dark:border-gray-700">
-                <span>Tổng:</span>
-                <span class="text-blue-600">{{ formatPrice(order.totalPrice) }} ₫</span>
-              </div>
+        <!-- Product Info -->
+        <GlassCard class="p-6">
+          <h2 class="text-lg font-semibold text-white mb-4">Thông tin sản phẩm</h2>
+          <div class="flex items-center gap-4">
+            <div class="w-20 h-20 bg-slate-700/50 rounded-xl flex items-center justify-center">
+              <CubeIcon class="w-10 h-10 text-blue-400" />
+            </div>
+            <div>
+              <h3 class="text-white font-medium text-lg">{{ order.productName || order.packageName }}</h3>
+              <p class="text-blue-400 font-bold text-2xl mt-1">{{ formatPrice(order.totalPrice) }}</p>
             </div>
           </div>
+        </GlassCard>
 
-          <!-- Discord Info -->
-          <div class="card p-6">
-            <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-              Thông tin Discord
-            </h3>
-            <div class="space-y-3">
-              <div v-if="order.discordServerId" class="flex justify-between">
-                <span class="text-slate-500 dark:text-slate-400">Server ID:</span>
-                <span class="font-mono">{{ order.discordServerId }}</span>
-              </div>
-              <div v-if="order.discordServerName" class="flex justify-between">
-                <span class="text-slate-500 dark:text-slate-400">Server Name:</span>
-                <span>{{ order.discordServerName }}</span>
-              </div>
-              <div v-if="!order.discordServerId" class="text-slate-500 italic">
-                Chưa cung cấp thông tin Discord
-              </div>
-            </div>
+        <!-- Delivery Info -->
+        <GlassCard class="p-6">
+          <h2 class="text-lg font-semibold text-white mb-4">Thông tin giao hàng</h2>
+          <div class="bg-slate-900/50 rounded-xl p-4">
+            <p class="text-white whitespace-pre-wrap">{{ order.deliveryInfo || 'Chưa cập nhật' }}</p>
           </div>
-        </div>
+        </GlassCard>
 
-        <!-- Description -->
-        <div class="card p-6">
-          <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-            Mô tả yêu cầu
-          </h3>
-          <p class="text-slate-600 dark:text-gray-300 whitespace-pre-wrap">
-            {{ order.description || 'Không có mô tả' }}
-          </p>
-        </div>
+        <!-- Notes -->
+        <GlassCard v-if="order.notes" class="p-6">
+          <h2 class="text-lg font-semibold text-white mb-4">Ghi chú</h2>
+          <p class="text-slate-300">{{ order.notes }}</p>
+        </GlassCard>
 
         <!-- Actions -->
-        <div class="card p-6">
-          <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-            Thao tác
-          </h3>
-          <div class="flex flex-wrap gap-3">
-            <button
-              v-if="order.paymentStatus === 'pending' && order.status !== 'cancelled'"
-              @click="showPayModal = true"
-              class="btn-primary"
-            >
-              <CreditCardIcon class="w-5 h-5 mr-2" />
-              Thanh toán ngay
-            </button>
-
-            <button
-              v-if="order.canCancel"
-              @click="confirmCancel"
-              class="btn-outline text-red-600"
-            >
-              <XCircleIcon class="w-5 h-5 mr-2" />
-              Hủy đơn
-            </button>
-
-            <button
-              v-if="order.status === 'completed' && !order.rating"
-              @click="showReviewModal = true"
-              class="btn-outline"
-            >
-              <StarIcon class="w-5 h-5 mr-2" />
-              Đánh giá
-            </button>
-          </div>
+        <div v-if="order.status === 'pending'" class="flex gap-4">
+          <button 
+            @click="cancelOrder" 
+            :disabled="cancelling"
+            class="flex-1 py-3 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 transition-colors disabled:opacity-50"
+          >
+            {{ cancelling ? 'Đang hủy...' : 'Hủy đơn hàng' }}
+          </button>
         </div>
       </div>
     </div>
@@ -145,51 +89,39 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import { orderApi } from '@/services/api.js';
-import {
-  ArrowLeftIcon,
-  CreditCardIcon,
-  XCircleIcon,
-  StarIcon
-} from '@heroicons/vue/24/outline';
-import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
+import GlassCard from '@/components/ui/GlassCard.vue';
+import Badge from '@/components/ui/Badge.vue';
+import { ArrowLeftIcon, CubeIcon } from '@heroicons/vue/24/solid';
 
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
 
-const loading = ref(true);
 const order = ref(null);
-const showPayModal = ref(false);
-const showReviewModal = ref(false);
+const loading = ref(true);
+const cancelling = ref(false);
 
 const formatPrice = (price) => {
-  return price?.toLocaleString('vi-VN') || '0';
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(price || 0);
 };
 
 const formatDate = (date) => {
-  return new Date(date).toLocaleString('vi-VN');
+  return new Date(date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 };
 
-const getStatusBadgeClass = (status) => {
-  const classes = {
-    pending: 'badge-warning',
-    processing: 'badge-info',
-    completed: 'badge-success',
-    cancelled: 'badge-danger',
-    refunded: 'badge-danger'
-  };
-  return classes[status] || 'badge-info';
-};
+const getStatusVariant = (status) => ({
+  pending: 'warning',
+  processing: 'info',
+  completed: 'success',
+  cancelled: 'danger'
+}[status] || 'default');
 
-const getPaymentStatusClass = (status) => {
-  const classes = {
-    pending: 'text-yellow-600 dark:text-yellow-400',
-    paid: 'text-green-600 dark:text-green-400',
-    failed: 'text-red-600 dark:text-red-400',
-    refunded: 'text-slate-500'
-  };
-  return classes[status] || 'text-slate-500';
-};
+const getStatusLabel = (status) => ({
+  pending: 'Đang chờ',
+  processing: 'Đang xử lý',
+  completed: 'Hoàn thành',
+  cancelled: 'Đã hủy'
+}[status] || status);
 
 const fetchOrder = async () => {
   try {
@@ -198,23 +130,23 @@ const fetchOrder = async () => {
       order.value = response.data;
     }
   } catch (error) {
-    toast.error('Không thể tải đơn hàng');
+    toast.error('Không thể tải thông tin đơn hàng');
   } finally {
     loading.value = false;
   }
 };
 
-const confirmCancel = async () => {
+const cancelOrder = async () => {
   if (!confirm('Bạn có chắc muốn hủy đơn hàng này?')) return;
-
+  cancelling.value = true;
   try {
-    const response = await orderApi.cancelOrder(order.value._id);
-    if (response.success) {
-      toast.success('Đã hủy đơn hàng');
-      fetchOrder();
-    }
+    await orderApi.cancelOrder(order.value._id);
+    toast.success('Đã hủy đơn hàng');
+    order.value.status = 'cancelled';
   } catch (error) {
-    toast.error(error.message || 'Không thể hủy đơn hàng');
+    toast.error('Không thể hủy đơn hàng');
+  } finally {
+    cancelling.value = false;
   }
 };
 

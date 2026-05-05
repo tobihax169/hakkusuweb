@@ -8,3 +8,5 @@ export { default as Transaction } from './Transaction.js';
 export { default as ServicePackage } from './ServicePackage.js';
 export { default as Log } from './Log.js';
 export { default as Withdrawal } from './Withdrawal.js';
+export { default as Announcement } from './Announcement.js';
+export { default as Ticket } from './Ticket.js';

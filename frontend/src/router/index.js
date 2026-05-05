@@ -23,19 +23,21 @@ const CreateOrderView = () => import('@/views/orders/CreateOrderView.vue');
 const AdminDashboard = () => import('@/views/admin/DashboardView.vue');
 const AdminUsers = () => import('@/views/admin/UsersView.vue');
 const AdminOrders = () => import('@/views/admin/OrdersView.vue');
-const AdminServices = () => import('@/views/admin/ServicesView.vue');
 const AdminAnnouncements = () => import('@/views/admin/AnnouncementsView.vue');
 
 // Staff/Support Views
 const StaffDashboard = () => import('@/views/staff/StaffDashboard.vue');
 const StaffTickets = () => import('@/views/staff/TicketsView.vue');
 const StaffApprovals = () => import('@/views/staff/ApprovalsView.vue');
+const StaffAnnouncements = () => import('@/views/admin/AnnouncementsView.vue');
 
 // Seller Views
 const SellerRegister = () => import('@/views/seller/SellerRegister.vue');
 const SellerDashboard = () => import('@/views/seller/SellerDashboard.vue');
 const SellerProducts = () => import('@/views/seller/SellerProducts.vue');
 const CreateProduct = () => import('@/views/seller/CreateProduct.vue');
+const EditProduct = () => import('@/views/seller/EditProduct.vue');
+const SellerOrdersView = () => import('@/views/seller/SellerOrdersView.vue');
 
 const routes = [
   {
@@ -89,7 +91,6 @@ const routes = [
       { path: '', name: 'AdminDashboard', component: AdminDashboard },
       { path: 'users', name: 'AdminUsers', component: AdminUsers },
       { path: 'orders', name: 'AdminOrders', component: AdminOrders },
-      { path: 'services', name: 'AdminServices', component: AdminServices },
       { path: 'announcements', name: 'AdminAnnouncements', component: AdminAnnouncements }
     ]
   },
@@ -101,7 +102,8 @@ const routes = [
     children: [
       { path: '', name: 'StaffDashboard', component: StaffDashboard },
       { path: 'tickets', name: 'StaffTickets', component: StaffTickets },
-      { path: 'approvals', name: 'StaffApprovals', component: StaffApprovals }
+      { path: 'approvals', name: 'StaffApprovals', component: StaffApprovals },
+      { path: 'announcements', name: 'StaffAnnouncements', component: StaffAnnouncements }
     ]
   },
   // Seller Routes
@@ -112,8 +114,10 @@ const routes = [
     children: [
       { path: 'register', name: 'SellerRegister', component: SellerRegister },
       { path: 'dashboard', name: 'SellerDashboard', component: SellerDashboard, meta: { requiresSeller: true } },
+      { path: 'orders', name: 'SellerOrders', component: SellerOrdersView, meta: { requiresSeller: true } },
       { path: 'products', name: 'SellerProducts', component: SellerProducts, meta: { requiresSeller: true } },
-      { path: 'products/create', name: 'CreateProduct', component: CreateProduct, meta: { requiresSeller: true } }
+      { path: 'products/create', name: 'CreateProduct', component: CreateProduct, meta: { requiresSeller: true } },
+      { path: 'products/edit/:id', name: 'EditProduct', component: EditProduct, meta: { requiresSeller: true } }
     ]
   },
   {

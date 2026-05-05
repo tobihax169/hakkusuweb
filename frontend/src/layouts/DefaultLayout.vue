@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
-    <Navbar />
+  <div class="min-h-screen bg-slate-900 text-white">
+    <UnifiedHeader />
     
     <main class="pt-16">
       <router-view v-slot="{ Component }">
@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import Navbar from '@/components/layout/Navbar.vue';
+import UnifiedHeader from '@/components/layout/UnifiedHeader.vue';
 import Footer from '@/components/layout/Footer.vue';
 </script>
 

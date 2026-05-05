@@ -1,6 +1,6 @@
 import express from 'express';
 import * as sellerController from '../controllers/seller.controller.js';
-import { authenticate, requireAdmin } from '../middleware/auth.js';
+import { authenticate, requireAdmin, requireSupport } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -54,6 +54,7 @@ router.get('/dashboard', requireSeller, sellerController.getSellerDashboard);
 // ==================== PRODUCT MANAGEMENT ====================
 router.post('/products', requireSeller, sellerController.createProduct);
 router.get('/products', requireSeller, sellerController.getSellerProducts);
+router.get('/products/:id', requireSeller, sellerController.getSellerProductById);
 router.put('/products/:id', requireSeller, sellerController.updateProduct);
 router.delete('/products/:id', requireSeller, sellerController.deleteProduct);
 
@@ -66,18 +67,18 @@ router.post('/withdrawals', requireSeller, sellerController.requestWithdrawal);
 router.get('/withdrawals', requireSeller, sellerController.getWithdrawals);
 router.put('/withdrawals/:id/cancel', requireSeller, sellerController.cancelWithdrawal);
 
-// ==================== ADMIN FUNCTIONS ====================
-// Duyệt seller
-router.put('/admin/sellers/:userId/verify', requireAdmin, sellerController.verifySeller);
-router.put('/admin/sellers/:userId/reject', requireAdmin, sellerController.rejectSeller);
-router.get('/admin/pending-sellers', requireAdmin, sellerController.getPendingSellers);
+// ==================== ADMIN / SUPPORT FUNCTIONS ====================
+// Duyệt seller (support + admin)
+router.put('/admin/sellers/:userId/verify', requireSupport, sellerController.verifySeller);
+router.put('/admin/sellers/:userId/reject', requireSupport, sellerController.rejectSeller);
+router.get('/admin/pending-sellers', requireSupport, sellerController.getPendingSellers);
 
 // Duyệt sản phẩm
-router.put('/admin/products/:id/approve', requireAdmin, sellerController.approveProduct);
-router.put('/admin/products/:id/reject', requireAdmin, sellerController.rejectProduct);
-router.get('/admin/pending-products', requireAdmin, sellerController.getPendingProducts);
+router.put('/admin/products/:id/approve', requireSupport, sellerController.approveProduct);
+router.put('/admin/products/:id/reject', requireSupport, sellerController.rejectProduct);
+router.get('/admin/pending-products', requireSupport, sellerController.getPendingProducts);
 
-// Xử lý rút tiền
+// Xử lý rút tiền (chỉ admin)
 router.put('/admin/withdrawals/:id/process', requireAdmin, sellerController.processWithdrawal);
 router.get('/admin/pending-withdrawals', requireAdmin, sellerController.getPendingWithdrawals);
 

@@ -1,162 +1,106 @@
 <template>
-  <div class="py-8">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Header -->
-      <div class="flex items-center gap-4 mb-6">
-        <button 
-          @click="$router.back()"
-          class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-800"
-        >
-          <ArrowLeftIcon class="w-5 h-5 text-slate-600 dark:text-slate-400" />
+  <div class="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px]" />
+      <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500/5 rounded-full blur-[100px]" />
+    </div>
+
+    <div class="relative z-10 max-w-3xl mx-auto">
+      <div class="flex items-center gap-4 mb-8">
+        <button @click="$router.back()" class="p-2 bg-slate-800/50 rounded-xl hover:bg-slate-700/50 transition-colors">
+          <ArrowLeftIcon class="w-5 h-5 text-slate-400" />
         </button>
-        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">
-          Đặt hàng mới
-        </h1>
-      </div>
-
-      <!-- Step 1: Select Package -->
-      <div v-if="step === 1" class="card p-6">
-        <h2 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-          Chọn gói dịch vụ
-        </h2>
-
-        <div v-if="loading" class="flex justify-center py-8">
-          <LoadingSpinner size="lg" />
-        </div>
-
-        <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div
-            v-for="pkg in services"
-            :key="pkg.id"
-            @click="selectPackage(pkg)"
-            :class="[
-              'p-4 rounded-xl border-2 cursor-pointer transition-all',
-              selectedPackage?.id === pkg.id
-                ? 'border-blue-500 bg-primary-50 dark:bg-primary-900/20'
-                : 'border-slate-200 dark:border-gray-700 hover:border-primary-300'
-            ]"
-          >
-            <div class="flex items-center gap-3 mb-2">
-              <component :is="getIcon(pkg.icon)" class="w-6 h-6 text-blue-600" />
-              <h3 class="font-semibold text-slate-900 dark:text-white">{{ pkg.name }}</h3>
-            </div>
-            <p class="text-lg font-bold text-blue-600">
-              {{ pkg.price > 0 ? formatPrice(pkg.price) + ' ₫' : 'Liên hệ' }}
-            </p>
-            <p class="text-sm text-slate-500 mt-1">{{ pkg.features.length }} tính năng</p>
-          </div>
-        </div>
-
-        <div class="mt-6 flex justify-end">
-          <button
-            :disabled="!selectedPackage"
-            @click="step = 2"
-            class="btn-primary"
-          >
-            Tiếp theo
-            <ArrowRightIcon class="w-5 h-5 ml-2" />
-          </button>
+        <div>
+          <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent">Tạo đơn hàng</h1>
+          <p class="text-slate-400 mt-1">Điền thông tin để hoàn tất đơn hàng</p>
         </div>
       </div>
 
-      <!-- Step 2: Details -->
-      <div v-else-if="step === 2" class="card p-6">
-        <h2 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-          Chi tiết yêu cầu
-        </h2>
-
-        <form @submit.prevent="submitOrder" class="space-y-4">
-          <!-- Discord Server -->
-          <div>
-            <label class="form-label">Discord Server ID (nếu có)</label>
-            <input
-              v-model="form.discordServerId"
-              type="text"
-              class="form-input"
-              placeholder="1234567890"
-            />
-          </div>
-
-          <!-- Description -->
-          <div>
-            <label class="form-label">Mô tả yêu cầu</label>
-            <textarea
-              v-model="form.description"
-              class="form-input"
-              rows="4"
-              placeholder="Mô tả chi tiết những tính năng bạn cần..."
-            />
-          </div>
-
-          <!-- Payment Method -->
-          <div>
-            <label class="form-label">Phương thức thanh toán</label>
-            <div class="grid grid-cols-2 gap-4">
-              <button
-                type="button"
-                @click="form.paymentMethod = 'wallet'"
-                :class="[
-                  'p-4 rounded-xl border-2 text-left transition-all',
-                  form.paymentMethod === 'wallet'
-                    ? 'border-blue-500 bg-primary-50 dark:bg-primary-900/20'
-                    : 'border-slate-200 dark:border-gray-700'
-                ]"
-              >
-                <CurrencyDollarIcon class="w-6 h-6 text-blue-600 mb-2" />
-                <p class="font-medium text-slate-900 dark:text-white">Ví (Gem)</p>
-                <p class="text-sm text-slate-500">Số dư: {{ gemBalance }}</p>
-              </button>
-
-              <button
-                type="button"
-                @click="form.paymentMethod = 'qr_code'"
-                :class="[
-                  'p-4 rounded-xl border-2 text-left transition-all',
-                  form.paymentMethod === 'qr_code'
-                    ? 'border-blue-500 bg-primary-50 dark:bg-primary-900/20'
-                    : 'border-slate-200 dark:border-gray-700'
-                ]"
-              >
-                <QrCodeIcon class="w-6 h-6 text-blue-600 mb-2" />
-                <p class="font-medium text-slate-900 dark:text-white">QR Code</p>
-                <p class="text-sm text-slate-500">Chuyển khoản ngân hàng</p>
-              </button>
+      <!-- Product Selection -->
+      <div v-if="!selectedProduct" class="space-y-4">
+        <h2 class="text-lg font-semibold text-white mb-4">Chọn sản phẩm</h2>
+        <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div v-for="i in 4" :key="i" class="bg-slate-800/50 rounded-2xl h-24 animate-pulse" />
+        </div>
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <GlassCard 
+            v-for="product in products" 
+            :key="product.id"
+            hover
+            class="p-4 cursor-pointer"
+            @click="selectProduct(product)"
+          >
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 bg-slate-700/50 rounded-xl flex items-center justify-center">
+                <CubeIcon class="w-8 h-8 text-blue-400" />
+              </div>
+              <div class="flex-1">
+                <h3 class="text-white font-medium">{{ product.name }}</h3>
+                <p class="text-blue-400 font-bold text-lg">{{ formatPrice(product.price) }}</p>
+              </div>
+              <ChevronRightIcon class="w-5 h-5 text-slate-500" />
             </div>
-          </div>
+          </GlassCard>
+        </div>
+      </div>
 
-          <!-- Summary -->
-          <div class="bg-slate-50 dark:bg-gray-800 rounded-lg p-4">
-            <div class="flex justify-between items-center">
-              <span class="text-slate-600 dark:text-slate-400">Gói dịch vụ:</span>
-              <span class="font-medium text-slate-900 dark:text-white">{{ selectedPackage?.name }}</span>
+      <!-- Order Form -->
+      <div v-else>
+        <GlassCard class="p-6 mb-6">
+          <div class="flex items-center justify-between pb-6 border-b border-slate-700/50">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 bg-slate-700/50 rounded-xl flex items-center justify-center">
+                <CubeIcon class="w-8 h-8 text-blue-400" />
+              </div>
+              <div>
+                <h2 class="text-lg font-semibold text-white">{{ selectedProduct.name }}</h2>
+                <p class="text-blue-400 font-bold text-xl">{{ formatPrice(selectedProduct.price) }}</p>
+              </div>
             </div>
-            <div class="flex justify-between items-center mt-2 pt-2 border-t border-slate-200 dark:border-gray-700">
-              <span class="text-slate-900 dark:text-white font-semibold">Tổng thanh toán:</span>
-              <span class="text-xl font-bold text-blue-600">
-                {{ formatPrice(selectedPackage?.price) }} ₫
-              </span>
-            </div>
-          </div>
-
-          <!-- Actions -->
-          <div class="flex items-center justify-between">
-            <button
-              type="button"
-              @click="step = 1"
-              class="btn-outline"
-            >
-              Quay lại
-            </button>
-            <button
-              type="submit"
-              :disabled="submitting"
-              class="btn-primary"
-            >
-              <LoadingSpinner v-if="submitting" size="sm" color="white" class="mr-2" />
-              {{ submitting ? 'Đang xử lý...' : 'Đặt hàng' }}
+            <button @click="selectedProduct = null" class="p-2 hover:bg-slate-700/50 rounded-lg transition-colors">
+              <XMarkIcon class="w-5 h-5 text-slate-400" />
             </button>
           </div>
-        </form>
+        </GlassCard>
+
+        <GlassCard class="p-6">
+          <form @submit.prevent="createOrder" class="space-y-6">
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-2">Thông tin nhận hàng / Account</label>
+              <textarea 
+                v-model="formData.deliveryInfo" 
+                rows="3" 
+                required
+                class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 outline-none focus:border-blue-500/50"
+                placeholder="Nhập thông tin tài khoản hoặc địa chỉ nhận hàng..."
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-2">Ghi chú (tùy chọn)</label>
+              <textarea 
+                v-model="formData.notes" 
+                rows="2"
+                class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 outline-none focus:border-blue-500/50"
+                placeholder="Ghi chú thêm cho đơn hàng..."
+              />
+            </div>
+
+            <div class="pt-6 border-t border-slate-700/50">
+              <div class="flex items-center justify-between mb-6">
+                <span class="text-slate-400">Tổng thanh toán</span>
+                <span class="text-2xl font-bold text-blue-400">{{ formatPrice(selectedProduct.price) }}</span>
+              </div>
+              <button 
+                type="submit" 
+                :disabled="submitting"
+                class="w-full py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all disabled:opacity-50"
+              >
+                {{ submitting ? 'Đang xử lý...' : 'Xác nhận đặt hàng' }}
+              </button>
+            </div>
+          </form>
+        </GlassCard>
       </div>
     </div>
   </div>
@@ -164,129 +108,66 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useToast } from 'vue-toastification';
-import { useAuthStore } from '@/stores/auth.js';
-import { serviceApi, orderApi, userApi } from '@/services/api.js';
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  CurrencyDollarIcon,
-  CubeIcon,
-  StarIcon,
-  SparklesIcon,
-  PuzzlePieceIcon
-} from '@heroicons/vue/24/outline';
-import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
+import { serviceApi, orderApi } from '@/services/api.js';
+import GlassCard from '@/components/ui/GlassCard.vue';
+import { ArrowLeftIcon, CubeIcon, ChevronRightIcon, XMarkIcon } from '@heroicons/vue/24/solid';
 
-const route = useRoute();
 const router = useRouter();
+const route = useRoute();
 const toast = useToast();
-const authStore = useAuthStore();
 
-const step = ref(1);
+const products = ref([]);
+const selectedProduct = ref(null);
+const formData = reactive({ deliveryInfo: '', notes: '' });
 const loading = ref(true);
 const submitting = ref(false);
-const services = ref([]);
-const selectedPackage = ref(null);
-const gemBalance = ref(0);
-
-const form = reactive({
-  discordServerId: '',
-  discordServerName: '',
-  description: '',
-  paymentMethod: 'wallet'
-});
-
-const iconMap = {
-  CubeIcon,
-  StarIcon,
-  SparklesIcon,
-  PuzzlePieceIcon
-};
-
-const getIcon = (iconName) => iconMap[iconName] || CubeIcon;
 
 const formatPrice = (price) => {
-  return price?.toLocaleString('vi-VN') || '0';
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(price || 0);
 };
 
-const fetchServices = async () => {
-  try {
-    const response = await serviceApi.getServices();
-    services.value = response.data;
+const selectProduct = (product) => {
+  selectedProduct.value = product;
+};
 
-    // Check if package is pre-selected from URL
-    const preSelected = route.query.package;
-    if (preSelected) {
-      selectedPackage.value = services.value.find(s => s.id === preSelected);
-      if (selectedPackage.value) {
-        step.value = 2;
-      }
+const createOrder = async () => {
+  submitting.value = true;
+  try {
+    const response = await orderApi.createOrder({
+      productId: selectedProduct.value.id,
+      deliveryInfo: formData.deliveryInfo,
+      notes: formData.notes,
+      totalPrice: selectedProduct.value.price
+    });
+    if (response.success) {
+      toast.success('Đặt hàng thành công!');
+      router.push('/orders');
     }
   } catch (error) {
-    toast.error('Không thể tải dịch vụ');
+    toast.error(error.message || 'Không thể tạo đơn hàng');
+  } finally {
+    submitting.value = false;
+  }
+};
+
+const fetchProducts = async () => {
+  try {
+    const response = await serviceApi.getServices();
+    products.value = response.data || [];
+    
+    const productId = route.query.product;
+    if (productId) {
+      const product = products.value.find(p => p.id === productId || p._id === productId);
+      if (product) selectedProduct.value = product;
+    }
+  } catch (error) {
+    toast.error('Không thể tải sản phẩm');
   } finally {
     loading.value = false;
   }
 };
 
-const fetchWallet = async () => {
-  try {
-    const response = await userApi.getWallet();
-    gemBalance.value = response.data?.balance?.gem || 0;
-  } catch (error) {
-    // Silent fail - error handled by API interceptor
-  }
-};
-
-const selectPackage = (pkg) => {
-  selectedPackage.value = pkg;
-};
-
-const submitOrder = async () => {
-  if (!selectedPackage.value) return;
-
-  submitting.value = true;
-  try {
-    const response = await orderApi.createOrder({
-      packageId: selectedPackage.value.id,
-      description: form.description,
-      discordServerId: form.discordServerId,
-      paymentMethod: form.paymentMethod
-    });
-
-    if (response.success) {
-      toast.success('Đơn hàng đã được tạo!');
-      
-      if (form.paymentMethod === 'wallet') {
-        // Auto-pay with wallet
-        await autoPay(response.data._id);
-      } else {
-        router.push(`/orders/${response.data._id}`);
-      }
-    }
-  } catch (error) {
-    toast.error(error.message || 'Không thể tạo đơn hàng');
-    submitting.value = false;
-  }
-};
-
-const autoPay = async (orderId) => {
-  try {
-    const payResponse = await orderApi.payWithWallet(orderId, { currency: 'gem' });
-    if (payResponse.success) {
-      toast.success('Thanh toán thành công!');
-      router.push('/orders');
-    }
-  } catch (error) {
-    toast.error(error.message || 'Thanh toán thất bại');
-    router.push(`/orders/${orderId}`);
-  }
-};
-
-onMounted(() => {
-  fetchServices();
-  fetchWallet();
-});
+onMounted(fetchProducts);
 </script>

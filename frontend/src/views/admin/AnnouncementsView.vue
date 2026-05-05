@@ -1,494 +1,239 @@
 <template>
-  <div>
-    <h1 class="text-2xl font-bold text-slate-900 dark:text-white mb-6">
-      Quản lý Thông báo
-    </h1>
-
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-8">
-      <div class="card p-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Tổng thông báo</p>
-            <p class="text-2xl font-bold text-slate-900 dark:text-white mt-1">{{ stats.total }}</p>
-          </div>
-          <div class="w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-            <MegaphoneIcon class="w-6 h-6 text-blue-600 dark:text-blue-400" />
-          </div>
-        </div>
-      </div>
-
-      <div class="card p-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Đang hiển thị</p>
-            <p class="text-2xl font-bold text-slate-900 dark:text-white mt-1">{{ stats.active }}</p>
-          </div>
-          <div class="w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-            <EyeIcon class="w-6 h-6 text-green-600 dark:text-green-400" />
-          </div>
-        </div>
-      </div>
-
-      <div class="card p-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Lượt xem</p>
-            <p class="text-2xl font-bold text-slate-900 dark:text-white mt-1">{{ formatNumber(stats.views) }}</p>
-          </div>
-          <div class="w-12 h-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
-            <ChartBarIcon class="w-6 h-6 text-indigo-600 dark:text-purple-400" />
-          </div>
-        </div>
-      </div>
-
-      <div class="card p-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Scheduled</p>
-            <p class="text-2xl font-bold text-slate-900 dark:text-white mt-1">{{ stats.scheduled }}</p>
-          </div>
-          <div class="w-12 h-12 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
-            <ClockIcon class="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
-          </div>
-        </div>
-      </div>
+  <div class="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-violet-500/5 rounded-full blur-[100px]" />
+      <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px]" />
     </div>
 
-    <!-- Action Bar -->
-    <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-4">
-        <select
-          v-model="filterType"
-          class="px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white"
+    <div class="relative z-10 max-w-4xl mx-auto">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent">
+            Thông báo
+          </h1>
+          <p class="text-slate-400 mt-1">Quản lý thông báo hệ thống</p>
+        </div>
+        <button
+          v-if="authStore.isAdmin"
+          @click="showCreateModal = true"
+          class="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
         >
-          <option value="all">Tất cả loại</option>
-          <option value="maintenance">Bảo trì</option>
-          <option value="update">Cập nhật</option>
-          <option value="promotion">Khuyến mãi</option>
-          <option value="general">Thông báo chung</option>
-        </select>
-        <select
-          v-model="filterStatus"
-          class="px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-slate-900 dark:text-white"
-        >
-          <option value="all">Tất cả trạng thái</option>
-          <option value="active">Đang hiển thị</option>
-          <option value="draft">Bản nháp</option>
-          <option value="expired">Hết hạn</option>
-        </select>
-      </div>
-      <button
-        @click="showCreateModal = true"
-        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium flex items-center gap-2"
-      >
-        <PlusIcon class="w-5 h-5" />
-        Tạo thông báo
-      </button>
-    </div>
-
-    <!-- Announcements List -->
-    <div class="card">
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="bg-slate-50 dark:bg-gray-800">
-            <tr>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Thông báo</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Loại</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Đối tượng</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Thời gian</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Lượt xem</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Trạng thái</th>
-              <th class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase">Thao tác</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-            <tr v-for="item in filteredAnnouncements" :key="item.id" class="hover:bg-slate-50 dark:hover:bg-gray-800/50">
-              <td class="px-6 py-4">
-                <div class="font-medium text-slate-900 dark:text-white">{{ item.title }}</div>
-                <div class="text-sm text-slate-500 line-clamp-1">{{ item.content }}</div>
-              </td>
-              <td class="px-6 py-4">
-                <span :class="getTypeClass(item.type)">{{ getTypeLabel(item.type) }}</span>
-              </td>
-              <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
-                {{ getTargetLabel(item.target) }}
-              </td>
-              <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
-                <div v-if="item.startDate">{{ formatDate(item.startDate) }}</div>
-                <div v-if="item.endDate" class="text-xs text-slate-500">đến {{ formatDate(item.endDate) }}</div>
-              </td>
-              <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
-                {{ formatNumber(item.views) }}
-              </td>
-              <td class="px-6 py-4">
-                <span :class="getStatusClass(item.status)">{{ getStatusLabel(item.status) }}</span>
-              </td>
-              <td class="px-6 py-4">
-                <div class="flex items-center gap-2">
-                  <button
-                    @click="editAnnouncement(item)"
-                    class="p-2 rounded-lg bg-slate-100 dark:bg-gray-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-gray-600"
-                    title="Sửa"
-                  >
-                    <PencilIcon class="w-4 h-4" />
-                  </button>
-                  <button
-                    v-if="item.status === 'draft'"
-                    @click="publishAnnouncement(item)"
-                    class="p-2 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50"
-                    title="Đăng"
-                  >
-                    <CheckIcon class="w-4 h-4" />
-                  </button>
-                  <button
-                    v-if="item.status === 'active'"
-                    @click="unpublishAnnouncement(item)"
-                    class="p-2 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-200 dark:hover:bg-yellow-900/50"
-                    title="Ẩn"
-                  >
-                    <EyeSlashIcon class="w-4 h-4" />
-                  </button>
-                  <button
-                    @click="deleteAnnouncement(item)"
-                    class="p-2 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50"
-                    title="Xóa"
-                  >
-                    <TrashIcon class="w-4 h-4" />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          <PlusIcon class="w-5 h-5" />
+          Tạo thông báo
+        </button>
       </div>
 
-      <div v-if="filteredAnnouncements.length === 0" class="text-center py-12">
-        <MegaphoneIcon class="w-16 h-16 mx-auto text-gray-300 dark:text-slate-600 mb-4" />
-        <p class="text-slate-500 dark:text-slate-400">Chưa có thông báo nào</p>
+      <!-- Announcements List -->
+      <div class="space-y-4">
+        <div v-if="loading" class="space-y-4">
+          <div v-for="i in 3" :key="i" class="bg-slate-800/50 rounded-2xl h-32 animate-pulse" />
+        </div>
+        <div v-else-if="announcements.length === 0" class="text-center py-12">
+          <MegaphoneIcon class="w-16 h-16 mx-auto text-slate-600 mb-4" />
+          <p class="text-slate-400">Chưa có thông báo nào</p>
+        </div>
+        <GlassCard 
+          v-for="announcement in announcements" 
+          :key="announcement._id"
+          class="p-6"
+        >
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <div class="flex items-center gap-3 mb-3">
+                <Badge :variant="getTypeVariant(announcement.type)">
+                  {{ getTypeLabel(announcement.type) }}
+                </Badge>
+                <span class="text-slate-500 text-sm">{{ formatDate(announcement.createdAt) }}</span>
+                <Badge v-if="announcement.pinned" variant="primary">Đã ghim</Badge>
+              </div>
+              <h3 class="text-lg font-semibold text-white mb-2">{{ announcement.title }}</h3>
+              <p class="text-slate-400">{{ announcement.content }}</p>
+            </div>
+            <div v-if="authStore.isAdmin" class="flex gap-2 ml-4">
+              <button 
+                @click="editAnnouncement(announcement)"
+                class="p-2 bg-blue-500/10 text-blue-400 rounded-lg hover:bg-blue-500/20 transition-colors"
+              >
+                <PencilIcon class="w-4 h-4" />
+              </button>
+              <button 
+                @click="deleteAnnouncement(announcement._id)"
+                class="p-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors"
+              >
+                <TrashIcon class="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </GlassCard>
       </div>
     </div>
 
     <!-- Create/Edit Modal -->
-    <div v-if="showCreateModal || editingItem" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-      <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div class="p-6 border-b border-slate-200 dark:border-gray-700 flex items-center justify-between">
-          <h2 class="text-xl font-bold text-slate-900 dark:text-white">
-            {{ editingItem ? 'Sửa thông báo' : 'Tạo thông báo mới' }}
-          </h2>
-          <button @click="closeModal" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-700">
-            <XMarkIcon class="w-6 h-6 text-slate-500" />
-          </button>
-        </div>
-
-        <form @submit.prevent="saveAnnouncement" class="p-6 space-y-6">
+    <div v-if="showCreateModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" @click.self="showCreateModal = false">
+      <GlassCard class="w-full max-w-lg p-6">
+        <h3 class="text-lg font-semibold text-white mb-6">{{ editingId ? 'Sửa thông báo' : 'Tạo thông báo' }}</h3>
+        <form @submit.prevent="saveAnnouncement" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">Tiêu đề</label>
-            <input
-              v-model="form.title"
+            <label class="block text-sm font-medium text-slate-300 mb-2">Tiêu đề</label>
+            <input 
+              v-model="formData.title" 
               type="text"
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500/50"
+              placeholder="Nhập tiêu đề"
               required
-              class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-slate-900 dark:text-white"
-              placeholder="Nhập tiêu đề thông báo"
-            />
+            >
           </div>
-
           <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">Nội dung</label>
-            <textarea
-              v-model="form.content"
-              rows="5"
+            <label class="block text-sm font-medium text-slate-300 mb-2">Nội dung</label>
+            <textarea 
+              v-model="formData.content" 
+              rows="4"
+              class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500/50"
+              placeholder="Nhập nội dung thông báo..."
               required
-              class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-slate-900 dark:text-white resize-none"
-              placeholder="Nhập nội dung chi tiết"
             />
           </div>
-
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">Loại thông báo</label>
-              <select
-                v-model="form.type"
-                class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-slate-900 dark:text-white"
-              >
-                <option value="maintenance">Bảo trì</option>
-                <option value="update">Cập nhật</option>
-                <option value="promotion">Khuyến mãi</option>
-                <option value="general">Thông báo chung</option>
+              <label class="block text-sm font-medium text-slate-300 mb-2">Loại</label>
+              <select v-model="formData.type" class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none">
+                <option value="info">Thông tin</option>
+                <option value="warning">Cảnh báo</option>
+                <option value="success">Thành công</option>
+                <option value="error">Lỗi</option>
               </select>
             </div>
-
-            <div>
-              <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">Đối tượng nhận</label>
-              <select
-                v-model="form.target"
-                class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-slate-900 dark:text-white"
-              >
-                <option value="all">Tất cả người dùng</option>
-                <option value="users">Chỉ người dùng</option>
-                <option value="sellers">Chỉ seller</option>
-                <option value="admins">Chỉ admin</option>
-              </select>
+            <div class="flex items-center gap-2 pt-8">
+              <input v-model="formData.pinned" type="checkbox" id="pinned" class="w-4 h-4 rounded border-slate-700 bg-slate-900">
+              <label for="pinned" class="text-slate-400">Ghim thông báo</label>
             </div>
           </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">Ngày bắt đầu</label>
-              <input
-                v-model="form.startDate"
-                type="datetime-local"
-                class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-slate-900 dark:text-white"
-              />
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">Ngày kết thúc (tùy chọn)</label>
-              <input
-                v-model="form.endDate"
-                type="datetime-local"
-                class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-slate-900 dark:text-white"
-              />
-            </div>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <input
-              v-model="form.pinned"
-              type="checkbox"
-              id="pinned"
-              class="w-4 h-4 text-blue-600 rounded border-gray-300"
-            />
-            <label for="pinned" class="text-sm text-slate-700 dark:text-gray-300">Ghim lên đầu trang</label>
-          </div>
-
-          <div class="flex items-center justify-end gap-4 pt-4 border-t border-slate-200 dark:border-gray-700">
-            <button
+          <div class="flex gap-3 pt-4">
+            <button 
               type="button"
-              @click="closeModal"
-              class="px-6 py-2 border border-gray-300 dark:border-gray-600 text-slate-700 dark:text-gray-300 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-700"
+              @click="showCreateModal = false"
+              class="flex-1 py-2.5 bg-slate-700 text-white rounded-xl hover:bg-slate-600 transition-colors"
             >
               Hủy
             </button>
-            <button
+            <button 
               type="submit"
               :disabled="saving"
-              class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium disabled:opacity-50"
+              class="flex-1 py-2.5 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors disabled:opacity-50"
             >
-              {{ saving ? 'Đang lưu...' : (editingItem ? 'Cập nhật' : 'Tạo thông báo') }}
+              {{ saving ? 'Đang lưu...' : 'Lưu' }}
             </button>
           </div>
         </form>
-      </div>
+      </GlassCard>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { useToast } from 'vue-toastification';
+import { useAuthStore } from '@/stores/auth.js';
+import { announcementApi } from '@/services/api.js';
+import GlassCard from '@/components/ui/GlassCard.vue';
+import Badge from '@/components/ui/Badge.vue';
 import {
-  MegaphoneIcon,
-  EyeIcon,
-  ChartBarIcon,
-  ClockIcon,
   PlusIcon,
+  MegaphoneIcon,
   PencilIcon,
-  CheckIcon,
-  EyeSlashIcon,
-  TrashIcon,
-  XMarkIcon
-} from '@heroicons/vue/24/outline';
+  TrashIcon
+} from '@heroicons/vue/24/solid';
 
 const toast = useToast();
-const filterType = ref('all');
-const filterStatus = ref('all');
+const authStore = useAuthStore();
+const loading = ref(true);
+const announcements = ref([]);
 const showCreateModal = ref(false);
-const editingItem = ref(null);
 const saving = ref(false);
+const editingId = ref(null);
+const formData = reactive({ title: '', content: '', type: 'info', pinned: false });
 
-const stats = ref({
-  total: 0,
-  active: 0,
-  views: 0,
-  scheduled: 0
-});
+const getTypeVariant = (type) => ({
+  info: 'info',
+  warning: 'warning',
+  success: 'success',
+  error: 'danger'
+}[type] || 'default');
 
-const form = ref({
-  title: '',
-  content: '',
-  type: 'general',
-  target: 'all',
-  startDate: '',
-  endDate: '',
-  pinned: false
-});
+const getTypeLabel = (type) => ({
+  info: 'Thông tin',
+  warning: 'Cảnh báo',
+  success: 'Thành công',
+  error: 'Lỗi'
+}[type] || type);
 
-const announcements = ref([
-  {
-    id: 1,
-    title: 'Bảo trì hệ thống ngày 05/05/2026',
-    content: 'Hệ thống sẽ bảo trì từ 02:00 đến 06:00 sáng để nâng cấp cơ sở dữ liệu.',
-    type: 'maintenance',
-    target: 'all',
-    startDate: new Date('2026-05-05T02:00:00'),
-    endDate: new Date('2026-05-05T06:00:00'),
-    views: 1250,
-    status: 'active',
-    pinned: true
-  },
-  {
-    id: 2,
-    title: 'Khuyến mãi 30% tất cả sản phẩm',
-    content: 'Chương trình khuyến mãi lớn nhất năm! Giảm 30% cho tất cả sản phẩm từ ngày 1-7/5.',
-    type: 'promotion',
-    target: 'all',
-    startDate: new Date('2026-05-01T00:00:00'),
-    endDate: new Date('2026-05-07T23:59:59'),
-    views: 3580,
-    status: 'active',
-    pinned: false
-  },
-  {
-    id: 3,
-    title: 'Cập nhật tính năng mới cho seller',
-    content: 'Đã thêm tính năng thống kê doanh thu chi tiết theo từng sản phẩm.',
-    type: 'update',
-    target: 'sellers',
-    startDate: new Date(),
-    views: 420,
-    status: 'draft',
-    pinned: false
-  }
-]);
-
-const filteredAnnouncements = computed(() => {
-  return announcements.value.filter(item => {
-    const matchType = filterType.value === 'all' || item.type === filterType.value;
-    const matchStatus = filterStatus.value === 'all' || item.status === filterStatus.value;
-    return matchType && matchStatus;
-  });
-});
-
-const closeModal = () => {
-  showCreateModal.value = false;
-  editingItem.value = null;
-  form.value = {
-    title: '',
-    content: '',
-    type: 'general',
-    target: 'all',
-    startDate: '',
-    endDate: '',
-    pinned: false
-  };
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 };
 
-const editAnnouncement = (item) => {
-  editingItem.value = item;
-  form.value = { ...item };
+const fetchAnnouncements = async () => {
+  try {
+    const response = await announcementApi.getAll();
+    if (response.success) announcements.value = Array.isArray(response.data) ? response.data : [];
+  } catch (error) {
+    announcements.value = [];
+    toast.error(error.message || 'Không thể tải thông báo');
+  } finally {
+    loading.value = false;
+  }
+};
+
+const editAnnouncement = (announcement) => {
+  editingId.value = announcement._id;
+  formData.title = announcement.title;
+  formData.content = announcement.content;
+  formData.type = announcement.type;
+  formData.pinned = announcement.pinned;
   showCreateModal.value = true;
 };
 
 const saveAnnouncement = async () => {
+  if (!formData.title || !formData.content) {
+    toast.error('Vui lòng nhập đầy đủ thông tin');
+    return;
+  }
   saving.value = true;
   try {
-    if (editingItem.value) {
-      const index = announcements.value.findIndex(a => a.id === editingItem.value.id);
-      if (index !== -1) {
-        announcements.value[index] = { ...editingItem.value, ...form.value };
-      }
-      toast.success('Đã cập nhật thông báo');
+    if (editingId.value) {
+      await announcementApi.update(editingId.value, formData);
+      toast.success('Cập nhật thành công');
     } else {
-      const newItem = {
-        id: Date.now(),
-        ...form.value,
-        views: 0,
-        status: 'draft'
-      };
-      announcements.value.unshift(newItem);
-      toast.success('Đã tạo thông báo mới');
+      await announcementApi.create(formData);
+      toast.success('Tạo thông báo thành công');
     }
-    closeModal();
+    showCreateModal.value = false;
+    editingId.value = null;
+    resetForm();
+    fetchAnnouncements();
   } catch (error) {
-    toast.error('Có lỗi xảy ra');
+    toast.error(error.message || 'Không thể lưu thông báo');
   } finally {
     saving.value = false;
   }
 };
 
-const publishAnnouncement = async (item) => {
-  try {
-    item.status = 'active';
-    toast.success('Đã đăng thông báo');
-  } catch (error) {
-    toast.error('Không thể đăng thông báo');
-  }
-};
-
-const unpublishAnnouncement = async (item) => {
-  try {
-    item.status = 'draft';
-    toast.success('Đã ẩn thông báo');
-  } catch (error) {
-    toast.error('Không thể ẩn thông báo');
-  }
-};
-
-const deleteAnnouncement = async (item) => {
+const deleteAnnouncement = async (id) => {
   if (!confirm('Bạn có chắc muốn xóa thông báo này?')) return;
-  
   try {
-    announcements.value = announcements.value.filter(a => a.id !== item.id);
+    await announcementApi.delete(id);
     toast.success('Đã xóa thông báo');
+    announcements.value = announcements.value.filter(a => a._id !== id);
   } catch (error) {
-    toast.error('Không thể xóa thông báo');
+    toast.error(error.message || 'Không thể xóa thông báo');
   }
 };
 
-const getTypeClass = (type) => {
-  const classes = {
-    maintenance: 'px-3 py-1 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400',
-    update: 'px-3 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
-    promotion: 'px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400',
-    general: 'px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-gray-700 text-slate-600 dark:text-slate-400'
-  };
-  return classes[type] || classes.general;
+const resetForm = () => {
+  formData.title = '';
+  formData.content = '';
+  formData.type = 'info';
+  formData.pinned = false;
 };
 
-const getTypeLabel = (type) => {
-  const labels = { maintenance: 'Bảo trì', update: 'Cập nhật', promotion: 'Khuyến mãi', general: 'Thông báo' };
-  return labels[type] || type;
-};
-
-const getTargetLabel = (target) => {
-  const labels = { all: 'Tất cả', users: 'Người dùng', sellers: 'Seller', admins: 'Admin' };
-  return labels[target] || target;
-};
-
-const getStatusClass = (status) => {
-  const classes = {
-    active: 'px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400',
-    draft: 'px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-gray-700 text-slate-600 dark:text-slate-400',
-    expired: 'px-3 py-1 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
-  };
-  return classes[status] || classes.draft;
-};
-
-const getStatusLabel = (status) => {
-  const labels = { active: 'Đang hiển thị', draft: 'Bản nháp', expired: 'Hết hạn' };
-  return labels[status] || status;
-};
-
-const formatNumber = (num) => new Intl.NumberFormat('vi-VN').format(num);
-const formatDate = (date) => new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(date));
-
-onMounted(() => {
-  stats.value = {
-    total: announcements.value.length,
-    active: announcements.value.filter(a => a.status === 'active').length,
-    views: announcements.value.reduce((sum, a) => sum + a.views, 0),
-    scheduled: announcements.value.filter(a => a.startDate && new Date(a.startDate) > new Date()).length
-  };
-});
+onMounted(fetchAnnouncements);
 </script>
